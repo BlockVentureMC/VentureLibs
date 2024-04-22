@@ -48,3 +48,9 @@ var Player.hasBuildTag: Boolean
     set(value) {
         if (value) this.addScoreboardTag("builder") else this.removeScoreboardTag("builder")
     }
+
+/**
+ * TODO:
+ * - Add translation extensions
+ * - Add db player extensions (from and to)
+ */

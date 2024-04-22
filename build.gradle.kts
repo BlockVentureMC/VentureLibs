@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.9.23"
     id("com.github.johnrengelman.shadow") version "8.1.1"
+    kotlin("plugin.serialization") version "1.9.22"
 }
 
 group = "net.blockventuremc"
@@ -28,6 +29,10 @@ val deps = listOf(
     "org.jetbrains.exposed:exposed-dao:$exposedVersion",
     "org.jetbrains.exposed:exposed-jdbc:$exposedVersion",
     "org.jetbrains.exposed:exposed-java-time:$exposedVersion",
+    "com.google.code.gson:gson:2.10.1",
+    "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2",
+
+
     "com.zaxxer:HikariCP:5.1.0",
     "org.mariadb.jdbc:mariadb-java-client:3.3.3",
     "io.sentry:sentry:6.17.0"
