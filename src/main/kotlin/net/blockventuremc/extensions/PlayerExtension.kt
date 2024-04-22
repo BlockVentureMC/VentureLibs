@@ -3,8 +3,10 @@ package net.blockventuremc.extensions
 import dev.fruxz.stacked.text
 import net.blockventuremc.consts.*
 import org.bukkit.Bukkit
+import org.bukkit.GameMode
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import java.util.*
 
 
@@ -36,3 +38,13 @@ fun String.toOfflinePlayer(): OfflinePlayer {
 fun String.toOfflinePlayerIfCached(): OfflinePlayer? {
     return Bukkit.getOfflinePlayerIfCached(this)
 }
+
+
+val Player.canBuild: Boolean
+    get() = gameMode == GameMode.SPECTATOR || (this.hasPermission(BUILD_PERMISSIONS) && hasBuildTag)
+
+var Player.hasBuildTag: Boolean
+    get() = this.scoreboardTags.contains("builder")
+    set(value) {
+        if (value) this.addScoreboardTag("builder") else this.removeScoreboardTag("builder")
+    }
