@@ -1,9 +1,11 @@
 package net.blockventuremc.modules.general.model
 
 enum class Ranks(val color: String) {
-    Owner("#FF0000"),
-    Admin("#FF0000"),
-    Developer("#FF0000"),
-    Builder("#FF0000"),
-    Default("#FF0000")
+    Staff("#FF0000"),
+    Plus("#FF0000"),
+    Default("#FF0000");
+
+    fun isHigherOrEqual(rank: Ranks): Boolean {
+        return this.ordinal <= rank.ordinal
+    }
 }
