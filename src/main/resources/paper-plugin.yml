@@ -1,0 +1,5 @@
+name: BlockVenture
+version: '1.0'
+main: net.blockventuremc.Plugin
+description: Plugin
+api-version: '1.20'
