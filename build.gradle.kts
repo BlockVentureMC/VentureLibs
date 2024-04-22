@@ -4,16 +4,33 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.9.23"
     id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("org.sonarqube") version "5.0.0.4638"
+    id("io.sentry.jvm.gradle") version "3.12.0"
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "BlockVentureMC_BlockVenturePlugin_f0f84c38-f5bd-478b-871c-99d4b33cb318")
+        property("sonar.projectName", "BlockVenturePlugin")
+    }
+}
+
+sentry {
+    // Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
+    // This enables source context, allowing you to see your source
+    // code as part of your stack traces in Sentry.
+    includeSourceContext = true
+
+    org = "flawcra"
+    projectName = "blockventure-plugin"
+    authToken = System.getenv("SENTRY_AUTH_TOKEN")
 }
 
 group = "net.blockventuremc"
 version = "1.0"
 
 repositories {
-    mavenCentral()
-    maven("https://jitpack.io/")
-    maven("https://repo.fruxz.dev/releases/")
-    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://nexus.flawcra.cc/repository/maven-mirrors/")
 }
 
 val exposedVersion = "0.49.0"
@@ -30,7 +47,6 @@ val deps = listOf(
     "org.jetbrains.exposed:exposed-java-time:$exposedVersion",
     "com.zaxxer:HikariCP:5.1.0",
     "org.mariadb.jdbc:mariadb-java-client:3.3.3",
-    "io.sentry:sentry:6.17.0"
 )
 
 
