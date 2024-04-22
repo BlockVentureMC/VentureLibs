@@ -15,6 +15,7 @@ class Plugin: JavaPlugin() {
     init {
         instance = this
     }
+
     override fun onEnable() {
         logger.info("Loading database...")
         DatabaseManager.database
