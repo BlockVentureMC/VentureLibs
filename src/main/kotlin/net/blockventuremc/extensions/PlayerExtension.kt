@@ -26,6 +26,14 @@ fun CommandSender.sendText(message: String) = sendMessage(text(TEXT_GRAY + messa
 fun CommandSender.sendTextPrefixedIf(message: String, condition: Boolean) = if(condition) sendMessage(text(PREFIX + message)) else Unit
 fun CommandSender.sendTextPrefixed(message: String) = sendMessage(text(PREFIX + message))
 
+fun Player.sendDeniedSound() = playSound(location, "minecraft:block.note_block.bass", 1f, 1f)
+
+fun Player.sendSuccessSound() = playSound(location, "minecraft:block.note_block.pling", 1f, 1f)
+
+fun Player.sendTeleportSound() = playSound(location, "minecraft:block.note_block.harp", 1f, 1f)
+
+fun Player.sendOpenSound() = playSound(location, "minecraft:block.note_block.chime", 1f, 1f)
+
 
 fun UUID.toOfflinePlayer(): OfflinePlayer {
     return Bukkit.getOfflinePlayer(this)
