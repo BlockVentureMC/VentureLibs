@@ -1,6 +1,9 @@
 package net.blockventuremc.consts
 
-import org.bukkit.permissions.Permission
-import org.bukkit.permissions.PermissionDefault
+const val ALL_PERMISSIONS = "blockventure.*"
 
-val BUILD_PERMISSIONS = Permission("blockventure.build", PermissionDefault.OP)
+const val BUILD_PERMISSIONS ="blockventure.build"
+
+const val ADMIN_PERMISSIONS = "blockventure.admin"
+
+val availablePermissions = listOf(ALL_PERMISSIONS, BUILD_PERMISSIONS)
