@@ -60,8 +60,32 @@ dependencies {
     }
 }
 
+open class RunSentryTask : DefaultTask() {
+    init {
+        group = "io.sentry"
+        description = "Enables and runs the Sentry source bundling task"
+    }
+
+    @TaskAction
+    fun runSentry() {
+        println("Sentry task will run just before this task.")
+    }
+}
+
 
 tasks {
+    findByName("sentryBundleSourcesJava")?.enabled = false
+
+    register<RunSentryTask>("runSentry") {
+        val sentryTask = project.tasks.findByName("sentryBundleSourcesJava")
+        if (sentryTask != null) {
+            sentryTask.enabled = true
+            dependsOn(sentryTask)
+        } else {
+            println("Sentry task not found")
+        }
+    }
+
     build {
         dependsOn("shadowJar")
     }
