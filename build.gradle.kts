@@ -1,9 +1,12 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.dokka.gradle.DokkaTask
+import java.net.URL
 
 plugins {
-    kotlin("jvm") version "1.9.23"
+    kotlin("jvm") version "2.0.0-RC1"
     id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("org.jetbrains.dokka") version  "1.9.20"
     id("org.sonarqube") version "5.0.0.4638"
     id("io.sentry.jvm.gradle") version "3.12.0"
 }
@@ -91,7 +94,7 @@ tasks {
     }
 
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.jvmTarget = "21"
         kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
 
@@ -107,8 +110,25 @@ tasks {
         archiveFileName.set("BlockVenturePlugin.jar")
     }
 
+    withType<DokkaTask>().configureEach {
+        moduleName.set(project.name)
+        moduleVersion.set(project.version.toString())
+
+        dokkaSourceSets.configureEach {
+            displayName.set(name)
+            jdkVersion.set(21)
+            languageVersion.set("21")
+            apiVersion.set("21")
+
+            sourceLink {
+                localDirectory.set(projectDir.resolve("src"))
+                remoteUrl.set(URL("https://github.com/BlockVentureMC/BlockVenturePlugin/tree/main/src"))
+                remoteLineSuffix.set("#L")
+            }
+        }
+    }
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
