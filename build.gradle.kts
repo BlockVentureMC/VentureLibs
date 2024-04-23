@@ -25,7 +25,7 @@ plugins {
     kotlin("plugin.serialization") version "1.9.22"
     id("org.jetbrains.dokka") version  "1.9.20"
     id("org.sonarqube") version "5.0.0.4638"
-    id("io.sentry.jvm.gradle") version "3.12.0"
+    id("io.sentry.jvm.gradle") version "4.5.0"
 }
 
 sonar {
