@@ -28,9 +28,7 @@ internal fun Instant.toCalendar() =
     Calendar(GregorianCalendar.from(ZonedDateTime.from(this.atZone(ZoneId.systemDefault()))))
 
 internal fun <T> smartTransaction(block: Transaction.() -> T): T {
-
     return transaction {
-        //addLogger(StdOutSqlLogger)
         return@transaction block()
     }
 }

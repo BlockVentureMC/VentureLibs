@@ -1,7 +1,13 @@
 package net.blockventuremc.extensions
 
 import dev.fruxz.stacked.text
+import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.consts.*
+import net.blockventuremc.database.functions.createDatabaseUser
+import net.blockventuremc.database.functions.getDatabaseUserOrNull
+import net.blockventuremc.database.model.DatabaseUser
+import net.blockventuremc.modules.i18n.TranslationCache
+import net.blockventuremc.modules.i18n.model.Translation
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.OfflinePlayer
@@ -57,8 +63,22 @@ var Player.hasBuildTag: Boolean
         if (value) this.addScoreboardTag("builder") else this.removeScoreboardTag("builder")
     }
 
-/**
- * TODO:
- * - Add translation extensions
- * - Add db player extensions (from and to)
- */
+fun DatabaseUser.translate(message: String, placeholders: Map<String, Any?> = emptyMap()): Translation? {
+    return TranslationCache.get(language.getLanguageCode(), message, placeholders)
+}
+
+fun Player.translate(message: String, placeholders: Map<String, Any?> = emptyMap()): Translation? {
+    return toDatabaseUser().translate(message, placeholders)
+}
+
+fun Player.toDatabaseUser(): DatabaseUser {
+    return PlayerCache.get(uniqueId)
+}
+
+fun UUID.toDatabaseUser(): DatabaseUser {
+    return PlayerCache.get(this)
+}
+
+fun UUID.toDatabaseUserDB(): DatabaseUser {
+    return getDatabaseUserOrNull(this) ?: createDatabaseUser(DatabaseUser(this, Bukkit.getPlayer(this)?.name ?: Bukkit.getOfflinePlayer(this).name ?: "Unknown"))
+}
