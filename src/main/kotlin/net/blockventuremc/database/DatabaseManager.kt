@@ -4,7 +4,9 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import dev.fruxz.ascend.tool.time.calendar.Calendar
 import net.blockventuremc.Plugin
+import net.blockventuremc.database.functions.TableUsers
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
@@ -22,6 +24,12 @@ internal object DatabaseManager {
         maximumPoolSize = 100
     }
     val database = Database.connect(HikariDataSource(dbConfig))
+
+    fun register() = smartTransaction {
+        SchemaUtils.createMissingTablesAndColumns(
+            TableUsers
+        )
+    }
 }
 
 internal fun Instant.toCalendar() =
