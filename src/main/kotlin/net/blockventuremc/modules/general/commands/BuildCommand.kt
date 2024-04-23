@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 @BlockCommand(
     name = "build",
     description = "Change your build mode",
-    permission = BUILD_PERMISSIONS,
+    permission = "blockventure.build",
     permissionDefault = PermissionDefault.OP,
     usage = "/build",
 )
