@@ -23,7 +23,8 @@ class BuildCommand : CommandExecutor {
 
         sender.hasBuildTag = !sender.hasBuildTag
 
-        sender.sendMessagePrefixed("Build mode is now ${if (sender.hasBuildTag) "enabled" else "disabled"}")
+        sender.sendMessagePrefixed(sender.toDatabaseUser().translate("build_mode_toggled", mapOf("enabled" to (if (sender.hasBuildTag) "enabled" else "disabled")))
+            ?.message ?: "Build mode is now ${if (sender.hasBuildTag) "enabled" else "disabled"}")
 
         return true
     }
