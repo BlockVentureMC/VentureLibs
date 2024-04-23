@@ -5,6 +5,8 @@ import com.zaxxer.hikari.HikariDataSource
 import dev.fruxz.ascend.tool.time.calendar.Calendar
 import net.blockventuremc.Plugin
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.Transaction
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -24,3 +26,9 @@ internal object DatabaseManager {
 
 internal fun Instant.toCalendar() =
     Calendar(GregorianCalendar.from(ZonedDateTime.from(this.atZone(ZoneId.systemDefault()))))
+
+internal fun <T> smartTransaction(block: Transaction.() -> T): T {
+    return transaction {
+        return@transaction block()
+    }
+}

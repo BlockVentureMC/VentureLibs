@@ -1,8 +1,8 @@
 package net.blockventuremc.modules.general.commands
 
 import net.blockventuremc.annotations.BlockCommand
-import net.blockventuremc.extensions.hasBuildTag
-import net.blockventuremc.extensions.sendMessagePrefixed
+import net.blockventuremc.consts.*
+import net.blockventuremc.extensions.*
 import org.bukkit.command.CommandExecutor
 import org.bukkit.permissions.PermissionDefault
 import org.bukkit.command.Command
@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 @BlockCommand(
     name = "build",
     description = "Change your build mode",
-    permission = "pixel.build",
+    permission = BUILD_PERMISSIONS,
     permissionDefault = PermissionDefault.OP,
     usage = "/build",
 )

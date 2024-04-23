@@ -6,6 +6,7 @@ import java.net.URL
 plugins {
     kotlin("jvm") version "2.0.0-RC1"
     id("com.github.johnrengelman.shadow") version "8.1.1"
+    kotlin("plugin.serialization") version "1.9.22"
     id("org.jetbrains.dokka") version  "1.9.20"
     id("org.sonarqube") version "5.0.0.4638"
     id("io.sentry.jvm.gradle") version "3.12.0"
@@ -48,6 +49,10 @@ val deps = listOf(
     "org.jetbrains.exposed:exposed-dao:$exposedVersion",
     "org.jetbrains.exposed:exposed-jdbc:$exposedVersion",
     "org.jetbrains.exposed:exposed-java-time:$exposedVersion",
+    "com.google.code.gson:gson:2.10.1",
+    "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2",
+
+
     "com.zaxxer:HikariCP:5.1.0",
     "org.mariadb.jdbc:mariadb-java-client:3.3.3",
 )
