@@ -19,16 +19,9 @@ class ChatEvent: Listener {
 
     @EventHandler
     fun onChat(event: AsyncChatEvent): Unit = with(event) {
-        val player = player
-
-        val placeHolderText = chatFormat
-        val messagePlain = message().asPlainString
-
-        val format =
-            text(parsePlaceholders(placeHolderText, player)).append(text(parsePlaceholders(messagePlain, player)))
 
         event.renderer { _, _, _, _ ->
-            return@renderer format
+            return@renderer text(parsePlaceholders(chatFormat, player)).append(text(parsePlaceholders(message().asPlainString, player)))
         }
     }
 

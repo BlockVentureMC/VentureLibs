@@ -85,7 +85,6 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
         return this
     }
 
-    @FunctionalInterface
     fun interface Performer<T> {
         fun perform(itemBuilder: T): T
     }
@@ -189,7 +188,7 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
 
     fun lore(vararg lores: String): ItemBuilder {
         val meta = itemStack.itemMeta
-        var lore = listOf<Component>()
+        val lore = mutableListOf<Component>()
 
         lores.forEach {
             val lines = it.split("\n")
@@ -338,7 +337,7 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
         )
 
         fun fromItemStack(itemStack: ItemStack): ItemBuilder {
-            var mat = if (ItemBuilder.invalidMaterials.contains(itemStack.type)) Material.GRASS_BLOCK else itemStack.type
+            var mat = if (invalidMaterials.contains(itemStack.type)) Material.GRASS_BLOCK else itemStack.type
             val builder = ItemBuilder(mat)
             builder.itemStack = itemStack
             return builder
