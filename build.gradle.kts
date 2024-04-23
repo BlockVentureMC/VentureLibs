@@ -78,6 +78,7 @@ dependencies {
     // External dependencies
     compileOnly("com.mojang:authlib:$authlibVersion")
     compileOnly("me.clip:placeholderapi:$placeholderApiVersion")
+    compileOnly("me.neznamy", "tab-api", "4.0.2")
 
     deps.forEach {
         implementation(it)

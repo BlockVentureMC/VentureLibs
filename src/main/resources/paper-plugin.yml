@@ -9,3 +9,7 @@ dependencies:
     PlaceholderAPI:
       load: BEFORE
       required: true
+
+    TAB:
+      load: BEFORE
+      required: true
