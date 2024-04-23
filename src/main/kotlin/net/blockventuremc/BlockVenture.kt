@@ -6,6 +6,7 @@ import net.blockventuremc.database.DatabaseManager
 import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.modules.placeholders.registerPlaceholders
 import net.blockventuremc.utils.RegisterManager.registerAll
+import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
 class BlockVenture: JavaPlugin() {
@@ -17,6 +18,13 @@ class BlockVenture: JavaPlugin() {
 
     init {
         instance = this
+    }
+
+    override fun onLoad() {
+        server.spigot().spigotConfig["messages.unknown-command"] = "§c" + "Unknown Command"
+        server.spigot().spigotConfig["messages.server-full"] = "${"server full"} - Club Members can join at any time"
+        server.spigot().spigotConfig["messages.outdated-client"] = "Your client is outdated, please use the latest version of Minecraft"
+        server.spigot().spigotConfig["messages.outdated-server"] = "Hold on! We are not that fast. We upgrade as soon as we can"
     }
 
     override fun onEnable() {
@@ -37,5 +45,16 @@ class BlockVenture: JavaPlugin() {
         PlayerCache.runOnlineTimeScheduler()
 
         logger.info("Hello, Minecraft!")
+    }
+
+    override fun onDisable() {
+        PlayerCache.cleanup()
+
+        for (player in Bukkit.getOnlinePlayers()) {
+            val pixelPlayer = PlayerCache.getOrNull(player.uniqueId) ?: continue
+            PlayerCache.saveToDB(pixelPlayer.copy(username = player.name))
+        }
+
+        logger.info("Plugin has been disabled")
     }
 }

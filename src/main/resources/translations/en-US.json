@@ -1,3 +1,4 @@
 {
-  "build_mode_toggled": "Build mode is now %enabled%."
+  "build_mode_toggled": "Build mode is now %enabled%.",
+  "onlinetime": "Your online time is %onlinetime%."
 }

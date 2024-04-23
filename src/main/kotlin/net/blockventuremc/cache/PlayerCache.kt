@@ -1,6 +1,8 @@
 package net.blockventuremc.cache
 
 import net.blockventuremc.BlockVenture
+import net.blockventuremc.database.functions.getDatabaseUserOrNull
+import net.blockventuremc.database.functions.updateDatabaseUser
 import net.blockventuremc.database.model.DatabaseUser
 import net.blockventuremc.extensions.toDatabaseUserDB
 import org.bukkit.Bukkit
@@ -11,13 +13,23 @@ import kotlin.time.Duration.Companion.seconds
 object PlayerCache {
     private var _cache = mapOf<UUID, DatabaseUser>()
 
-    fun get(uuid: UUID): DatabaseUser = _cache[uuid] ?: register(uuid.toDatabaseUserDB())
+    fun getOrNull(uuid: UUID): DatabaseUser? = _cache[uuid]
 
-    private fun register(user: DatabaseUser): DatabaseUser {
+    fun get(uuid: UUID): DatabaseUser = _cache[uuid] ?: addToCache(uuid.toDatabaseUserDB())
+
+    fun addToCache(user: DatabaseUser): DatabaseUser {
         _cache += Pair(user.uuid, user)
         return user
     }
 
+    /**
+     * Updates the given user in the database.
+     *
+     * @param user The user to be saved to the database.
+     */
+    fun saveToDB(user: DatabaseUser) {
+        updateDatabaseUser(user)
+    }
 
     fun updateCached(user: DatabaseUser): DatabaseUser {
         _cache -= user.uuid
@@ -29,6 +41,14 @@ object PlayerCache {
         _cache -= uuid
     }
 
+    private fun loadPlayer(uuid: UUID): DatabaseUser {
+        val player = getDatabaseUserOrNull(uuid) ?: return DatabaseUser(uuid, "Unknown")
+        return addToCache(player)
+    }
+
+    fun reloadPlayer(uuid: UUID): DatabaseUser {
+        return loadPlayer(uuid)
+    }
 
     private var task: BukkitTask? = null
     fun runOnlineTimeScheduler() {
