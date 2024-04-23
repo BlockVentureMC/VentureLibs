@@ -1,15 +1,16 @@
 package net.blockventuremc.modules.i18n
 
 import com.google.gson.Gson
-import dev.fruxz.ascend.extension.getResourceOrNull
-import dev.fruxz.ascend.extension.logging.getItsLogger
+import net.blockventuremc.extensions.getLogger
 import net.blockventuremc.modules.i18n.model.Translation
-import java.io.File
+import java.nio.file.FileSystem
+import java.nio.file.FileSystems
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReadWriteLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
-import kotlin.io.path.Path
-import kotlin.io.path.isDirectory
-import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.readText
 import kotlin.time.measureTime
 
@@ -46,8 +47,44 @@ object TranslationCache {
      */
     private var cache: Map<String, List<Translation>> = emptyMap()
 
+    /**
+     * Provides an access to JAR file systems.
+     */
+    object JarFileSystemProvider {
+        private val fileSystems = ConcurrentHashMap<String, FileSystem>()
 
-    private val translationFolder = this::class.java.getResource("/translations")?.path?.let { Path(it) }
+        /**
+         * Returns a [FileSystem] for the JAR file at the specified path.
+         *
+         * @param jarPath The path of the JAR file.
+         * @return A [FileSystem] object representing the JAR file.
+         */
+        fun getFileSystem(jarPath: String): FileSystem {
+            return fileSystems.computeIfAbsent(jarPath) { path ->
+                FileSystems.newFileSystem(Paths.get(path))
+            }
+        }
+    }
+
+
+    /**
+     * Lists all resources in a JAR file at the specified path.
+     *
+     * @param pathInJar The path of the resources in the JAR file.
+     * @return A list of [Path] objects representing the resources.
+     */
+    private fun listResourcesInJar(pathInJar: String): List<Path> {
+        // Pfad zur Jar-Datei (normalerweise kannst du diesen Pfad dynamisch ermitteln)
+        val jarPath = Paths.get(this::class.java.protectionDomain.codeSource.location.toURI()).toString()
+        val fs = JarFileSystemProvider.getFileSystem(jarPath)
+
+        // Erstelle ein neues FileSystem für die Jar-Datei
+        val path = fs.getPath(pathInJar)
+        // Verwende einen Stream, um die Dateien/Verzeichnisse zu listen
+        Files.list(path).use { paths ->
+            return paths.toList()
+        }
+    }
 
 
     /**
@@ -64,40 +101,32 @@ object TranslationCache {
                 lock.writeLock().unlock()
             }
         }
-        getItsLogger().info("Loaded ${cache.size} languages with a total of ${getTotalTranslations()} translations in $loadTimer.")
+        getLogger().info("Loaded ${cache.size} languages with a total of ${getTotalTranslations()} translations in $loadTimer.")
     }
 
     private fun loadAllTranslations(): Map<String, List<Translation>> {
-        if (translationFolder == null || !translationFolder.isDirectory()) {
-            println("translations folder not found!")
-            return emptyMap()
-        }
-
-        if (translationFolder.listDirectoryEntries().isEmpty()) {
-            println("translations folder is empty!")
+        if (listResourcesInJar("translations").isEmpty()) {
+            getLogger().info("translations folder is empty!")
             return emptyMap()
         }
 
         val translations = mutableMapOf<String, List<Translation>>()
-        val translationFiles = translationFolder.listDirectoryEntries().filter { it.fileName.toString().endsWith(".json") }
+        val translationFiles = listResourcesInJar("translations").filter { it.fileName.toString().endsWith(".json") }
         var totalTranslations = 0
-        val allTranslationTime = measureTime {
-            for (translationFile in translationFiles) {
-                val langTranslations = mutableListOf<Translation>()
-                val languageCode = translationFile.fileName.toString().removeSuffix(".json")
-                val englishTranslations = gson.fromJson(translationFile.readText(), Map::class.java)
-                getItsLogger().info("Migrating ${englishTranslations.size} $languageCode translations...")
-                val translationTime = measureTime {
-                    englishTranslations.forEach { (key, value) ->
-                        langTranslations.add(Translation(messageKey = key.toString(), message = value.toString()))
-                        totalTranslations++
-                    }
+        for (translationFile in translationFiles) {
+            val langTranslations = mutableListOf<Translation>()
+            val languageCode = translationFile.fileName.toString().removeSuffix(".json")
+            val englishTranslations = gson.fromJson(translationFile.readText(), Map::class.java)
+            getLogger().info("Migrating ${englishTranslations.size} $languageCode translations...")
+            val translationTime = measureTime {
+                englishTranslations.forEach { (key, value) ->
+                    langTranslations.add(Translation(messageKey = key.toString(), message = value.toString()))
+                    totalTranslations++
                 }
-                translations[languageCode] = langTranslations
-                getItsLogger().info("Loaded ${englishTranslations.size} $languageCode translations in ${translationTime}.")
             }
+            translations[languageCode] = langTranslations
+            getLogger().info("Loaded ${englishTranslations.size} $languageCode translations in ${translationTime}.")
         }
-        getItsLogger().info("Loaded ${translations.size} languages with a total of $totalTranslations translations in $allTranslationTime.")
         return translations
     }
 
@@ -183,7 +212,7 @@ object TranslationCache {
             var message = cache[languageCode]?.find { it.messageKey == messageKey } ?: cache[FALLBACK_LANGUAGE]?.find { it.messageKey == messageKey }
 
             if (message == null) {
-                getItsLogger().info("No translation found for $languageCode:$messageKey")
+                getLogger().info("No translation found for $languageCode:$messageKey")
                 return null
             }
 
