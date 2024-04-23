@@ -3,6 +3,22 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.dokka.gradle.DokkaTask
 import java.net.URL
 
+/**
+ * Defines the versions of the dependencies inside gradle.properties.
+ */
+val exposedVersion: String by project
+val gsonVersion: String by project
+val hikariVersion: String by project
+val mariadbVersion: String by project
+val reflectionsVersion: String by project
+val dotenvVersion: String by project
+val fruxzAscendVersion: String by project
+val fruxzStackedVersion: String by project
+val serializationVersion: String by project
+val minecraftVersion: String by project
+val authlibVersion: String by project
+val placeholderApiVersion: String by project
+
 plugins {
     kotlin("jvm") version "2.0.0-RC1"
     id("com.github.johnrengelman.shadow") version "8.1.1"
@@ -37,33 +53,31 @@ repositories {
     maven("https://nexus.flawcra.cc/repository/maven-mirrors/")
 }
 
-val exposedVersion = "0.49.0"
-
 val deps = listOf(
-    "net.oneandone.reflections8:reflections8:0.11.7",
-    "dev.fruxz:ascend:2024.1.2",
-    "dev.fruxz:stacked:2024.1.1",
-    "io.github.cdimascio:dotenv-kotlin:6.4.1",
+    "net.oneandone.reflections8:reflections8:$reflectionsVersion",
+    "dev.fruxz:ascend:$fruxzAscendVersion",
+    "dev.fruxz:stacked:$fruxzStackedVersion",
+    "io.github.cdimascio:dotenv-kotlin:$dotenvVersion",
 
     "org.jetbrains.exposed:exposed-core:$exposedVersion",
     "org.jetbrains.exposed:exposed-dao:$exposedVersion",
     "org.jetbrains.exposed:exposed-jdbc:$exposedVersion",
     "org.jetbrains.exposed:exposed-java-time:$exposedVersion",
-    "com.google.code.gson:gson:2.10.1",
-    "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2",
+    "com.google.code.gson:gson:$gsonVersion",
+    "org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion",
 
 
-    "com.zaxxer:HikariCP:5.1.0",
-    "org.mariadb.jdbc:mariadb-java-client:3.3.3",
+    "com.zaxxer:HikariCP:$hikariVersion",
+    "org.mariadb.jdbc:mariadb-java-client:$mariadbVersion",
 )
 
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:$minecraftVersion")
 
     // External dependencies
-    compileOnly("com.mojang:authlib:1.6.25")
-    compileOnly("me.clip:placeholderapi:2.11.5")
+    compileOnly("com.mojang:authlib:$authlibVersion")
+    compileOnly("me.clip:placeholderapi:$placeholderApiVersion")
 
     deps.forEach {
         implementation(it)
