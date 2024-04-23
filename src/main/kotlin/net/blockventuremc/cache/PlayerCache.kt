@@ -19,10 +19,14 @@ object PlayerCache {
     }
 
 
-    private fun updateCached(user: DatabaseUser): DatabaseUser {
+    fun updateCached(user: DatabaseUser): DatabaseUser {
         _cache -= user.uuid
         _cache += Pair(user.uuid, user)
         return user
+    }
+
+    fun remove(uuid: UUID) {
+        _cache -= uuid
     }
 
 

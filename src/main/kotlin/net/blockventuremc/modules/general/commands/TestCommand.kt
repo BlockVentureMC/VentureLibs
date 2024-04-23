@@ -2,6 +2,7 @@ package net.blockventuremc.modules.general.commands
 
 import net.blockventuremc.annotations.BlockCommand
 import net.blockventuremc.database.model.DatabaseUser
+import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.modules.general.model.Ranks
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -21,7 +22,7 @@ class TestCommand: CommandExecutor {
         val u = DatabaseUser(sender.uniqueId, sender.name)
 
         if (!u.rank.isHigherOrEqual(Ranks.Staff)) {
-            sender.sendMessage("You do not have permission to use this command.")
+            sender.sendMessagePrefixed("You do not have permission to use this command.")
             return true
         }
         sender.sendMessage("Test command")
