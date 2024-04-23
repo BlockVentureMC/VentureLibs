@@ -13,32 +13,7 @@ import org.reflections8.Reflections
 import kotlin.time.measureTime
 
 object RegisterManager {
-    fun registerAll() {
-        val reflections = Reflections("net.blockventuremc.modules")
-
-        val timeListeners = measureTime {
-            for (clazz in reflections.getSubTypesOf(Listener::class.java)) {
-                try {
-                    val constructor = clazz.declaredConstructors.find { it.parameterCount == 0 } ?: continue
-
-                    if (clazz.`package`.name.contains("conversations")) continue
-
-                    constructor.isAccessible = true
-
-                    val event = constructor.newInstance() as Listener
-
-                    Bukkit.getPluginManager().registerEvents(event, Plugin.instance)
-                    Bukkit.getConsoleSender()
-                        .sendMessage("Listener ${event.javaClass.simpleName} registered")
-                } catch (exception: InstantiationError) {
-                    exception.printStackTrace()
-                } catch (exception: IllegalAccessException) {
-                    exception.printStackTrace()
-                }
-            }
-        }
-        println("Registered listeners in $timeListeners")
-
+    private fun registerCommands(reflections: Reflections) {
 
         val timeCommands = measureTime {
             for (clazz in reflections.getTypesAnnotatedWith(BlockCommand::class.java)) {
@@ -78,5 +53,38 @@ object RegisterManager {
             }
         }
         println("Registered commands in $timeCommands")
+    }
+
+    private fun registerListeners(reflections: Reflections) {
+        val timeListeners = measureTime {
+            for (clazz in reflections.getSubTypesOf(Listener::class.java)) {
+                try {
+                    val constructor = clazz.declaredConstructors.find { it.parameterCount == 0 } ?: continue
+
+                    if (clazz.`package`.name.contains("conversations")) continue
+
+                    constructor.isAccessible = true
+
+                    val event = constructor.newInstance() as Listener
+
+                    Bukkit.getPluginManager().registerEvents(event, Plugin.instance)
+                    Bukkit.getConsoleSender()
+                        .sendMessage("Listener ${event.javaClass.simpleName} registered")
+                } catch (exception: InstantiationError) {
+                    exception.printStackTrace()
+                } catch (exception: IllegalAccessException) {
+                    exception.printStackTrace()
+                }
+            }
+        }
+        println("Registered listeners in $timeListeners")
+    }
+    fun registerAll() {
+        val reflections = Reflections("net.blockventuremc.modules")
+
+        registerListeners(reflections)
+
+        registerCommands(reflections)
+
     }
 }
