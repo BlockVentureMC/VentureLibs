@@ -22,7 +22,7 @@ val placeholderApiVersion: String by project
 plugins {
     kotlin("jvm") version "2.0.0-RC1"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    kotlin("plugin.serialization") version "1.9.22"
+    kotlin("plugin.serialization") version "1.9.23"
     id("org.jetbrains.dokka") version  "1.9.20"
     id("org.sonarqube") version "5.0.0.4638"
     id("io.sentry.jvm.gradle") version "3.12.0"
