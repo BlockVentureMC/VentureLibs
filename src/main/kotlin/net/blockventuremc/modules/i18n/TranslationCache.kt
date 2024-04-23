@@ -4,8 +4,10 @@ import com.google.gson.Gson
 import dev.fruxz.ascend.extension.getResourceOrNull
 import dev.fruxz.ascend.extension.logging.getItsLogger
 import net.blockventuremc.modules.i18n.model.Translation
+import java.io.File
 import java.util.concurrent.locks.ReadWriteLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.io.path.Path
 import kotlin.io.path.isDirectory
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.readText
@@ -45,7 +47,7 @@ object TranslationCache {
     private var cache: Map<String, List<Translation>> = emptyMap()
 
 
-    private val translationFolder = getResourceOrNull("translations")
+    private val translationFolder = this::class.java.getResource("/translations")?.path?.let { Path(it) }
 
 
     /**

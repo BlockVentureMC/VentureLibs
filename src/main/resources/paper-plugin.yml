@@ -1,5 +1,15 @@
 name: BlockVenture
 version: '1.0'
-main: net.blockventuremc.Plugin
+main: net.blockventuremc.BlockVenture
 description: Plugin
 api-version: '1.20'
+
+dependencies:
+  server:
+    PlaceholderAPI:
+      load: BEFORE
+      required: true
+
+    TAB:
+      load: BEFORE
+      required: true

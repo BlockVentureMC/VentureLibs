@@ -7,6 +7,7 @@ import net.blockventuremc.database.toCalendar
 import net.blockventuremc.modules.general.model.Languages
 import net.blockventuremc.modules.general.model.Ranks
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.javatime.CurrentTimestamp
 import org.jetbrains.exposed.sql.javatime.timestamp
 import java.util.*
 import kotlin.time.Duration.Companion.seconds
@@ -17,8 +18,8 @@ object TableUsers : Table("users") {
     val userRank = enumerationByName("rank", 24, Ranks::class).default(Ranks.Default)
     val userLanguage = enumerationByName("language", 2, Languages::class).default(Languages.EN)
 
-    val userFirstJoined = timestamp("firstJoined")
-    val userLastJoined = timestamp("lastTimeOnline")
+    val userFirstJoined = timestamp("firstJoined").defaultExpression(CurrentTimestamp())
+    val userLastJoined = timestamp("lastTimeOnline").defaultExpression(CurrentTimestamp())
     val onlineTime = long("onlineTime").default(0)
 
     override val primaryKey = PrimaryKey(userUUID)

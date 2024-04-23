@@ -1,7 +1,7 @@
 package net.blockventuremc.modules.general.events
 
 import com.destroystokyo.paper.MaterialSetTag
-import net.blockventuremc.Plugin
+import net.blockventuremc.BlockVenture
 import net.blockventuremc.extensions.canBuild
 import net.blockventuremc.extensions.sendDeniedSound
 import org.bukkit.Bukkit
@@ -66,7 +66,7 @@ class BuildEvents: Listener {
     @EventHandler
     fun onLiquidGet(event: PlayerBucketFillEvent) {
         if (!event.player.canBuild && event.block.type == Material.WATER) {
-            Bukkit.getScheduler().runTaskLater(Plugin.instance, Runnable {
+            Bukkit.getScheduler().runTaskLater(BlockVenture.instance, Runnable {
                 event.block.type = Material.WATER
             }, 1)
         }

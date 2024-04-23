@@ -1,6 +1,6 @@
 package net.blockventuremc.cache
 
-import net.blockventuremc.Plugin
+import net.blockventuremc.BlockVenture
 import net.blockventuremc.database.model.DatabaseUser
 import net.blockventuremc.extensions.toDatabaseUserDB
 import org.bukkit.Bukkit
@@ -19,16 +19,20 @@ object PlayerCache {
     }
 
 
-    private fun updateCached(user: DatabaseUser): DatabaseUser {
+    fun updateCached(user: DatabaseUser): DatabaseUser {
         _cache -= user.uuid
         _cache += Pair(user.uuid, user)
         return user
     }
 
+    fun remove(uuid: UUID) {
+        _cache -= uuid
+    }
+
 
     private var task: BukkitTask? = null
     fun runOnlineTimeScheduler() {
-        task = Bukkit.getScheduler().runTaskTimerAsynchronously(Plugin.instance, Runnable {
+        task = Bukkit.getScheduler().runTaskTimerAsynchronously(BlockVenture.instance, Runnable {
             Bukkit.getOnlinePlayers().forEach { player ->
                 val dbUser = get(player.uniqueId)
                 dbUser.testForActivity()
