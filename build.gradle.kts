@@ -20,7 +20,7 @@ val authlibVersion: String by project
 val placeholderApiVersion: String by project
 
 plugins {
-    kotlin("jvm") version "2.0.0-RC1"
+    kotlin("jvm") version "2.0.255-SNAPSHOT"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     kotlin("plugin.serialization") version "1.9.22"
     id("org.jetbrains.dokka") version  "1.9.20"
