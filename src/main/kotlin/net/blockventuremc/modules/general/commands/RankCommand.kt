@@ -44,7 +44,7 @@ class RankCommand : CommandExecutor, TabCompleter {
             targetPlayer.player?.sendMessage("§aDein Rang wurde auf §e${rank}§a geändert.")
         }
 
-        sender.sendMessagePrefixed("Rang von ${targetPlayer.name} auf <${realRank.color}>$rank gesetzt")
+        sender.sendMessagePrefixed("Rang von ${targetPlayer.name} auf <${realRank.color}>$rank<reset> gesetzt")
 
         return true
     }
