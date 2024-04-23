@@ -6,6 +6,7 @@ import net.blockventuremc.consts.*
 import net.blockventuremc.database.functions.createDatabaseUser
 import net.blockventuremc.database.functions.getDatabaseUserOrNull
 import net.blockventuremc.database.model.DatabaseUser
+import net.blockventuremc.modules.general.model.Ranks
 import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.modules.i18n.model.Translation
 import org.bukkit.Bukkit
@@ -55,7 +56,7 @@ fun String.toOfflinePlayerIfCached(): OfflinePlayer? {
 
 
 val Player.canBuild: Boolean
-    get() = gameMode == GameMode.SPECTATOR || (this.hasPermission(BUILD_PERMISSIONS) && hasBuildTag)
+    get() = gameMode == GameMode.SPECTATOR || (this.toDatabaseUser().rank.isHigherOrEqual(Ranks.Staff) && hasBuildTag)
 
 var Player.hasBuildTag: Boolean
     get() = this.scoreboardTags.contains("builder")
