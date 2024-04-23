@@ -65,12 +65,10 @@ class BuildEvents: Listener {
 
     @EventHandler
     fun onLiquidGet(event: PlayerBucketFillEvent) {
-        if (!event.player.canBuild) {
-            if (event.block.type == Material.WATER) {
-                Bukkit.getScheduler().runTaskLater(Plugin.instance, Runnable {
-                    event.block.type = Material.WATER
-                }, 1)
-            }
+        if (!event.player.canBuild && event.block.type == Material.WATER) {
+            Bukkit.getScheduler().runTaskLater(Plugin.instance, Runnable {
+                event.block.type = Material.WATER
+            }, 1)
         }
     }
 
