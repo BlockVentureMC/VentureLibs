@@ -1,6 +1,6 @@
 package net.blockventuremc.utils
 
-import net.blockventuremc.Plugin
+import net.blockventuremc.BlockVenture
 import net.blockventuremc.annotations.BlockCommand
 import net.blockventuremc.consts.NAMESPACE_PLUGIN
 import net.blockventuremc.extensions.sendMessagePrefixed
@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.PluginCommand
 import org.bukkit.event.Listener
 import org.bukkit.permissions.Permission
+import org.bukkit.plugin.Plugin
 import org.reflections8.Reflections
 import kotlin.time.measureTime
 
@@ -25,7 +26,7 @@ object RegisterManager {
 
                     constructor.isAccessible = true
 
-                    val command: PluginCommand = constructor.newInstance(annotation.name, Plugin.instance)
+                    val command: PluginCommand = constructor.newInstance(annotation.name, BlockVenture.instance)
 
                     command.aliases = annotation.aliases.toList()
                     command.description = annotation.description
@@ -67,7 +68,7 @@ object RegisterManager {
 
                     val event = constructor.newInstance() as Listener
 
-                    Bukkit.getPluginManager().registerEvents(event, Plugin.instance)
+                    Bukkit.getPluginManager().registerEvents(event, BlockVenture.instance)
                     Bukkit.getConsoleSender()
                         .sendMessage("Listener ${event.javaClass.simpleName} registered")
                 } catch (exception: InstantiationError) {

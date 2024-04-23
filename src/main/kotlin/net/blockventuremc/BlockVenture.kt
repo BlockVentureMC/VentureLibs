@@ -7,9 +7,9 @@ import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.utils.RegisterManager.registerAll
 import org.bukkit.plugin.java.JavaPlugin
 
-class Plugin: JavaPlugin() {
+class BlockVenture: JavaPlugin() {
     companion object {
-        lateinit var instance: Plugin
+        lateinit var instance: BlockVenture
     }
 
     val dotenv = dotenv()

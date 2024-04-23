@@ -3,7 +3,7 @@ package net.blockventuremc.database
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import dev.fruxz.ascend.tool.time.calendar.Calendar
-import net.blockventuremc.Plugin
+import net.blockventuremc.BlockVenture
 import net.blockventuremc.database.functions.TableUsers
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -17,10 +17,10 @@ import java.util.*
 internal object DatabaseManager {
 
     val dbConfig = HikariConfig().apply {
-        jdbcUrl = Plugin.instance.dotenv["DATABASE_URL"]
-        driverClassName = Plugin.instance.dotenv["DATABASE_DRIVER"]
-        username = Plugin.instance.dotenv["DATABASE_USER"]
-        password = Plugin.instance.dotenv["DATABASE_PASSWORD"]
+        jdbcUrl = BlockVenture.instance.dotenv["DATABASE_URL"]
+        driverClassName = BlockVenture.instance.dotenv["DATABASE_DRIVER"]
+        username = BlockVenture.instance.dotenv["DATABASE_USER"]
+        password = BlockVenture.instance.dotenv["DATABASE_PASSWORD"]
         maximumPoolSize = 100
     }
     val database = Database.connect(HikariDataSource(dbConfig))

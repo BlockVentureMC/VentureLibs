@@ -1,7 +1,7 @@
 package net.blockventuremc.utils
 
 import kotlinx.coroutines.*
-import net.blockventuremc.Plugin
+import net.blockventuremc.BlockVenture
 import org.bukkit.Bukkit
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -37,7 +37,7 @@ val globalPool: ExecutorService = Executors.newCachedThreadPool()
 object MinecraftCoroutineDispatcher : CoroutineDispatcher() {
     override fun dispatch(context: CoroutineContext, block: Runnable) {
         if (!Bukkit.isPrimaryThread()) {
-            Bukkit.getServer().scheduler.runTask(Plugin.instance, block)
+            Bukkit.getServer().scheduler.runTask(BlockVenture.instance, block)
             return
         }
         block.run()
