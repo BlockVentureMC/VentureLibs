@@ -19,10 +19,10 @@ object PlayerCache {
     }
 
 
-    fun updateCachedPlayer(cringeUser: DatabaseUser): DatabaseUser {
-        _cache -= cringeUser.uuid
-        _cache += Pair(cringeUser.uuid, cringeUser)
-        return cringeUser
+    private fun updateCached(user: DatabaseUser): DatabaseUser {
+        _cache -= user.uuid
+        _cache += Pair(user.uuid, user)
+        return user
     }
 
 
@@ -34,7 +34,7 @@ object PlayerCache {
                 dbUser.testForActivity()
                 if (dbUser.afk) return@forEach
 
-                updateCachedPlayer(dbUser.copy(onlineTime = dbUser.onlineTime + 1.seconds))
+                updateCached(dbUser.copy(onlineTime = dbUser.onlineTime + 1.seconds))
             }
         }, 20L, 20L)
     }

@@ -60,7 +60,10 @@ val deps = listOf(
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+
+    // External dependencies
     compileOnly("com.mojang:authlib:1.6.25")
+    compileOnly("me.clip:placeholderapi:2.11.5")
 
     deps.forEach {
         implementation(it)
