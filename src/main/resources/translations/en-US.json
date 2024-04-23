@@ -1,1 +1,3 @@
-{}
+{
+  "build_mode_toggled": "Build mode is now %enabled%."
+}
