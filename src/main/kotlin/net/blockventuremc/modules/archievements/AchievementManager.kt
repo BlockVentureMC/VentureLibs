@@ -1,5 +1,6 @@
 package net.blockventuremc.modules.archievements
 
+import dev.fruxz.ascend.extension.logging.getItsLogger
 import dev.fruxz.stacked.extension.Title
 import dev.fruxz.stacked.text
 import net.blockventuremc.database.functions.addAchievementToUser
@@ -17,6 +18,8 @@ object AchievementManager {
         player.showTitle(Title(text(achievement.title), text(achievement.description)))
 
         addAchievementToUser(DatabaseAchievement(uuid, achievement))
+
+        getItsLogger().info("Added achievement ${achievement.title} to ${player.name}")
 
     }
 }
