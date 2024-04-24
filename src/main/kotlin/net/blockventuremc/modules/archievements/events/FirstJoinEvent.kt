@@ -4,11 +4,12 @@ import net.blockventuremc.database.functions.getAchievementOfUser
 import net.blockventuremc.modules.archievements.AchievementManager
 import net.blockventuremc.modules.archievements.model.Achievement
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 
 class FirstJoinEvent: Listener {
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     fun onFirstJoin(event: PlayerJoinEvent) {
         val achievement = getAchievementOfUser(event.player.uniqueId, Achievement.FirstJoin)
 
