@@ -1,5 +1,6 @@
 package net.blockventuremc.utils
 
+import io.sentry.Sentry
 import net.blockventuremc.BlockVenture
 import net.blockventuremc.annotations.BlockCommand
 import net.blockventuremc.consts.NAMESPACE_PLUGIN
@@ -38,6 +39,7 @@ object RegisterManager {
                             commandInstance.onCommand(sender, command, label, args)
                         } catch (e: Exception) {
                             sender.sendMessagePrefixed("An error occurred while executing the command.")
+                            Sentry.captureException(e)
                             throw e
                         }
                     }
@@ -73,8 +75,10 @@ object RegisterManager {
                         .sendMessage("Listener ${event.javaClass.simpleName} registered")
                 } catch (exception: InstantiationError) {
                     exception.printStackTrace()
+                    Sentry.captureException(exception)
                 } catch (exception: IllegalAccessException) {
                     exception.printStackTrace()
+                    Sentry.captureException(exception)
                 }
             }
         }
