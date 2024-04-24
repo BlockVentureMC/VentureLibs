@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import dev.fruxz.ascend.tool.time.calendar.Calendar
 import net.blockventuremc.BlockVenture
+import net.blockventuremc.database.functions.TableAchievements
 import net.blockventuremc.database.functions.TableUsers
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -27,7 +28,8 @@ internal object DatabaseManager {
 
     fun register() = smartTransaction {
         SchemaUtils.createMissingTablesAndColumns(
-            TableUsers
+            TableUsers,
+            TableAchievements
         )
     }
 }
