@@ -15,6 +15,8 @@ object TableAchievements: Table("achievements") {
     val achievement = enumerationByName("achievement", 24, Achievement::class)
 
     val receivedAt = timestamp("receivedAt").defaultExpression(CurrentTimestamp())
+
+    override val primaryKey = PrimaryKey(userUUID, achievement)
 }
 
 private fun mapToDatabaseAchievement(row: ResultRow): DatabaseAchievement = with(row) {
