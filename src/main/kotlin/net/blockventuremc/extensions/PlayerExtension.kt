@@ -6,6 +6,7 @@ import net.blockventuremc.consts.*
 import net.blockventuremc.database.functions.createDatabaseUser
 import net.blockventuremc.database.functions.getDatabaseUserOrNull
 import net.blockventuremc.database.model.DatabaseUser
+import net.blockventuremc.modules.general.model.Languages
 import net.blockventuremc.modules.general.model.Ranks
 import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.modules.i18n.model.Translation
@@ -66,6 +67,11 @@ var Player.hasBuildTag: Boolean
 
 fun DatabaseUser.translate(message: String, placeholders: Map<String, Any?> = emptyMap()): Translation? {
     return TranslationCache.get(language.getLanguageCode(), message, placeholders)
+}
+
+fun CommandSender.translate(message: String, placeholders: Map<String, Any?> = emptyMap()): Translation? {
+    if (this is Player) return toDatabaseUser().translate(message, placeholders)
+    return TranslationCache.get(Languages.EN.getLanguageCode(), message, placeholders)
 }
 
 fun Player.translate(message: String, placeholders: Map<String, Any?> = emptyMap()): Translation? {

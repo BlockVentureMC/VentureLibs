@@ -7,5 +7,9 @@
   "achievement.achieved": "You have achieved the achievement <color:#f78fb3>%achievement%</color>.",
   "achievement.firstjoin.title": "Welcome to the server!",
   "achievement.firstjoin.description": "You have joined the server for the first time.",
-  "messages.auto-save": "<color:#4cd137>Your data was saved automatically."
+  "messages.auto-save": "<color:#4cd137>Your data was saved automatically.",
+  "commands.rank_not_found": "Rank <color:#f78fb3>%rank%</color> not found.",
+  "lock.usage": "Usage: /lock <color:#f78fb3><rank></color>.",
+  "lock.no_door": "You must look at a door to lock it.",
+  "lock.success": "The door is now locked to only open for <color:#f78fb3>%rank%</color> or higher."
 }

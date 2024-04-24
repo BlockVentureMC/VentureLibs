@@ -3,13 +3,16 @@ package net.blockventuremc.modules.general.commands.crew
 import net.blockventuremc.annotations.BlockCommand
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.extensions.sendMessagePrefixed
+import net.blockventuremc.extensions.sendSuccessSound
 import net.blockventuremc.extensions.toDatabaseUser
+import net.blockventuremc.extensions.translate
 import net.blockventuremc.modules.general.model.Ranks
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.TabCompleter
 import org.bukkit.permissions.PermissionDefault
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import kotlin.collections.filter
 import kotlin.collections.find
 import kotlin.collections.map
@@ -38,7 +41,7 @@ class RankCommand : CommandExecutor, TabCompleter {
 
         val realRank = Ranks.entries.find { it.name.equals(rank, true) }
         if(realRank == null) {
-            sender.sendMessagePrefixed("<red>Rank not found")
+            sender.sendMessagePrefixed(sender.translate("commands.rank_not_found", mapOf("rank" to args[0]))?.message ?: "Rank not found")
             return true
         }
 
@@ -51,6 +54,10 @@ class RankCommand : CommandExecutor, TabCompleter {
         }
 
         sender.sendMessagePrefixed("Rang von ${targetPlayer.name} auf <${realRank.color}>$rank<reset> gesetzt")
+
+        if (sender is Player) {
+            sender.sendSuccessSound()
+        }
 
         return true
     }
