@@ -6,5 +6,6 @@
   "no_permission.club_member": "This command is only available to <color:#ea8685>Club Members</color>.",
   "achievement.achieved": "You have achieved the achievement <color:#f78fb3>%achievement%</color>.",
   "achievement.firstjoin.title": "Welcome to the server!",
-  "achievement.firstjoin.description": "You have joined the server for the first time."
+  "achievement.firstjoin.description": "You have joined the server for the first time.",
+  "messages.auto-save": "<color:#4cd137>Your data was saved automatically."
 }
