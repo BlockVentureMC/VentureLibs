@@ -97,3 +97,6 @@ fun CommandSender.isRankOrHigher(rank: Ranks): Boolean {
         true
     }
 }
+
+val DatabaseUser.bitsPerMinute: Long
+    get() = (rank.bitsPerMinute).toLong()
