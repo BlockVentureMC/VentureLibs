@@ -1,4 +1,7 @@
 {
   "build_mode_toggled": "Build mode is now %enabled%.",
-  "onlinetime": "Your online time is %onlinetime%."
+  "fly_mode_toggled": "Fly mode is now %enabled%.",
+  "fly_mode_toggled_by": "Fly mode of %player% is now %enabled%.",
+  "onlinetime": "Your online time is %onlinetime%.",
+  "no_permission.club_member": "This command is only available to <color:#ea8685>Club Members</color>."
 }

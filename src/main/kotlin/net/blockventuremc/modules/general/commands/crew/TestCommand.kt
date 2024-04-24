@@ -1,4 +1,4 @@
-package net.blockventuremc.modules.general.commands
+package net.blockventuremc.modules.general.commands.crew
 
 import net.blockventuremc.annotations.BlockCommand
 import net.blockventuremc.database.model.DatabaseUser
@@ -21,7 +21,7 @@ class TestCommand: CommandExecutor {
 
         val u = DatabaseUser(sender.uniqueId, sender.name)
 
-        if (!u.rank.isHigherOrEqual(Ranks.Staff)) {
+        if (!u.rank.isHigherOrEqual(Ranks.Crew)) {
             sender.sendMessagePrefixed("You do not have permission to use this command.")
             return true
         }

@@ -12,7 +12,7 @@ import kotlin.time.Duration
 data class DatabaseUser(
     val uuid: UUID,
     val username: String,
-    val rank: Ranks = Ranks.Default,
+    val rank: Ranks = Ranks.Guest,
     val language: Languages = Languages.EN,
 
     // Other
