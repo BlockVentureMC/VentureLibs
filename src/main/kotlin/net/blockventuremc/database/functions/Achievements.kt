@@ -14,7 +14,7 @@ object TableAchievements: Table("achievements") {
 
     val achievement = enumerationByName("achievement", 24, Achievement::class)
 
-    val gottenAt = timestamp("gottenAt").defaultExpression(CurrentTimestamp())
+    val receivedAt = timestamp("receivedAt").defaultExpression(CurrentTimestamp())
 }
 
 private fun mapToDatabaseAchievement(row: ResultRow): DatabaseAchievement = with(row) {
@@ -22,7 +22,7 @@ private fun mapToDatabaseAchievement(row: ResultRow): DatabaseAchievement = with
         uuid = UUID.fromString(this[TableAchievements.userUUID]),
         achievement = this[TableAchievements.achievement],
 
-        gottenAt = this[TableAchievements.gottenAt].toCalendar()
+        receivedAt = this[TableAchievements.receivedAt].toCalendar()
     )
 }
 
@@ -30,7 +30,7 @@ fun addAchievementToUser(achievement: DatabaseAchievement) = smartTransaction {
     TableAchievements.insert {
         it[userUUID] = achievement.uuid.toString()
         it[TableAchievements.achievement] = achievement.achievement
-        it[gottenAt] = achievement.gottenAt.javaInstant
+        it[receivedAt] = achievement.receivedAt.javaInstant
     }
 }
 

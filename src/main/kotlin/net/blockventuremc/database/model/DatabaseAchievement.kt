@@ -8,5 +8,5 @@ data class DatabaseAchievement(
     val uuid: UUID,
     val achievement: Achievement,
 
-    val gottenAt: Calendar = Calendar.now()
+    val receivedAt: Calendar = Calendar.now()
 )
