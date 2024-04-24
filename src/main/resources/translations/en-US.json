@@ -11,6 +11,6 @@
   "commands.rank_not_found": "Rank <color:#f78fb3>%rank%</color> not found.",
   "lock.usage": "Usage: /lock <color:#f78fb3><rank></color>.",
   "lock.no_door": "You must look at a door to lock it.",
-  "lock.success": "The door is now locked to only open for <color:#f78fb3>%rank%</color> or higher."
+  "lock.success": "The door is now locked to only open for <color:#f78fb3>%rank%</color> or higher.",
   "venturebits.self": "You have %venturebits% VentureBits.\nYou currently earn %bitsPerMinute% VentureBits per minute."
 }
