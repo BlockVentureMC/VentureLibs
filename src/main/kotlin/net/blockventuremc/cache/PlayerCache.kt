@@ -6,6 +6,7 @@ import net.blockventuremc.BlockVenture
 import net.blockventuremc.database.functions.getDatabaseUserOrNull
 import net.blockventuremc.database.functions.updateDatabaseUser
 import net.blockventuremc.database.model.DatabaseUser
+import net.blockventuremc.extensions.bitsPerMinute
 import net.blockventuremc.extensions.getLogger
 import net.blockventuremc.extensions.toDatabaseUserDB
 import net.blockventuremc.extensions.translate
@@ -58,6 +59,7 @@ object PlayerCache {
     private var task: BukkitTask? = null
     fun runOnlineTimeScheduler() {
         var lastAutoSave = Calendar.now()
+        var lastVentureTreassure = Calendar.now()
         task = Bukkit.getScheduler().runTaskTimerAsynchronously(BlockVenture.instance, Runnable {
             if (Bukkit.getOnlinePlayers().isEmpty()) return@Runnable
 
@@ -67,6 +69,15 @@ object PlayerCache {
                 if (dbUser.afk) return@forEach
 
                 updateCached(dbUser.copy(onlineTime = dbUser.onlineTime + 1.seconds))
+            }
+
+            // Give venture bits every minute
+            if (lastVentureTreassure.plus(1.minutes) < Calendar.now()) {
+                Bukkit.getOnlinePlayers().forEach { player ->
+                    val dbUser = get(player.uniqueId)
+                    updateCached(dbUser.copy(ventureBits = dbUser.ventureBits + dbUser.bitsPerMinute))
+                }
+                lastVentureTreassure = Calendar.now()
             }
 
             // Save all players every 15 minutes

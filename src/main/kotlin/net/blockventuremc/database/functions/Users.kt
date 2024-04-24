@@ -19,6 +19,8 @@ object TableUsers : Table("users") {
     val userRank = enumerationByName("rank", 24, Ranks::class).default(Ranks.Guest)
     val userLanguage = enumerationByName("language", 2, Languages::class).default(Languages.EN)
 
+    val ventureBits = long("ventureBits").default(0) // Currency
+
     val userFirstJoined = timestamp("firstJoined").defaultExpression(CurrentTimestamp())
     val userLastJoined = timestamp("lastTimeOnline").defaultExpression(CurrentTimestamp())
     val onlineTime = long("onlineTime").default(0)
@@ -37,6 +39,7 @@ private fun mapToDatabaseUser(row: ResultRow): DatabaseUser = with(row) {
         username = this[TableUsers.userName],
         rank = this[TableUsers.userRank],
         language = this[TableUsers.userLanguage],
+        ventureBits = this[TableUsers.ventureBits],
         firstJoined = this[TableUsers.userFirstJoined].toCalendar(),
         lastTimeJoined = this[TableUsers.userLastJoined].toCalendar(),
         onlineTime = this[TableUsers.onlineTime].seconds,
@@ -57,6 +60,7 @@ fun updateDatabaseUser(user: DatabaseUser) = smartTransaction {
         it[userName] = user.username
         it[userRank] = user.rank
         it[userLanguage] = user.language
+        it[ventureBits] = user.ventureBits
         it[userFirstJoined] = user.firstJoined.javaInstant
         it[userLastJoined] = user.lastTimeJoined.javaInstant
         it[onlineTime] = user.onlineTime.inWholeSeconds

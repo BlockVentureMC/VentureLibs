@@ -15,6 +15,8 @@ data class DatabaseUser(
     val rank: Ranks = Ranks.Guest,
     val language: Languages = Languages.EN,
 
+    val ventureBits: Long = 0,
+
     // Other
     val firstJoined: Calendar = Calendar.now(),
     val lastTimeJoined: Calendar = Calendar.now(),
