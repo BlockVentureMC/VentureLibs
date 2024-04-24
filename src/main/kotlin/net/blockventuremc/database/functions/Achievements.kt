@@ -1,6 +1,5 @@
 package net.blockventuremc.database.functions
 
-import net.blockventuremc.database.functions.TableUsers.userUUID
 import net.blockventuremc.database.model.DatabaseAchievement
 import net.blockventuremc.database.smartTransaction
 import net.blockventuremc.database.toCalendar
@@ -20,7 +19,7 @@ object TableAchievements: Table("achievements") {
 
 private fun mapToDatabaseAchievement(row: ResultRow): DatabaseAchievement = with(row) {
     return DatabaseAchievement(
-        uuid = UUID.fromString(this[userUUID]),
+        uuid = UUID.fromString(this[TableAchievements.userUUID]),
         achievement = this[TableAchievements.achievement],
 
         gottenAt = this[TableAchievements.gottenAt].toCalendar()
