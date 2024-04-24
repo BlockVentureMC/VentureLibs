@@ -15,7 +15,7 @@ import kotlin.time.Duration.Companion.seconds
 object TableUsers : Table("users") {
     val userUUID = varchar("uuid", 45)
     val userName = varchar("username", 24)
-    val userRank = enumerationByName("rank", 24, Ranks::class).default(Ranks.Default)
+    val userRank = enumerationByName("rank", 24, Ranks::class).default(Ranks.Guest)
     val userLanguage = enumerationByName("language", 2, Languages::class).default(Languages.EN)
 
     val userFirstJoined = timestamp("firstJoined").defaultExpression(CurrentTimestamp())

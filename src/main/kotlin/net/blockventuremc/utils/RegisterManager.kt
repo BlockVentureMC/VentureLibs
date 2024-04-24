@@ -37,7 +37,7 @@ object RegisterManager {
                         try {
                             commandInstance.onCommand(sender, command, label, args)
                         } catch (e: Exception) {
-                            sender.sendMessagePrefixed("Ein Fehler ist aufgetreten!")
+                            sender.sendMessagePrefixed("An error occurred while executing the command.")
                             throw e
                         }
                     }

@@ -56,7 +56,7 @@ fun String.toOfflinePlayerIfCached(): OfflinePlayer? {
 
 
 val Player.canBuild: Boolean
-    get() = gameMode == GameMode.SPECTATOR || (this.toDatabaseUser().rank.isHigherOrEqual(Ranks.Staff) && hasBuildTag)
+    get() = gameMode == GameMode.SPECTATOR || (this.toDatabaseUser().rank.isHigherOrEqual(Ranks.Trial) && hasBuildTag)
 
 var Player.hasBuildTag: Boolean
     get() = this.scoreboardTags.contains("builder")
@@ -82,4 +82,12 @@ fun UUID.toDatabaseUser(): DatabaseUser {
 
 fun UUID.toDatabaseUserDB(): DatabaseUser {
     return getDatabaseUserOrNull(this) ?: createDatabaseUser(DatabaseUser(this, Bukkit.getPlayer(this)?.name ?: Bukkit.getOfflinePlayer(this).name ?: "Unknown"))
+}
+
+fun CommandSender.isRankOrHigher(rank: Ranks): Boolean {
+    return if (this is Player) {
+        this.toDatabaseUser().rank.isHigherOrEqual(rank)
+    } else {
+        true
+    }
 }
