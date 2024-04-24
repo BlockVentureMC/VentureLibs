@@ -70,9 +70,9 @@ object RegisterManager {
 
     val dcCommands = mutableListOf<AbstractCommand>()
 
-    private suspend fun registerDiscordCommands(kord: Kord, reflections: Reflections) {
+    private suspend fun registerDiscordCommands(kord: Kord) {
 
-        // every class is by AbstractCommand
+        val reflections = Reflections("net.blockventuremc.modules.discord")
 
         val timeDiscordCommands = measureTime {
             for (clazz in reflections.getSubTypesOf(AbstractCommand::class.java)) {
@@ -126,7 +126,7 @@ object RegisterManager {
                 }
             }
         }
-        
+
         println("Registered discord commands in $timeDiscordCommands")
     }
     private fun registerCommands(reflections: Reflections) {

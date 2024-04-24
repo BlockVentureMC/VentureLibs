@@ -1,8 +1,11 @@
 package net.blockventuremc
 
+import dev.kord.core.Kord
 import io.github.cdimascio.dotenv.dotenv
+import kotlinx.coroutines.runBlocking
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.database.DatabaseManager
+import net.blockventuremc.modules.discord.DiscordBot
 import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.modules.placeholders.registerPlaceholders
 import net.blockventuremc.utils.RegisterManager.registerAll
@@ -12,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin
 class BlockVenture: JavaPlugin() {
     companion object {
         lateinit var instance: BlockVenture
+        lateinit var bot: DiscordBot
     }
 
     val dotenv = dotenv()
@@ -43,6 +47,15 @@ class BlockVenture: JavaPlugin() {
         registerAll()
 
         PlayerCache.runOnlineTimeScheduler()
+
+        logger.info("Starting Discord bot...")
+
+        if (dotenv["DISCORD_BOT_TOKEN"] != null) runBlocking {
+            val kord = Kord(dotenv["DISCORD_BOT_TOKEN"])
+
+            bot = DiscordBot(kord)
+            bot.start()
+        }
 
         logger.info("Hello, Minecraft!")
     }
