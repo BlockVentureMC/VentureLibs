@@ -1,6 +1,7 @@
 package net.blockventuremc.modules.general.commands.guests
 
 import net.blockventuremc.annotations.BlockCommand
+import net.blockventuremc.extensions.bitsPerMinute
 import net.blockventuremc.extensions.getLogger
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.toDatabaseUser
@@ -12,18 +13,18 @@ import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
 import java.lang.management.ManagementFactory
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.to
 
 
 @BlockCommand(
-    name = "onlinetime",
-    description = "Check your onlinetime",
-    permission = "blockventure.onlinetime",
+    name = "money",
+    description = "Check your balance",
+    permission = "blockventure.balance",
     permissionDefault = PermissionDefault.TRUE,
-    usage = "/onlinetime",
-    aliases = ["ot"]
+    usage = "/money",
+    aliases = ["bal", "balance", "venturebits", "vb"]
 )
-class OnlinetimeCommand : CommandExecutor {
-
+class MoneyCommand : CommandExecutor {
 
     override fun onCommand(
         sender: CommandSender,
@@ -31,17 +32,20 @@ class OnlinetimeCommand : CommandExecutor {
         label: String,
         args: Array<out String>
     ): Boolean {
-        if (sender !is Player) {
-            val jreRunningSince = System.currentTimeMillis() - ManagementFactory.getRuntimeMXBean().startTime
-            val runTimeDuration = jreRunningSince.milliseconds
-            getLogger().info("The server is running for $runTimeDuration")
-            return true
-        }
+        if (sender !is Player) return false
 
         val player = sender
-        val onlinetime = player.toDatabaseUser().onlineTime
+        val dbUser = player.toDatabaseUser()
 
-        player.sendMessagePrefixed(player.translate("onlinetime", mapOf("onlinetime" to onlinetime.toString()))?.message ?: "You have been online for $onlinetime")
+        player.sendMessagePrefixed(
+            player.translate(
+                "venturebits.self", mapOf(
+                    "venturebits" to dbUser.ventureBits.toString(),
+                    "bitsPerMinute" to dbUser.bitsPerMinute.toString()
+                )
+            )?.message ?: ("You have ${dbUser.ventureBits} VentureBits.\n" +
+                    "You currently earn ${dbUser.bitsPerMinute} VentureBits per minute.")
+        )
         return true
     }
 
