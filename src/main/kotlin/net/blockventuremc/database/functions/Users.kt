@@ -4,6 +4,7 @@ import net.blockventuremc.database.functions.TableUsers.userUUID
 import net.blockventuremc.database.model.DatabaseUser
 import net.blockventuremc.database.smartTransaction
 import net.blockventuremc.database.toCalendar
+import net.blockventuremc.modules.archievements.model.Achievement
 import net.blockventuremc.modules.general.model.Languages
 import net.blockventuremc.modules.general.model.Ranks
 import org.jetbrains.exposed.sql.*
