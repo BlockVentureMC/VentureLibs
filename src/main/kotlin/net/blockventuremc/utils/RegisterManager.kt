@@ -1,6 +1,7 @@
 package net.blockventuremc.utils
 
 import dev.kord.common.Locale
+import dev.kord.common.entity.Permissions
 
 import dev.kord.core.Kord
 import dev.kord.rest.builder.interaction.*
@@ -10,7 +11,7 @@ import net.blockventuremc.annotations.BlockCommand
 import net.blockventuremc.consts.NAMESPACE_PLUGIN
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.modules.discord.model.AbstractCommand
-import net.blockventuremc.modules.discord.model.Event
+import net.blockventuremc.modules.discord.model.AbstractEvent
 import net.blockventuremc.modules.i18n.TranslationCache
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandExecutor
@@ -33,8 +34,6 @@ fun OptionsBuilder.translate() {
     if (de != null) {
         name(Locale.GERMAN, de.message)
     }
-
-
 }
 
 
@@ -56,6 +55,7 @@ object RegisterManager {
                         command.name,
                         command.description
                     ) {
+                        defaultMemberPermissions = Permissions(command.permission)
 
                         command.options.invoke(this)
 
@@ -101,13 +101,13 @@ object RegisterManager {
 
     private suspend fun registerDiscordListeners(kord: Kord, reflections: Reflections) {
         val timeDiscordListeners = measureTime {
-            for (clazz in reflections.getSubTypesOf(Event::class.java)) {
+            for (clazz in reflections.getSubTypesOf(AbstractEvent::class.java)) {
                 try {
                     val constructor = clazz.declaredConstructors.find { it.parameterCount == 0 } ?: continue
 
                     constructor.isAccessible = true
 
-                    val event = constructor.newInstance() as Event
+                    val event = constructor.newInstance() as AbstractEvent
 
                     event.execute(kord)
 
