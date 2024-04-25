@@ -10,12 +10,11 @@ import net.blockventuremc.utils.translate
 
 class TestCommand: AbstractCommand() {
     override val name = "test"
-    override val description = "Test command"
 
     override val permission = Permission.SendMessages
 
     override val options = fun ChatInputCreateBuilder.() {
-        integer("number", "Number to test") {
+        integer("number", "x") {
             required = true
 
             translate()

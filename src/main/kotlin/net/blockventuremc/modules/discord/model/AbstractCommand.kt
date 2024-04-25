@@ -7,7 +7,6 @@ import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
 
 abstract class AbstractCommand {
     abstract val name: String
-    abstract val description: String
     open val permission: Permission? = null
     abstract val options: ChatInputCreateBuilder.() -> Unit
 

@@ -55,6 +55,8 @@ class BlockVenture: JavaPlugin() {
 
             bot = DiscordBot(kord)
             bot.start()
+        } else {
+            logger.warning("DISCORD_BOT_TOKEN is not set in .env file, Discord bot will not be started")
         }
 
         logger.info("Hello, Minecraft!")

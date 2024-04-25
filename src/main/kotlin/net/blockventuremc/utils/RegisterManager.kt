@@ -23,16 +23,20 @@ import org.reflections8.Reflections
 import kotlin.time.measureTime
 
 fun OptionsBuilder.translate() {
-
-    val enUs = TranslationCache.get(Locale.ENGLISH_UNITED_STATES.language, "discord.options.${name}")
-    if (enUs != null) {
-        name(Locale.ENGLISH_UNITED_STATES, enUs.message)
-    }
-
     val de = TranslationCache.get(Locale.GERMAN.language, "discord.options.${name}")
 
     if (de != null) {
         name(Locale.GERMAN, de.message)
+    }
+
+    val enUsDesc = TranslationCache.get(Locale.ENGLISH_UNITED_STATES.language, "discord.options.${name}.description")
+    if (enUsDesc != null) {
+        description = enUsDesc.message
+    }
+
+    val deDesc = TranslationCache.get(Locale.GERMAN.language, "discord.options.${name}.description")
+    if (deDesc != null) {
+        description(Locale.GERMAN, deDesc.message)
     }
 }
 
@@ -51,9 +55,11 @@ object RegisterManager {
 
                     val command = constructor.newInstance() as AbstractCommand
 
+                    val desc = TranslationCache.get(Locale.ENGLISH_UNITED_STATES.language, "discord.commands.${command.name}.description")
+
                     kord.createGlobalChatInputCommand(
                         command.name,
-                        command.description
+                        desc?.message ?: "No description"
                     ) {
                         if (command.permission != null) {
                             defaultMemberPermissions = Permissions(command.permission!!)
@@ -61,20 +67,9 @@ object RegisterManager {
 
                         command.options.invoke(this)
 
-                        val enUS = TranslationCache.get(Locale.ENGLISH_UNITED_STATES.language, "discord.commands.${command.name}")
-                        if (enUS != null) {
-                            name(Locale.ENGLISH_UNITED_STATES, enUS.message)
-                        }
-
                         val de = TranslationCache.get(Locale.GERMAN.language, "discord.commands.${command.name}")
                         if (de != null) {
                             name(Locale.GERMAN, de.message)
-                        }
-
-                        val enUSDesc = TranslationCache.get(Locale.ENGLISH_UNITED_STATES.language, "discord.commands.${command.name}.description")
-
-                        if (enUSDesc != null) {
-                            description(Locale.ENGLISH_UNITED_STATES, enUSDesc.message)
                         }
 
                         val deDesc = TranslationCache.get(Locale.GERMAN.language, "discord.commands.${command.name}.description")
