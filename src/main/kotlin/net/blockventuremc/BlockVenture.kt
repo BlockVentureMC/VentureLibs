@@ -8,7 +8,7 @@ import net.blockventuremc.database.DatabaseManager
 import net.blockventuremc.modules.discord.DiscordBot
 import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.modules.placeholders.registerPlaceholders
-import net.blockventuremc.utils.RegisterManager.registerAll
+import net.blockventuremc.utils.RegisterManager.registerMC
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -44,7 +44,7 @@ class BlockVenture: JavaPlugin() {
         registerPlaceholders()
 
         logger.info("Registering modules...")
-        registerAll()
+        registerMC()
 
         PlayerCache.runOnlineTimeScheduler()
 

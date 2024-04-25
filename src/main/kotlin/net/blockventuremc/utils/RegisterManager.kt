@@ -10,6 +10,7 @@ import net.blockventuremc.annotations.BlockCommand
 import net.blockventuremc.consts.NAMESPACE_PLUGIN
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.modules.discord.model.AbstractCommand
+import net.blockventuremc.modules.discord.model.Event
 import net.blockventuremc.modules.i18n.TranslationCache
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandExecutor
@@ -36,43 +37,11 @@ fun OptionsBuilder.translate() {
 
 }
 
-/**
- *
- *                     kord.createGlobalChatInputCommand(
- *                         "sum",
- *                         "A slash command that sums two numbers"
- *                     ) {
- *
- *                         integer("second", "The second number to sum") {
- *                             required = true
- *
- *                             translate()
- *                         }
- *
- *                         string("first", "The first number to sum") {
- *                             required = true
- *
- *                             translate()
- *                         }
- *
- *
- *                         if (TranslationCache.get(Locale.ENGLISH_UNITED_STATES.language, "de") != null) {
- *                             name(Locale.ENGLISH_GREAT_BRITAIN, TranslationCache.get(Locale.ENGLISH_UNITED_STATES.language, "de")!!.message)
- *                         }
- *
- *                         if (TranslationCache.get(Locale.GERMAN.language, "de") != null) {
- *                             name(Locale.GERMAN, TranslationCache.get(Locale.GERMAN.language, "de")!!.message)
- *                         }
- *                     }
- */
 
 object RegisterManager {
-
     val dcCommands = mutableListOf<AbstractCommand>()
 
-    private suspend fun registerDiscordCommands(kord: Kord) {
-
-        val reflections = Reflections("net.blockventuremc.modules.discord")
+    private suspend fun registerDiscordCommands(kord: Kord, reflections: Reflections) {
 
         val timeDiscordCommands = measureTime {
             for (clazz in reflections.getSubTypesOf(AbstractCommand::class.java)) {
@@ -129,6 +98,33 @@ object RegisterManager {
 
         println("Registered discord commands in $timeDiscordCommands")
     }
+
+    private suspend fun registerDiscordListeners(kord: Kord, reflections: Reflections) {
+        val timeDiscordListeners = measureTime {
+            for (clazz in reflections.getSubTypesOf(Event::class.java)) {
+                try {
+                    val constructor = clazz.declaredConstructors.find { it.parameterCount == 0 } ?: continue
+
+                    constructor.isAccessible = true
+
+                    val event = constructor.newInstance() as Event
+
+                    event.execute(kord)
+
+                    println("Event ${event.javaClass.simpleName} registered")
+                } catch (exception: InstantiationError) {
+                    exception.printStackTrace()
+                    Sentry.captureException(exception)
+                } catch (exception: IllegalAccessException) {
+                    exception.printStackTrace()
+                    Sentry.captureException(exception)
+                }
+            }
+        }
+        println("Registered discord listeners in $timeDiscordListeners")
+    }
+
+
     private fun registerCommands(reflections: Reflections) {
 
         val timeCommands = measureTime {
@@ -198,12 +194,21 @@ object RegisterManager {
         }
         println("Registered listeners in $timeListeners")
     }
-    fun registerAll() {
+
+    fun registerMC() {
         val reflections = Reflections("net.blockventuremc.modules")
 
         registerListeners(reflections)
 
         registerCommands(reflections)
 
+    }
+
+    suspend fun registerDiscord(kord: Kord) {
+        val reflections = Reflections("net.blockventuremc.modules.discord")
+
+        registerDiscordCommands(kord, reflections)
+
+        registerDiscordListeners(kord, reflections)
     }
 }
