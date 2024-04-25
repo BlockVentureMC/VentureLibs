@@ -51,11 +51,13 @@ object RegisterManager {
 
                     val command = constructor.newInstance() as AbstractCommand
 
-                    val cmd = kord.createGlobalChatInputCommand(
+                    kord.createGlobalChatInputCommand(
                         command.name,
                         command.description
                     ) {
-                        defaultMemberPermissions = Permissions(command.permission)
+                        if (command.permission != null) {
+                            defaultMemberPermissions = Permissions(command.permission!!)
+                        }
 
                         command.options.invoke(this)
 

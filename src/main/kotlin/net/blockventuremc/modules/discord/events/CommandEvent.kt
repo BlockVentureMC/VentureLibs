@@ -8,10 +8,6 @@ import net.blockventuremc.utils.RegisterManager
 
 class CommandEvent: AbstractEvent() {
     override suspend fun execute(bot: Kord) = bot.on<GuildChatInputCommandInteractionCreateEvent> {
-        val command = RegisterManager.dcCommands.find { it.name == interaction.command.rootName }
-
-        if (command != null) {
-            command.execute(bot, interaction)
-        }
+        RegisterManager.dcCommands.find { it.name == interaction.command.rootName }?.execute(bot, interaction)
     }
 }
