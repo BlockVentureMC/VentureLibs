@@ -2,6 +2,7 @@ package net.blockventuremc.modules.discord.commands
 
 import dev.kord.common.entity.Permission
 import dev.kord.core.Kord
+import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
 import dev.kord.rest.builder.interaction.integer
@@ -22,6 +23,8 @@ class TestCommand: AbstractCommand() {
     }
 
     override suspend fun execute(bot: Kord, interaction: GuildChatInputCommandInteraction) {
-        interaction.channel.createMessage("Test command executed!")
+        interaction.respondEphemeral {
+            content = "You entered ${interaction.command.options["number"]?.value}"
+        }
     }
 }
