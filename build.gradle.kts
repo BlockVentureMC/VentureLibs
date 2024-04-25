@@ -18,6 +18,7 @@ val serializationVersion: String by project
 val minecraftVersion: String by project
 val authlibVersion: String by project
 val placeholderApiVersion: String by project
+val customBlockDataVersion: String by project
 
 plugins {
     kotlin("jvm") version "2.0.0-RC1"
