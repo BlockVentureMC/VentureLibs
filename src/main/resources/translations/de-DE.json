@@ -6,5 +6,7 @@
     "no_permission.club_member": "Dieser Befehl ist nur für <color:#ea8685>Clubmitglieder</color> verfügbar.",
     "achievement.achieved": "Du hast das Achievement <color:#f78fb3>%achievement%</color> erhalten.",
     "achievement.firstjoin.title": "Willkommen auf dem Server!",
-    "achievement.firstjoin.description": "Du bist zum ersten Mal dem Server beigetreten."
+    "achievement.firstjoin.description": "Du bist zum ersten Mal dem Server beigetreten.",
+    "discord.options.number.description": "Enter a number DE",
+    "discord.commands.test.description": "Test command DE"
 }

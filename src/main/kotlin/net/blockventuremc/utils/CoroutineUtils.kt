@@ -32,6 +32,12 @@ suspend fun <T> mcasync(coroutine: suspend () -> T): T {
     }
 }
 
+fun <T> mcasyncBlocking(coroutine: suspend () -> T) {
+    CoroutineScope(Dispatchers.async).launch {
+        coroutine()
+    }
+}
+
 
 val globalPool: ExecutorService = Executors.newCachedThreadPool()
 object MinecraftCoroutineDispatcher : CoroutineDispatcher() {

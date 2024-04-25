@@ -9,6 +9,7 @@ import io.sentry.Sentry
 import net.blockventuremc.BlockVenture
 import net.blockventuremc.annotations.BlockCommand
 import net.blockventuremc.consts.NAMESPACE_PLUGIN
+import net.blockventuremc.extensions.code
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.modules.discord.model.AbstractCommand
 import net.blockventuremc.modules.discord.model.AbstractEvent
@@ -23,18 +24,12 @@ import org.reflections8.Reflections
 import kotlin.time.measureTime
 
 fun OptionsBuilder.translate() {
-    val de = TranslationCache.get(Locale.GERMAN.language, "discord.options.${name}")
-
-    if (de != null) {
-        name(Locale.GERMAN, de.message)
-    }
-
-    val enUsDesc = TranslationCache.get(Locale.ENGLISH_UNITED_STATES.language, "discord.options.${name}.description")
+    val enUsDesc = TranslationCache.get(Locale.ENGLISH_UNITED_STATES.code, "discord.options.${name}.description")
     if (enUsDesc != null) {
         description = enUsDesc.message
     }
 
-    val deDesc = TranslationCache.get(Locale.GERMAN.language, "discord.options.${name}.description")
+    val deDesc = TranslationCache.get(Locale.GERMAN.code, "discord.options.${name}.description")
     if (deDesc != null) {
         description(Locale.GERMAN, deDesc.message)
     }
@@ -55,7 +50,7 @@ object RegisterManager {
 
                     val command = constructor.newInstance() as AbstractCommand
 
-                    val desc = TranslationCache.get(Locale.ENGLISH_UNITED_STATES.language, "discord.commands.${command.name}.description")
+                    val desc = TranslationCache.get(Locale.ENGLISH_UNITED_STATES.code, "discord.commands.${command.name}.description")
 
                     kord.createGlobalChatInputCommand(
                         command.name,
@@ -67,12 +62,7 @@ object RegisterManager {
 
                         command.options.invoke(this)
 
-                        val de = TranslationCache.get(Locale.GERMAN.language, "discord.commands.${command.name}")
-                        if (de != null) {
-                            name(Locale.GERMAN, de.message)
-                        }
-
-                        val deDesc = TranslationCache.get(Locale.GERMAN.language, "discord.commands.${command.name}.description")
+                        val deDesc = TranslationCache.get(Locale.GERMAN.code, "discord.commands.${command.name}.description")
 
                         if (deDesc != null) {
                             description(Locale.GERMAN, deDesc.message)
