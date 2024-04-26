@@ -10,5 +10,6 @@
     "commands.rank_not_found": "Rang <color:#f78fb3>%rank%</color> nicht gefunden.",
     "lock.usage": "Verwendung: /lock <color:#f78fb3><rank></color>.",
     "commands.language.changed": "Sprache geändert auf <color:#f78fb3>%language%",
-    "messages.auto-save": "<color:#4cd137>Deine Daten wurden automatisch gespeichert."
+    "messages.auto-save": "<color:#4cd137>Deine Daten wurden automatisch gespeichert.",
+    "lock.no_door": "Du musst eine Tür anschauen, um sie abzuschließen."
 }
