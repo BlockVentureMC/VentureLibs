@@ -6,6 +6,7 @@ import dev.fruxz.ascend.tool.time.calendar.Calendar
 import net.blockventuremc.BlockVenture
 import net.blockventuremc.database.functions.TableAchievements
 import net.blockventuremc.database.functions.TableUsers
+import net.blockventuremc.database.model.TitleTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Transaction
@@ -29,7 +30,8 @@ internal object DatabaseManager {
     fun register() = smartTransaction {
         SchemaUtils.createMissingTablesAndColumns(
             TableUsers,
-            TableAchievements
+            TableAchievements,
+            TitleTable
         )
     }
 }
