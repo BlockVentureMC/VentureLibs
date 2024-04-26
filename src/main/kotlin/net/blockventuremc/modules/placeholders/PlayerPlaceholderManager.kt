@@ -4,7 +4,6 @@ import dev.fruxz.stacked.text
 import me.neznamy.tab.api.TabAPI
 import me.neznamy.tab.api.event.plugin.TabLoadEvent
 import me.neznamy.tab.api.placeholder.Placeholder
-import me.neznamy.tab.api.placeholder.PlayerPlaceholder
 import net.blockventuremc.extensions.getLogger
 import net.blockventuremc.extensions.toDatabaseUser
 import net.blockventuremc.extensions.translate
