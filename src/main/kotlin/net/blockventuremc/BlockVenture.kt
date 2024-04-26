@@ -53,13 +53,13 @@ class BlockVenture : JavaPlugin() {
 
         logger.info("Starting Discord bot...")
 
-        if (dotenv["DISCORD_BOT_TOKEN"] != null) mcasyncBlocking {
-            val kord = Kord(dotenv["DISCORD_BOT_TOKEN"]!!)
+        if (dotenv["BOT_TOKEN"] != null) mcasyncBlocking {
+            val kord = Kord(dotenv["BOT_TOKEN"]!!)
 
             bot = DiscordBot(kord)
             bot.start()
         } else {
-            logger.warning("DISCORD_BOT_TOKEN is not set in .env file, Discord bot will not be started")
+            logger.warning("BOT_TOKEN is not set in .env file, Discord bot will not be started")
         }
 
         logger.info("Hello, Minecraft!")
