@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.javatime.CurrentTimestamp
 import org.jetbrains.exposed.sql.javatime.timestamp
 import java.util.*
 
-object TableAchievements: Table("achievements") {
+object TableAchievements : Table("achievements") {
     val userUUID = varchar("uuid", 45)
 
     val achievement = enumerationByName("achievement", 24, Achievement::class)
@@ -37,5 +37,7 @@ fun addAchievementToUser(achievement: DatabaseAchievement) = smartTransaction {
 }
 
 fun getAchievementOfUser(uuid: UUID, achievement: Achievement): DatabaseAchievement? = smartTransaction {
-    return@smartTransaction TableAchievements.selectAll().where { TableAchievements.userUUID eq uuid.toString() and (TableAchievements.achievement eq achievement) }.firstOrNull()?.let(::mapToDatabaseAchievement)
+    return@smartTransaction TableAchievements.selectAll()
+        .where { TableAchievements.userUUID eq uuid.toString() and (TableAchievements.achievement eq achievement) }
+        .firstOrNull()?.let(::mapToDatabaseAchievement)
 }

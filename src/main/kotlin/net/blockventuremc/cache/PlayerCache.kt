@@ -13,8 +13,8 @@ import net.blockventuremc.extensions.translate
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitTask
 import java.util.UUID
-import kotlin.time.Duration.Companion.seconds
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 object PlayerCache {
     private var _cache = mapOf<UUID, DatabaseUser>()
@@ -86,7 +86,12 @@ object PlayerCache {
                 _cache.values.forEach { saveToDB(it) }
                 lastAutoSave = Calendar.now()
                 Bukkit.getOnlinePlayers().forEach { player ->
-                    player.sendActionBar(text(player.translate("messages.auto-save")?.message ?: "<color:#4cd137>Your data was saved automatically."))
+                    player.sendActionBar(
+                        text(
+                            player.translate("messages.auto-save")?.message
+                                ?: "<color:#4cd137>Your data was saved automatically."
+                        )
+                    )
                 }
             }
         }, 20L, 20L)

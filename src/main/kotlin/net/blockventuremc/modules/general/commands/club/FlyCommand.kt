@@ -61,7 +61,10 @@ class FlyCommand : CommandExecutor {
         }
 
         if (!sender.isRankOrHigher(Ranks.ClubMember)) {
-            sender.sendMessagePrefixed(sender.translate("no_permission.club_member")?.message ?: "This command is only available to Club Members.")
+            sender.sendMessagePrefixed(
+                sender.translate("no_permission.club_member")?.message
+                    ?: "This command is only available to Club Members."
+            )
             sender.allowFlight = false
             return true
         }

@@ -6,6 +6,7 @@ import net.blockventuremc.consts.AFK_DURATION
 import net.blockventuremc.modules.general.events.custom.AFKChangeEvent
 import net.blockventuremc.modules.general.model.Languages
 import net.blockventuremc.modules.general.model.Ranks
+import net.blockventuremc.modules.titles.Title
 import java.util.*
 import kotlin.time.Duration
 
@@ -22,8 +23,12 @@ data class DatabaseUser(
     val lastTimeJoined: Calendar = Calendar.now(),
     val onlineTime: Duration = Duration.ZERO,
 
+    var selectedTitle: Title? = null,
+
     var afk: Boolean = false,
-    var lastActivity: Calendar = Calendar.now()
+    var lastActivity: Calendar = Calendar.now(),
+
+    val titles: MutableMap<Title, Calendar> = getPlayerTitles(uuid)
 ) {
 
     fun testForActivity() {

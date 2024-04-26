@@ -1,5 +1,8 @@
 package net.blockventuremc.modules.general.events
 
+import io.papermc.paper.event.player.AsyncChatEvent
+import net.blockventuremc.extensions.toDatabaseUser
+import net.blockventuremc.modules.general.events.custom.AFKChangeEvent
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -8,11 +11,8 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerTeleportEvent
-import io.papermc.paper.event.player.AsyncChatEvent
-import net.blockventuremc.extensions.toDatabaseUser
-import net.blockventuremc.modules.general.events.custom.AFKChangeEvent
 
-class ActivityEvents: Listener {
+class ActivityEvents : Listener {
 
     private fun handleMovement(from: Location, to: Location, player: Player) {
         if (from.blockX != to.blockX || from.blockZ != to.blockZ) {

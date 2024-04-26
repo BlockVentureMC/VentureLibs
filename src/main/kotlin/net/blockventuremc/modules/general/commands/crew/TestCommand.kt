@@ -15,7 +15,7 @@ import org.bukkit.permissions.PermissionDefault
     description = "Test command",
     permissionDefault = PermissionDefault.FALSE,
 )
-class TestCommand: CommandExecutor {
+class TestCommand : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender !is Player) return false
 
