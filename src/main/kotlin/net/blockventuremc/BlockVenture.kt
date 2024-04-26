@@ -6,13 +6,13 @@ import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.database.DatabaseManager
 import net.blockventuremc.modules.discord.DiscordBot
 import net.blockventuremc.modules.i18n.TranslationCache
-import net.blockventuremc.modules.placeholders.registerPlaceholders
 import net.blockventuremc.utils.RegisterManager.registerMC
 import net.blockventuremc.utils.mcasyncBlocking
+import net.blockventuremc.modules.placeholders.PlayerPlaceholderManager
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
-class BlockVenture: JavaPlugin() {
+class BlockVenture : JavaPlugin() {
     companion object {
         lateinit var instance: BlockVenture
         lateinit var bot: DiscordBot
@@ -27,8 +27,10 @@ class BlockVenture: JavaPlugin() {
     override fun onLoad() {
         server.spigot().spigotConfig["messages.unknown-command"] = "§c" + "Unknown Command"
         server.spigot().spigotConfig["messages.server-full"] = "${"server full"} - Club Members can join at any time"
-        server.spigot().spigotConfig["messages.outdated-client"] = "Your client is outdated, please use the latest version of Minecraft"
-        server.spigot().spigotConfig["messages.outdated-server"] = "Hold on! We are not that fast. We upgrade as soon as we can"
+        server.spigot().spigotConfig["messages.outdated-client"] =
+            "Your client is outdated, please use the latest version of Minecraft"
+        server.spigot().spigotConfig["messages.outdated-server"] =
+            "Hold on! We are not that fast. We upgrade as soon as we can"
     }
 
     override fun onEnable() {
@@ -41,7 +43,8 @@ class BlockVenture: JavaPlugin() {
         TranslationCache.loadAll()
 
         logger.info("Registering placeholders...")
-        registerPlaceholders()
+        PlayerPlaceholderManager()
+
 
         logger.info("Registering modules...")
         registerMC()

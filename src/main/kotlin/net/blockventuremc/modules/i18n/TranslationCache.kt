@@ -209,7 +209,8 @@ object TranslationCache {
     fun get(languageCode: String, messageKey: String, placeholders: Map<String, Any?> = emptyMap()): Translation? {
         try {
             lock.readLock().lock()
-            var message = cache[languageCode]?.find { it.messageKey == messageKey } ?: cache[FALLBACK_LANGUAGE]?.find { it.messageKey == messageKey }
+            var message = cache[languageCode]?.find { it.messageKey == messageKey }
+                ?: cache[FALLBACK_LANGUAGE]?.find { it.messageKey == messageKey }
 
             if (message == null) {
                 getLogger().info("No translation found for $languageCode:$messageKey")

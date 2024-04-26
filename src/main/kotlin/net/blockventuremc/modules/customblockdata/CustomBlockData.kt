@@ -9,11 +9,9 @@ import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.Plugin
 import org.bukkit.util.BlockVector
-import org.mariadb.jdbc.client.DataType
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import java.util.stream.Collectors
 
 /**
  * Represents a PersistentDataContainer for a specific Block. Also includes some general utility methods
@@ -190,7 +188,11 @@ class CustomBlockData(
         return pdc[key, type]
     }
 
-    override fun <T, C> getOrDefault(key: NamespacedKey, type: PersistentDataType<T, C>, defaultValue: C & Any): C & Any {
+    override fun <T, C> getOrDefault(
+        key: NamespacedKey,
+        type: PersistentDataType<T, C>,
+        defaultValue: C & Any
+    ): C & Any {
         return pdc.getOrDefault(key, type, defaultValue)
     }
 

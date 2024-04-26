@@ -45,24 +45,32 @@ class LockCommand : CommandExecutor, TabCompleter {
 
         val rank = Ranks.entries.find { it.name.equals(args[0], true) }
         if (rank == null) {
-            sender.sendMessagePrefixed(sender.translate("commands.rank_not_found", mapOf("rank" to args[0]))?.message ?: "Rank not found")
+            sender.sendMessagePrefixed(
+                sender.translate("commands.rank_not_found", mapOf("rank" to args[0]))?.message ?: "Rank not found"
+            )
             sender.sendDeniedSound()
             return true
         }
 
         val lookingAtBlock = sender.getTargetBlockExact(5)
         if (lookingAtBlock == null || !MaterialSetTag.DOORS.isTagged(lookingAtBlock.type)) {
-            sender.sendMessagePrefixed(sender.translate("lock.no_door")?.message ?: "You must look at a door to lock it.")
+            sender.sendMessagePrefixed(
+                sender.translate("lock.no_door")?.message ?: "You must look at a door to lock it."
+            )
             sender.sendDeniedSound()
             return true
         }
 
-        val bottomBlock = if((lookingAtBlock.blockData as Door).half == Bisected.Half.TOP) lookingAtBlock.getRelative(org.bukkit.block.BlockFace.DOWN) else lookingAtBlock
+        val bottomBlock =
+            if ((lookingAtBlock.blockData as Door).half == Bisected.Half.TOP) lookingAtBlock.getRelative(org.bukkit.block.BlockFace.DOWN) else lookingAtBlock
 
         val customBlockData = CustomBlockData(bottomBlock, BlockVenture.instance)
         customBlockData[BLOCKVENTURE_DOOR_LOCKS, PersistentDataType.BYTE] = rank.ordinal.toByte()
 
-        sender.sendMessagePrefixed(sender.translate("lock.success", mapOf("rank" to rank.name))?.message ?: "The door is now locked to only open for <color:#f78fb3>${rank.name}</color> or higher.")
+        sender.sendMessagePrefixed(
+            sender.translate("lock.success", mapOf("rank" to rank.name))?.message
+                ?: "The door is now locked to only open for <color:#f78fb3>${rank.name}</color> or higher."
+        )
         sender.sendSuccessSound()
         return true
     }
@@ -73,6 +81,7 @@ class LockCommand : CommandExecutor, TabCompleter {
         label: String,
         args: Array<out String>
     ): List<String> {
-        return Ranks.entries.sortedByDescending { ranks: Ranks -> ranks.ordinal }.map { it.name }.filter { it.startsWith(args[0]) }
+        return Ranks.entries.sortedByDescending { ranks: Ranks -> ranks.ordinal }.map { it.name }
+            .filter { it.startsWith(args[0]) }
     }
 }

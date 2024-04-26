@@ -4,6 +4,7 @@ import dev.fruxz.ascend.tool.time.calendar.Calendar
 import dev.fruxz.stacked.text
 import net.blockventuremc.BlockVenture
 import net.blockventuremc.cache.PlayerCache
+import net.blockventuremc.modules.titles.Title
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -26,6 +27,9 @@ class PlayerLoadSaveListener : Listener {
                 pixelPlayer
             )
             player.sendActionBar(text("<green>" + "Loaded userdata..."))
+
+            // Award first time visitor title (if applicable)
+            Title.FIRST_TIME_VISITOR.award(player)
         }, 10L)
     }
 

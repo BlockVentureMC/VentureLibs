@@ -181,7 +181,7 @@ object RegisterManager {
         }
         println("Registered listeners in $timeListeners")
     }
-
+    
     fun registerMC() {
         val reflections = Reflections("net.blockventuremc.modules")
 

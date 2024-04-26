@@ -41,7 +41,10 @@ class OnlinetimeCommand : CommandExecutor {
         val player = sender
         val onlinetime = player.toDatabaseUser().onlineTime
 
-        player.sendMessagePrefixed(player.translate("onlinetime", mapOf("onlinetime" to onlinetime.toString()))?.message ?: "You have been online for $onlinetime")
+        player.sendMessagePrefixed(
+            player.translate("onlinetime", mapOf("onlinetime" to onlinetime.toString()))?.message
+                ?: "You have been online for $onlinetime"
+        )
         return true
     }
 
