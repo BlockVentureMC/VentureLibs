@@ -18,5 +18,14 @@
     "title.categories.generic.description": "Wird durch das Erledigen verschiedener Aufgaben freigeschaltet",
     "title.categories.ride_counter.display": "<#f78fb3>Fahrzähler",
     "title.categories.ride_counter.description": "Durch Fahrgeschäfte freigeschaltet",
-    "title.first_time_visitor.display": "<#dff9fb>Erstmaliger Besucher"
+    "title.first_time_visitor.display": "<#dff9fb>Erstmaliger Besucher",
+    "title.changed": "Dein Titel wurde zu %title% geändert!",
+    "title.first_time_visitor.description": "Du hast den Server zum ersten Mal besucht.",
+    "title.gui.item.unlocked": "<#2ecc71>Freigeschaltet am: <#fed330>%unlocked%",
+    "title.gui.item.locked": "<#e74c3c>Gesperrt",
+    "title.unlocked": "Titel freigeschaltet!",
+    "title.unlocked.command": "Ändere deinen ausgewählten Titel mit <color:#eaff94>/title</color>.",
+    "title.command.not_found": "<color:#e74c3c>Titel %title% nicht gefunden.",
+    "title.not_unlocked": "Du hast den Titel <color:#f78fb3>%title%<color:#e74c3c> noch nicht freigeschaltet.",
+    "title.none": "<color:#4b6584>Kein Titel"
 }
