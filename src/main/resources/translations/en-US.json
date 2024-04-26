@@ -26,5 +26,8 @@
   "title.changed": "<green>Your title has been changed to <yellow>%title%</yellow> <green>!",
   "title.command.not_found": "<color:#e74c3c>Title %title% not found.",
   "title.not_unlocked": "<color:#e74c3c>You have not unlocked the title <color:#f78fb3>%title%<color:#e74c3c> yet.",
-  "title.none": "<color:#4b6584>No title"
+  "title.none": "<color:#4b6584>No title",
+  "commands.language.usage": "Usage: /language <color:#f78fb3><language>",
+  "commands.language.invalid": "Invalid language. Available languages: <color:#f78fb3>%languages%",
+  "commands.language.changed": "Language changed to <color:#f78fb3>%language%"
 }
