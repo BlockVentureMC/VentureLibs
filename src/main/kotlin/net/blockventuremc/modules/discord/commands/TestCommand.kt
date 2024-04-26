@@ -13,7 +13,7 @@ import net.blockventuremc.utils.translate
 class TestCommand: AbstractCommand() {
     override val name = "test"
 
-    override val permission = Permission.SendMessages
+    override val permission = Permission.ManageMessages
 
     override val options = fun ChatInputCreateBuilder.() {
         integer("number", "x") {
@@ -24,11 +24,6 @@ class TestCommand: AbstractCommand() {
     }
 
     override suspend fun execute(bot: Kord, interaction: GuildChatInputCommandInteraction) {
-
-        ChannelManager.sendEconomy {
-            title = "Test"
-            description = "You entered ${interaction.command.options["number"]?.value}"
-        }
 
         interaction.respondEphemeral {
             content = "You entered ${interaction.command.options["number"]?.value}"
