@@ -33,7 +33,9 @@ class LanguageCommand : CommandExecutor, TabExecutor {
         if (sender !is Player) return true
 
         if (args.isEmpty()) {
-            sender.sendMessagePrefixed(sender.translate("commands.language.usage")?.message ?: "Usage: /language <color:#f78fb3><language>")
+            sender.sendMessagePrefixed(
+                sender.translate("commands.language.usage")?.message ?: "Usage: /language <color:#f78fb3><language>"
+            )
             return true
         }
 
@@ -47,9 +49,13 @@ class LanguageCommand : CommandExecutor, TabExecutor {
         val blockPlayer = PlayerCache.getOrNull(sender.uniqueId) ?: return true
         PlayerCache.updateCached(blockPlayer.copy(language = language))
 
-        sender.sendMessagePrefixed(sender.translate("commands.language.changed", mapOf(
-            "language" to language.name
-        ))?.message ?: "Language changed to ${language.name}")
+        sender.sendMessagePrefixed(
+            sender.translate(
+                "commands.language.changed", mapOf(
+                    "language" to language.name
+                )
+            )?.message ?: "Language changed to ${language.name}"
+        )
 
         sender.sendSuccessSound()
         return true
