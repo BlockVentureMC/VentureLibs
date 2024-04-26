@@ -36,7 +36,11 @@ class TitleSelectionGui : Listener {
     fun openInventory(player: Player, titleCategory: TitleCategory = TitleCategory.GENERIC) {
         val blockPlayer = PlayerCache.getOrNull(player.uniqueId) ?: return
 
-        val inventory = Bukkit.createInventory(null, 9*6, text("<gradient:#45aaf2:#8854d0>Titles</gradient> <gray>» ${titleCategory.display(player)}"))
+        val inventory = Bukkit.createInventory(
+            null,
+            9 * 6,
+            text("<gradient:#45aaf2:#8854d0>Titles</gradient> <gray>» ${titleCategory.display(player)}")
+        )
         (0..53).forEach {
             val row = it / 9
             val column = it % 9
@@ -48,14 +52,22 @@ class TitleSelectionGui : Listener {
             inventory.setItem(it, placeHolder)
         }
 
-        inventory.setItem(16, TitleCategory.GENERIC.getIcon(player).clone().enchantIf(mapOf(Enchantment.DAMAGE_ALL to 1),titleCategory == TitleCategory.GENERIC).build())
-        inventory.setItem(25, TitleCategory.RIDE_COUNTER.getIcon(player).clone().enchantIf(mapOf(Enchantment.DAMAGE_ALL to 1),titleCategory == TitleCategory.RIDE_COUNTER).build())
+        inventory.setItem(
+            16,
+            TitleCategory.GENERIC.getIcon(player).clone()
+                .enchantIf(mapOf(Enchantment.DAMAGE_ALL to 1), titleCategory == TitleCategory.GENERIC).build()
+        )
+        inventory.setItem(
+            25,
+            TitleCategory.RIDE_COUNTER.getIcon(player).clone()
+                .enchantIf(mapOf(Enchantment.DAMAGE_ALL to 1), titleCategory == TitleCategory.RIDE_COUNTER).build()
+        )
         inventory.setItem(34, Material.BLACK_STAINED_GLASS_PANE.toItemBuilder { display("Soon...") }.build())
         inventory.setItem(43, Material.BLACK_STAINED_GLASS_PANE.toItemBuilder { display("Soon...") }.build())
 
         // 5x4 Grid
         val titles = Title.entries.filter { it.category == titleCategory }.sortedBy {
-            (if(blockPlayer.titles.containsKey(it)) -100 else 0) + it.ordinal
+            (if (blockPlayer.titles.containsKey(it)) -100 else 0) + it.ordinal
         }
 
         titles.forEachIndexed { index, title ->
@@ -77,7 +89,7 @@ class TitleSelectionGui : Listener {
 
         event.isCancelled = true
 
-        when(slot) {
+        when (slot) {
             16 -> openInventory(whoClicked as Player, TitleCategory.GENERIC)
             25 -> openInventory(whoClicked as Player, TitleCategory.RIDE_COUNTER)
 //            34 -> openInventory(whoClicked as Player, TitleCategory.GENERIC)
@@ -92,7 +104,12 @@ class TitleSelectionGui : Listener {
             blockPlayer.selectedTitle = title
             PlayerCache.updateCached(blockPlayer)
             player.playSound(whoClicked, Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 0.4f, 1.3f)
-            player.sendMessagePrefixed(blockPlayer.translate("title.changed", mapOf("title" to title.display(player)))?.message ?: "<green>Your title has been changed to <yellow>${title.display(player)}</yellow> <green>!")
+            player.sendMessagePrefixed(
+                blockPlayer.translate(
+                    "title.changed",
+                    mapOf("title" to title.display(player))
+                )?.message ?: "<green>Your title has been changed to <yellow>${title.display(player)}</yellow> <green>!"
+            )
             player.closeInventory()
         }
     }

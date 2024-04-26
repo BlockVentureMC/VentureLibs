@@ -2,7 +2,6 @@ package net.blockventuremc.modules.general.commands.guests
 
 import net.blockventuremc.annotations.BlockCommand
 import net.blockventuremc.extensions.bitsPerMinute
-import net.blockventuremc.extensions.getLogger
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.toDatabaseUser
 import net.blockventuremc.extensions.translate
@@ -11,8 +10,6 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
-import java.lang.management.ManagementFactory
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.to
 
 

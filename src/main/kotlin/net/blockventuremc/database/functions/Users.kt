@@ -5,7 +5,6 @@ import net.blockventuremc.database.model.DatabaseUser
 import net.blockventuremc.database.model.bulkReplacePlayerTitlesDB
 import net.blockventuremc.database.smartTransaction
 import net.blockventuremc.database.toCalendar
-import net.blockventuremc.modules.archievements.model.Achievement
 import net.blockventuremc.modules.general.model.Languages
 import net.blockventuremc.modules.general.model.Ranks
 import net.blockventuremc.modules.titles.Title
@@ -34,7 +33,8 @@ object TableUsers : Table("users") {
 
 
 fun getDatabaseUserOrNull(uuid: UUID): DatabaseUser? = smartTransaction {
-    return@smartTransaction TableUsers.selectAll().where { userUUID eq uuid.toString() }.firstOrNull()?.let(::mapToDatabaseUser)
+    return@smartTransaction TableUsers.selectAll().where { userUUID eq uuid.toString() }.firstOrNull()
+        ?.let(::mapToDatabaseUser)
 }
 
 private fun mapToDatabaseUser(row: ResultRow): DatabaseUser = with(row) {

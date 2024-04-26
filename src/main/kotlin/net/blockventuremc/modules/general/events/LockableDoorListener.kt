@@ -25,7 +25,8 @@ class LockableDoorListener : Listener {
         val clickedType = block.type
         if (!MaterialSetTag.DOORS.isTagged(clickedType)) return
 
-        val bottomBlock = if((block.blockData as Door).half == Bisected.Half.TOP) block.getRelative(org.bukkit.block.BlockFace.DOWN) else block
+        val bottomBlock =
+            if ((block.blockData as Door).half == Bisected.Half.TOP) block.getRelative(org.bukkit.block.BlockFace.DOWN) else block
 
         val customBlockData = CustomBlockData(bottomBlock, BlockVenture.instance)
         if (!customBlockData.has(BLOCKVENTURE_DOOR_LOCKS, PersistentDataType.BYTE)) return

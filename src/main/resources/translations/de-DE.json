@@ -1,10 +1,10 @@
 {
-    "build_mode_toggled": "Der Baumodus ist nun %enabled%.",
-    "fly_mode_toggled": "Der Flugmodus ist jetzt %enabled%.",
-    "fly_mode_toggled_by": "Der Flugmodus von %player% ist jetzt %enabled%.",
-    "onlinetime": "Deine Online-Zeit beträgt %onlinetime%.",
-    "no_permission.club_member": "Dieser Befehl ist nur für <color:#ea8685>Clubmitglieder</color> verfügbar.",
-    "achievement.achieved": "Du hast das Achievement <color:#f78fb3>%achievement%</color> erhalten.",
-    "achievement.firstjoin.title": "Willkommen auf dem Server!",
-    "achievement.firstjoin.description": "Du bist zum ersten Mal dem Server beigetreten."
+  "build_mode_toggled": "Der Baumodus ist nun %enabled%.",
+  "fly_mode_toggled": "Der Flugmodus ist jetzt %enabled%.",
+  "fly_mode_toggled_by": "Der Flugmodus von %player% ist jetzt %enabled%.",
+  "onlinetime": "Deine Online-Zeit beträgt %onlinetime%.",
+  "no_permission.club_member": "Dieser Befehl ist nur für <color:#ea8685>Clubmitglieder</color> verfügbar.",
+  "achievement.achieved": "Du hast das Achievement <color:#f78fb3>%achievement%</color> erhalten.",
+  "achievement.firstjoin.title": "Willkommen auf dem Server!",
+  "achievement.firstjoin.description": "Du bist zum ersten Mal dem Server beigetreten."
 }

@@ -19,7 +19,7 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent
 import org.bukkit.event.hanging.HangingPlaceEvent
 import org.bukkit.event.player.*
 
-class BuildEvents: Listener {
+class BuildEvents : Listener {
     @EventHandler
     fun onBlockBreak(event: BlockBreakEvent) {
         if (!event.player.canBuild) {
@@ -38,7 +38,7 @@ class BuildEvents: Listener {
 
     @EventHandler
     fun onHangItemFrame(event: HangingPlaceEvent) {
-        if(event.player == null) return
+        if (event.player == null) return
         if (!event.player!!.canBuild) {
             event.player!!.sendDeniedSound()
             event.isCancelled = true
@@ -95,7 +95,7 @@ class BuildEvents: Listener {
         if (event.player.canBuild) return
 
         val clickedType = event.clickedBlock?.type ?: return
-        with(clickedType){
+        with(clickedType) {
             event.isCancelled = when {
                 this == Material.FARMLAND -> true
                 this == Material.ITEM_FRAME -> true
@@ -112,7 +112,7 @@ class BuildEvents: Listener {
         if (event.player.canBuild) return
 
         val clickedType = event.rightClicked.type
-        with(clickedType){
+        with(clickedType) {
             event.isCancelled = when {
                 this == EntityType.ITEM_FRAME -> true
                 this == EntityType.GLOW_ITEM_FRAME -> true
@@ -122,7 +122,7 @@ class BuildEvents: Listener {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    fun onEntityDamageByEntity(event: EntityDamageByEntityEvent)  {
+    fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
         if (event.damager is Player) {
             val player = event.damager as Player
             if (!player.canBuild) {

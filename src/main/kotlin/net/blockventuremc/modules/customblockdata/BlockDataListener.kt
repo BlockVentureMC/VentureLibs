@@ -20,7 +20,7 @@
  * Donations: https://paypal.me/mfnalex
  */
 
-package net.blockventuremc.modules.customblockdata;
+package net.blockventuremc.modules.customblockdata
 
 import net.blockventuremc.BlockVenture
 import net.blockventuremc.modules.customblockdata.events.CustomBlockDataMoveEvent

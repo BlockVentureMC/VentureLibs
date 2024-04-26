@@ -30,20 +30,34 @@ class TitleCommand : CommandExecutor, TabExecutor {
         }
 
         val title = Title.entries.firstOrNull { titles: Title -> titles.name == args[0].uppercase() } ?: run {
-            sender.sendMessagePrefixed(sender.translate("title.command.not_found", mapOf("title" to args[0]))?.message ?: "<color:#e74c3c>Title ${args[0]} not found.")
+            sender.sendMessagePrefixed(
+                sender.translate("title.command.not_found", mapOf("title" to args[0]))?.message
+                    ?: "<color:#e74c3c>Title ${args[0]} not found."
+            )
             return true
         }
         val blockPlayer = PlayerCache.getOrNull(sender.uniqueId) ?: return true
 
         if (!blockPlayer.titles.containsKey(title)) {
-            sender.sendMessagePrefixed(sender.translate("title.not_unlocked", mapOf("title" to title.display(sender)))?.message ?: "<color:#e74c3c>You have not unlocked the title <yellow>${title.display(sender)}</yellow> <color:#e74c3c>yet.")
+            sender.sendMessagePrefixed(
+                sender.translate(
+                    "title.not_unlocked",
+                    mapOf("title" to title.display(sender))
+                )?.message
+                    ?: "<color:#e74c3c>You have not unlocked the title <yellow>${title.display(sender)}</yellow> <color:#e74c3c>yet."
+            )
             return true
         }
 
         blockPlayer.selectedTitle = title
         PlayerCache.updateCached(blockPlayer)
 
-        sender.sendMessagePrefixed(blockPlayer.translate("title.changed", mapOf("title" to title.display(sender)))?.message ?: "<green>Your title has been changed to <yellow>${title.display(sender)}</yellow> <green>!")
+        sender.sendMessagePrefixed(
+            blockPlayer.translate(
+                "title.changed",
+                mapOf("title" to title.display(sender))
+            )?.message ?: "<green>Your title has been changed to <yellow>${title.display(sender)}</yellow> <green>!"
+        )
         sender.playSound(sender, Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 0.4f, 1.3f)
 
         return true
@@ -61,6 +75,7 @@ class TitleCommand : CommandExecutor, TabExecutor {
                 val blockPlayer = PlayerCache.getOrNull(sender.uniqueId) ?: return emptyList()
                 blockPlayer.titles.map { it.key.name }.filter { it.startsWith(args[0], true) }
             }
+
             else -> emptyList()
         }
     }

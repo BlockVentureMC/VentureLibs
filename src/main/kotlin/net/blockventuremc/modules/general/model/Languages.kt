@@ -7,7 +7,7 @@ enum class Languages(val locale: Locale) {
     EN(Locale.ENGLISH);
 
     fun getLanguageCode(): String {
-        return when(this) {
+        return when (this) {
             DE -> "de-DE"
             EN -> "en-US"
         }

@@ -12,9 +12,19 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-enum class Title(val category: TitleCategory, val display: (Player) -> String, private val description: (Player) -> String, private val icon: ItemBuilder) {
+enum class Title(
+    val category: TitleCategory,
+    val display: (Player) -> String,
+    private val description: (Player) -> String,
+    private val icon: ItemBuilder
+) {
 
-    FIRST_TIME_VISITOR(TitleCategory.GENERIC, { player -> player.translate("title.first_time_visitor.display")?.message ?: "<#dff9fb>First Time Visitor" }, { player -> player.translate("title.first_time_visitor.description")?.message ?: "First time visitor" }, ItemBuilder(Material.BOOK));
+    FIRST_TIME_VISITOR(
+        TitleCategory.GENERIC,
+        { player -> player.translate("title.first_time_visitor.display")?.message ?: "<#dff9fb>First Time Visitor" },
+        { player -> player.translate("title.first_time_visitor.description")?.message ?: "First time visitor" },
+        ItemBuilder(Material.BOOK)
+    );
 
 
     fun getGuiIcon(player: Player): ItemStack {
@@ -25,7 +35,10 @@ enum class Title(val category: TitleCategory, val display: (Player) -> String, p
 
         if (blockPlayer.titles.containsKey(this)) {
             val unlockedAt = blockPlayer.titles[this]?.getFormatted(blockPlayer.language.locale)
-            lore.add(blockPlayer.translate("title.gui.item.unlocked", mapOf("unlocked" to unlockedAt))?.message ?: "Unlocked on: <#fed330>${unlockedAt}")
+            lore.add(
+                blockPlayer.translate("title.gui.item.unlocked", mapOf("unlocked" to unlockedAt))?.message
+                    ?: "Unlocked on: <#fed330>${unlockedAt}"
+            )
         } else {
             lore.add(blockPlayer.translate("title.gui.item.locked")?.message ?: "<#ff4757>Locked")
         }

@@ -5,11 +5,11 @@ import net.blockventuremc.extensions.hasBuildTag
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.toDatabaseUser
 import net.blockventuremc.extensions.translate
-import org.bukkit.command.CommandExecutor
-import org.bukkit.permissions.PermissionDefault
 import org.bukkit.command.Command
+import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.permissions.PermissionDefault
 import kotlin.to
 
 
@@ -26,8 +26,13 @@ class BuildCommand : CommandExecutor {
 
         sender.hasBuildTag = !sender.hasBuildTag
 
-        sender.sendMessagePrefixed(sender.toDatabaseUser().translate("build_mode_toggled", mapOf("enabled" to (if (sender.hasBuildTag) "enabled" else "disabled")))
-            ?.message ?: "Build mode is now ${if (sender.hasBuildTag) "enabled" else "disabled"}")
+        sender.sendMessagePrefixed(
+            sender.toDatabaseUser().translate(
+                "build_mode_toggled",
+                mapOf("enabled" to (if (sender.hasBuildTag) "enabled" else "disabled"))
+            )
+                ?.message ?: "Build mode is now ${if (sender.hasBuildTag) "enabled" else "disabled"}"
+        )
 
         return true
     }

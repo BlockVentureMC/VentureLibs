@@ -31,7 +31,9 @@ fun CommandSender.sendMessageBlock(vararg lines: String) {
 fun CommandSender.sendEmtpyLine() = sendMessage(text(" "))
 
 fun CommandSender.sendText(message: String) = sendMessage(text(TEXT_GRAY + message))
-fun CommandSender.sendTextPrefixedIf(message: String, condition: Boolean) = if(condition) sendMessage(text(PREFIX + message)) else Unit
+fun CommandSender.sendTextPrefixedIf(message: String, condition: Boolean) =
+    if (condition) sendMessage(text(PREFIX + message)) else Unit
+
 fun CommandSender.sendTextPrefixed(message: String) = sendMessage(text(PREFIX + message))
 
 fun Player.sendDeniedSound() = playSound(location, "minecraft:block.note_block.bass", 1f, 1f)
@@ -87,7 +89,12 @@ fun UUID.toDatabaseUser(): DatabaseUser {
 }
 
 fun UUID.toDatabaseUserDB(): DatabaseUser {
-    return getDatabaseUserOrNull(this) ?: createDatabaseUser(DatabaseUser(this, Bukkit.getPlayer(this)?.name ?: Bukkit.getOfflinePlayer(this).name ?: "Unknown"))
+    return getDatabaseUserOrNull(this) ?: createDatabaseUser(
+        DatabaseUser(
+            this,
+            Bukkit.getPlayer(this)?.name ?: Bukkit.getOfflinePlayer(this).name ?: "Unknown"
+        )
+    )
 }
 
 fun CommandSender.isRankOrHigher(rank: Ranks): Boolean {
