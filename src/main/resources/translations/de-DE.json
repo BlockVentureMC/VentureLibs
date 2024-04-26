@@ -11,5 +11,12 @@
     "lock.usage": "Verwendung: /lock <color:#f78fb3><rank></color>.",
     "commands.language.changed": "Sprache geändert auf <color:#f78fb3>%language%",
     "messages.auto-save": "<color:#4cd137>Deine Daten wurden automatisch gespeichert.",
-    "lock.no_door": "Du musst eine Tür anschauen, um sie abzuschließen."
+    "lock.no_door": "Du musst eine Tür anschauen, um sie abzuschließen.",
+    "venturebits.self": "Du hast %venturebits% VentureBits.\nDu bekommst derzeit %bitsPerMinute% VentureBits pro Minute.",
+    "lock.success": "Die Tür ist nun geschlossen kann nur von <color:#f78fb3>%rank%</color> oder höher geöffnet werden.",
+    "title.categories.generic.display": "<#95afc0>Generisch",
+    "title.categories.generic.description": "Wird durch das Erledigen verschiedener Aufgaben freigeschaltet",
+    "title.categories.ride_counter.display": "<#f78fb3>Fahrzähler",
+    "title.categories.ride_counter.description": "Durch Fahrgeschäfte freigeschaltet",
+    "title.first_time_visitor.display": "<#dff9fb>Erstmaliger Besucher"
 }
