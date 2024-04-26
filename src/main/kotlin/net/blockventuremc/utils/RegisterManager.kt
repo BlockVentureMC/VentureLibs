@@ -84,6 +84,7 @@ object RegisterManager {
         }
         println("Registered listeners in $timeListeners")
     }
+
     fun registerAll() {
         val reflections = Reflections("net.blockventuremc.modules")
 

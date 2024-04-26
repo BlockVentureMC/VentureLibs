@@ -12,5 +12,19 @@
   "lock.usage": "Usage: /lock <color:#f78fb3><rank></color>.",
   "lock.no_door": "You must look at a door to lock it.",
   "lock.success": "The door is now locked to only open for <color:#f78fb3>%rank%</color> or higher.",
-  "venturebits.self": "You have %venturebits% VentureBits.\nYou currently earn %bitsPerMinute% VentureBits per minute."
+  "venturebits.self": "You have %venturebits% VentureBits.\nYou currently earn %bitsPerMinute% VentureBits per minute.",
+  "title.categories.generic.display": "<#95afc0>Generic",
+  "title.categories.generic.description": "Unlocked by completing various tasks",
+  "title.categories.ride_counter.display": "<#f78fb3>Ride Counters",
+  "title.categories.ride_counter.description": "Unlocked by riding attractions",
+  "title.first_time_visitor.display": "<#dff9fb>First Time Visitor",
+  "title.first_time_visitor.description": "You have visited the server for the first time.",
+  "title.gui.item.unlocked": "<#2ecc71>Unlocked on: <#fed330>%unlocked%",
+  "title.gui.item.locked": "<#e74c3c>Locked",
+  "title.unlocked": "Title unlocked!",
+  "title.unlocked.command": "Change your selected title with <color:#eaff94>/title</color>.",
+  "title.changed": "<green>Your title has been changed to <yellow>%title%</yellow> <green>!",
+  "title.command.not_found": "<color:#e74c3c>Title %title% not found.",
+  "title.not_unlocked": "<color:#e74c3c>You have not unlocked the title <color:#f78fb3>%title%<color:#e74c3c> yet.",
+  "title.none": "<color:#4b6584>No title"
 }

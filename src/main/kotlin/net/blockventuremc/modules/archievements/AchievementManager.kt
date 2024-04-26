@@ -17,13 +17,18 @@ object AchievementManager {
     private fun addAchievement(uuid: UUID, achievement: Achievement) {
 
         val player = Bukkit.getPlayer(uuid) ?: return
-        val title = player.toDatabaseUser().translate("achievement.${achievement.name.lowercase()}.title")?.message ?: achievement.title
-        val description = player.toDatabaseUser().translate("achievement.${achievement.name.lowercase()}.description")?.message ?: achievement.description
+        val title = player.toDatabaseUser().translate("achievement.${achievement.name.lowercase()}.title")?.message
+            ?: achievement.title
+        val description =
+            player.toDatabaseUser().translate("achievement.${achievement.name.lowercase()}.description")?.message
+                ?: achievement.description
 
         player.showTitle(Title(text(title), text(description)))
 
-        player.sendMessagePrefixed(player.toDatabaseUser().translate("achievement.achieved", mapOf("achievement" to title))
-            ?.message ?: "Achievement achieved: $title")
+        player.sendMessagePrefixed(
+            player.toDatabaseUser().translate("achievement.achieved", mapOf("achievement" to title))
+                ?.message ?: "Achievement achieved: $title"
+        )
 
         addAchievementToUser(DatabaseAchievement(uuid, achievement))
 

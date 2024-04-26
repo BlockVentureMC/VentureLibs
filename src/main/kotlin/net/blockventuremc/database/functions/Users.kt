@@ -2,11 +2,12 @@ package net.blockventuremc.database.functions
 
 import net.blockventuremc.database.functions.TableUsers.userUUID
 import net.blockventuremc.database.model.DatabaseUser
+import net.blockventuremc.database.model.bulkReplacePlayerTitlesDB
 import net.blockventuremc.database.smartTransaction
 import net.blockventuremc.database.toCalendar
-import net.blockventuremc.modules.archievements.model.Achievement
 import net.blockventuremc.modules.general.model.Languages
 import net.blockventuremc.modules.general.model.Ranks
+import net.blockventuremc.modules.titles.Title
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.javatime.CurrentTimestamp
 import org.jetbrains.exposed.sql.javatime.timestamp
@@ -25,12 +26,15 @@ object TableUsers : Table("users") {
     val userLastJoined = timestamp("lastTimeOnline").defaultExpression(CurrentTimestamp())
     val onlineTime = long("onlineTime").default(0)
 
+    val selectedTitle = varchar("selected_title", 255).nullable()
+
     override val primaryKey = PrimaryKey(userUUID)
 }
 
 
 fun getDatabaseUserOrNull(uuid: UUID): DatabaseUser? = smartTransaction {
-    return@smartTransaction TableUsers.selectAll().where { userUUID eq uuid.toString() }.firstOrNull()?.let(::mapToDatabaseUser)
+    return@smartTransaction TableUsers.selectAll().where { userUUID eq uuid.toString() }.firstOrNull()
+        ?.let(::mapToDatabaseUser)
 }
 
 private fun mapToDatabaseUser(row: ResultRow): DatabaseUser = with(row) {
@@ -43,6 +47,7 @@ private fun mapToDatabaseUser(row: ResultRow): DatabaseUser = with(row) {
         firstJoined = this[TableUsers.userFirstJoined].toCalendar(),
         lastTimeJoined = this[TableUsers.userLastJoined].toCalendar(),
         onlineTime = this[TableUsers.onlineTime].seconds,
+        selectedTitle = this[TableUsers.selectedTitle]?.let { Title.valueOf(it) }
     )
 }
 
@@ -64,5 +69,7 @@ fun updateDatabaseUser(user: DatabaseUser) = smartTransaction {
         it[userFirstJoined] = user.firstJoined.javaInstant
         it[userLastJoined] = user.lastTimeJoined.javaInstant
         it[onlineTime] = user.onlineTime.inWholeSeconds
+        it[selectedTitle] = user.selectedTitle?.name
     }
+    bulkReplacePlayerTitlesDB(user.uuid, user.titles)
 }

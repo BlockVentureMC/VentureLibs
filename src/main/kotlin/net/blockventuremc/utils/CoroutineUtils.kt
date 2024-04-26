@@ -34,6 +34,7 @@ suspend fun <T> mcasync(coroutine: suspend () -> T): T {
 
 
 val globalPool: ExecutorService = Executors.newCachedThreadPool()
+
 object MinecraftCoroutineDispatcher : CoroutineDispatcher() {
     override fun dispatch(context: CoroutineContext, block: Runnable) {
         if (!Bukkit.isPrimaryThread()) {

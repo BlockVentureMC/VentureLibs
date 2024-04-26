@@ -10,9 +10,10 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 
-class ChatEvent: Listener {
+class ChatEvent : Listener {
 
-    private val chatFormat = "<color:%color%>%rank% <color:#3d3d3d>»</color> <color:#c8d6e5>%playername%</color> <color:#f6e58d>"
+    private val chatFormat =
+        "<color:%color%>%rank% <color:#3d3d3d>»</color> <color:#c8d6e5>%playername%</color> <color:#f6e58d>"
 
     private val urlRegex =
         Regex("http[s]?:\\/\\/(?:[a-zA-Z]|[0-9]|[\$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
@@ -21,7 +22,12 @@ class ChatEvent: Listener {
     fun onChat(event: AsyncChatEvent): Unit = with(event) {
 
         event.renderer { _, _, _, _ ->
-            return@renderer text(parsePlaceholders(chatFormat, player)).append(text(parsePlaceholders(message().asPlainString, player)))
+            return@renderer text(
+                parsePlaceholders(
+                    chatFormat,
+                    player
+                )
+            ).append(text(parsePlaceholders(message().asPlainString, player)))
         }
     }
 
