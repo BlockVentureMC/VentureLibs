@@ -27,5 +27,7 @@
     "title.unlocked.command": "Ändere deinen ausgewählten Titel mit <color:#eaff94>/title</color>.",
     "title.command.not_found": "<color:#e74c3c>Titel %title% nicht gefunden.",
     "title.not_unlocked": "Du hast den Titel <color:#f78fb3>%title%<color:#e74c3c> noch nicht freigeschaltet.",
-    "title.none": "<color:#4b6584>Kein Titel"
+    "title.none": "<color:#4b6584>Kein Titel",
+    "commands.language.usage": "Verwendung: /language <color:#f78fb3><Sprache>",
+    "commands.language.invalid": "Ungültige Sprache. Verfügbare Sprachen: <color:#f78fb3>%languages%"
 }
