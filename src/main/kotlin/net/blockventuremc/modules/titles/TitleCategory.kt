@@ -13,9 +13,23 @@ import org.bukkit.entity.Player
  * @property description The description of the title category.
  * @property icon The icon representing the title category in a GUI.
  */
-enum class TitleCategory(val display: (Player) -> String, private val description: (Player) -> String, private val icon: ItemBuilder) {
-    GENERIC({ player -> player.translate("title.categories.generic.display")?.message ?: "<#dff9fb>Generic" }, { player -> player.translate("title.categories.generic.description")?.message ?: "Generic titles" }, Material.BOOK.toItemBuilder()),
-    RIDE_COUNTER({ player -> player.translate("title.categories.ride_counter.display")?.message ?: "<#dff9fb>Ride Counters" }, { player -> player.translate("title.categories.ride_counter.description")?.message ?: "Ride counter titles" }, Material.SADDLE.toItemBuilder()),
+enum class TitleCategory(
+    val display: (Player) -> String,
+    private val description: (Player) -> String,
+    private val icon: ItemBuilder
+) {
+    GENERIC(
+        { player -> player.translate("title.categories.generic.display")?.message ?: "<#dff9fb>Generic" },
+        { player -> player.translate("title.categories.generic.description")?.message ?: "Generic titles" },
+        Material.BOOK.toItemBuilder()
+    ),
+    RIDE_COUNTER(
+        { player ->
+            player.translate("title.categories.ride_counter.display")?.message ?: "<#dff9fb>Ride Counters"
+        },
+        { player -> player.translate("title.categories.ride_counter.description")?.message ?: "Ride counter titles" },
+        Material.SADDLE.toItemBuilder()
+    ),
     ;
 
     /**
@@ -25,6 +39,7 @@ enum class TitleCategory(val display: (Player) -> String, private val descriptio
      * @return The item stack representing the GUI icon.
      */
     fun getIcon(player: Player): ItemBuilder {
-        return icon.display(display(player)).lore(*description(player).split("\n").map { "<#778ca3>$it" }.toTypedArray())
+        return icon.display(display(player))
+            .lore(*description(player).split("\n").map { "<#778ca3>$it" }.toTypedArray())
     }
 }

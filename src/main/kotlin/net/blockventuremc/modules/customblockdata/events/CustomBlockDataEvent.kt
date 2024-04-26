@@ -20,18 +20,18 @@
  * Donations: https://paypal.me/mfnalex
  */
 
-package net.blockventuremc.modules.customblockdata.events;
+package net.blockventuremc.modules.customblockdata.events
 
-import net.blockventuremc.modules.customblockdata.CustomBlockData;
-import org.bukkit.block.Block;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
+import net.blockventuremc.modules.customblockdata.CustomBlockData
+import org.bukkit.block.Block
+import org.bukkit.event.Cancellable
+import org.bukkit.event.Event
+import org.bukkit.event.HandlerList
 import org.bukkit.event.block.*
-import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.world.StructureGrowEvent;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.event.entity.EntityChangeBlockEvent
+import org.bukkit.event.entity.EntityExplodeEvent
+import org.bukkit.event.world.StructureGrowEvent
+import org.bukkit.plugin.Plugin
 
 open class CustomBlockDataEvent(private val plugin: Plugin, private val block: Block, private val bukkitEvent: Event) :
     Event(), Cancellable {
@@ -73,7 +73,9 @@ open class CustomBlockDataEvent(private val plugin: Plugin, private val block: B
 
     fun getReason(): Reason {
         for (reason in Reason.entries) {
-            if (reason != Reason.UNKNOWN && reason.eventClasses.stream().anyMatch { clazz -> clazz == bukkitEvent.javaClass }) {
+            if (reason != Reason.UNKNOWN && reason.eventClasses.stream()
+                    .anyMatch { clazz -> clazz == bukkitEvent.javaClass }
+            ) {
                 return reason
             }
         }
