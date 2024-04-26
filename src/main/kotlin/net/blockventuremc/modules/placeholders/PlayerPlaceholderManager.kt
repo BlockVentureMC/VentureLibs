@@ -57,7 +57,7 @@ class PlayerPlaceholderManager {
             (player.player as Player).toDatabaseUser().rank.color
         }
 
-        placeholders += placeholderManager.registerRelationalPlaceholder("%rel_title%", 5000) { player, viewer ->
+        placeholders += placeholderManager.registerRelationalPlaceholder("%rel_title%", 5000) { viewer, player ->
             val title = (player.player as Player).toDatabaseUser().selectedTitle
             return@registerRelationalPlaceholder if (title == null) {
                 (viewer.player as Player).translate("title.none")?.message ?: "<color:#4b6584>No title"
