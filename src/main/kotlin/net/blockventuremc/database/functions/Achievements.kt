@@ -13,8 +13,11 @@ object TableAchievements : Table("achievements") {
     val userUUID = varchar("uuid", 45)
 
     val achievement = enumerationByName("achievement", 24, Achievement::class)
-
     val receivedAt = timestamp("receivedAt").defaultExpression(CurrentTimestamp())
+
+    val counter = integer("counter").default(1)
+    val lastReceivedAt = timestamp("lastReceivedAt").defaultExpression(CurrentTimestamp())
+
 
     override val primaryKey = PrimaryKey(userUUID, achievement)
 }
@@ -23,16 +26,19 @@ private fun mapToDatabaseAchievement(row: ResultRow): DatabaseAchievement = with
     return DatabaseAchievement(
         uuid = UUID.fromString(this[TableAchievements.userUUID]),
         achievement = this[TableAchievements.achievement],
-
-        receivedAt = this[TableAchievements.receivedAt].toCalendar()
+        receivedAt = this[TableAchievements.receivedAt].toCalendar(),
+        counter = this[TableAchievements.counter],
+        lastReceivedAt = this[TableAchievements.lastReceivedAt].toCalendar()
     )
 }
 
 fun addAchievementToUser(achievement: DatabaseAchievement) = smartTransaction {
-    TableAchievements.insert {
+    TableAchievements.replace {
         it[userUUID] = achievement.uuid.toString()
         it[TableAchievements.achievement] = achievement.achievement
         it[receivedAt] = achievement.receivedAt.javaInstant
+        it[counter] = achievement.counter
+        it[lastReceivedAt] = achievement.lastReceivedAt.javaInstant
     }
 }
 

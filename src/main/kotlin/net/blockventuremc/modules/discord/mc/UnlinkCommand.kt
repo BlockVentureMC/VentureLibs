@@ -20,7 +20,7 @@ import org.bukkit.permissions.PermissionDefault
     permissionDefault = PermissionDefault.TRUE,
     usage = "/unlink"
 )
-class UnlinkCommand: CommandExecutor {
+class UnlinkCommand : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         val player = sender as? Player ?: run {
             sender.sendMessagePrefixed("This command is only available to players.")

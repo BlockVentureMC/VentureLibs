@@ -6,9 +6,9 @@ import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.database.DatabaseManager
 import net.blockventuremc.modules.discord.DiscordBot
 import net.blockventuremc.modules.i18n.TranslationCache
+import net.blockventuremc.modules.placeholders.PlayerPlaceholderManager
 import net.blockventuremc.utils.RegisterManager.registerMC
 import net.blockventuremc.utils.mcasyncBlocking
-import net.blockventuremc.modules.placeholders.PlayerPlaceholderManager
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 

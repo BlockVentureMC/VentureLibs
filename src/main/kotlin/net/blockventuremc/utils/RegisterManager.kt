@@ -50,7 +50,10 @@ object RegisterManager {
 
                     val command = constructor.newInstance() as AbstractCommand
 
-                    val desc = TranslationCache.get(Locale.ENGLISH_UNITED_STATES.code, "discord.commands.${command.name}.description")
+                    val desc = TranslationCache.get(
+                        Locale.ENGLISH_UNITED_STATES.code,
+                        "discord.commands.${command.name}.description"
+                    )
 
                     kord.createGlobalChatInputCommand(
                         command.name,
@@ -62,7 +65,8 @@ object RegisterManager {
 
                         command.options.invoke(this)
 
-                        val deDesc = TranslationCache.get(Locale.GERMAN.code, "discord.commands.${command.name}.description")
+                        val deDesc =
+                            TranslationCache.get(Locale.GERMAN.code, "discord.commands.${command.name}.description")
 
                         if (deDesc != null) {
                             description(Locale.GERMAN, deDesc.message)
@@ -181,7 +185,7 @@ object RegisterManager {
         }
         println("Registered listeners in $timeListeners")
     }
-    
+
     fun registerMC() {
         val reflections = Reflections("net.blockventuremc.modules")
 

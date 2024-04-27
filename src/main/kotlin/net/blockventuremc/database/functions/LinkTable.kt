@@ -32,7 +32,7 @@ private fun mapToLink(row: ResultRow): Link = with(row) {
 fun linkUser(link: Link) = smartTransaction {
     TableLink.insert {
         it[userUUID] = link.uuid.toString()
-        it[TableLink.discordID] = link.discordID
+        it[discordID] = link.discordID
         it[linkedAt] = link.linkedAt.javaInstant
     }
 }
