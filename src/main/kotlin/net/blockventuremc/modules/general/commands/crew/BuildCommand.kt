@@ -3,7 +3,7 @@ package net.blockventuremc.modules.general.commands.crew
 import net.blockventuremc.annotations.BlockCommand
 import net.blockventuremc.extensions.hasBuildTag
 import net.blockventuremc.extensions.sendMessagePrefixed
-import net.blockventuremc.extensions.toDatabaseUser
+import net.blockventuremc.extensions.toBlockUser
 import net.blockventuremc.extensions.translate
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -27,7 +27,7 @@ class BuildCommand : CommandExecutor {
         sender.hasBuildTag = !sender.hasBuildTag
 
         sender.sendMessagePrefixed(
-            sender.toDatabaseUser().translate(
+            sender.toBlockUser().translate(
                 "build_mode_toggled",
                 mapOf("enabled" to (if (sender.hasBuildTag) "enabled" else "disabled"))
             )

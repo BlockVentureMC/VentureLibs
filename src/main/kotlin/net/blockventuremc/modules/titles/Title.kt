@@ -4,7 +4,7 @@ import com.rainbowislands.utility.utils.ItemBuilder
 import dev.fruxz.ascend.tool.time.calendar.Calendar
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.extensions.sendMessageBlock
-import net.blockventuremc.extensions.toDatabaseUser
+import net.blockventuremc.extensions.toBlockUser
 import net.blockventuremc.extensions.translate
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -28,7 +28,7 @@ enum class Title(
 
 
     fun getGuiIcon(player: Player): ItemStack {
-        val blockPlayer = player.toDatabaseUser()
+        val blockPlayer = player.toBlockUser()
 
         val lore = description(player).split("\n").map { "<#778ca3>$it" }.toMutableList()
         lore.add(" ")

@@ -3,7 +3,7 @@ package net.blockventuremc.modules.general.commands.guests
 import net.blockventuremc.annotations.BlockCommand
 import net.blockventuremc.extensions.bitsPerMinute
 import net.blockventuremc.extensions.sendMessagePrefixed
-import net.blockventuremc.extensions.toDatabaseUser
+import net.blockventuremc.extensions.toBlockUser
 import net.blockventuremc.extensions.translate
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -32,7 +32,7 @@ class MoneyCommand : CommandExecutor {
         if (sender !is Player) return false
 
         val player = sender
-        val dbUser = player.toDatabaseUser()
+        val dbUser = player.toBlockUser()
 
         player.sendMessagePrefixed(
             player.translate(

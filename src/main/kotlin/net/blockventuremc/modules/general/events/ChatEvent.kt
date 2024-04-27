@@ -4,7 +4,7 @@ import dev.fruxz.stacked.extension.asPlainString
 import dev.fruxz.stacked.text
 import io.papermc.paper.event.player.AsyncChatEvent
 import me.clip.placeholderapi.PlaceholderAPI
-import net.blockventuremc.extensions.toDatabaseUser
+import net.blockventuremc.extensions.toBlockUser
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -35,8 +35,8 @@ class ChatEvent : Listener {
         var parsed = text
         parsed = parsed.replace("%playername%", player.name)
         parsed = parsed.replace("%displayname%", player.displayName().asPlainString)
-        parsed = parsed.replace("%color%", player.toDatabaseUser().rank.color)
-        parsed = parsed.replace("%rank%", player.toDatabaseUser().rank.name)
+        parsed = parsed.replace("%color%", player.toBlockUser().rank.color)
+        parsed = parsed.replace("%rank%", player.toBlockUser().rank.name)
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             parsed = PlaceholderAPI.setPlaceholders(player, parsed)
