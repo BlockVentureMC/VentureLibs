@@ -14,10 +14,6 @@ object LinkManager {
         _cache[name] = link
     }
 
-    fun remove(name: String) {
-        _cache.remove(name)
-    }
-
     fun remove(uuid: UUID) {
         _cache.remove(_cache.filter { it.value.uuid == uuid }.keys.firstOrNull())
     }

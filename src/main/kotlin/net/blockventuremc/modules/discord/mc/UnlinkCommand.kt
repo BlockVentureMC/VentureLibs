@@ -2,7 +2,7 @@ package net.blockventuremc.modules.discord.mc
 
 import net.blockventuremc.annotations.BlockCommand
 import net.blockventuremc.database.functions.getLinkOfUser
-import net.blockventuremc.database.functions.linkUser
+import net.blockventuremc.database.functions.unlinkUser
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.modules.discord.manager.LinkManager
 import org.bukkit.command.Command
@@ -12,39 +12,36 @@ import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
 
 @BlockCommand(
-    name = "link",
-    description = "Link your Minecraft account to your Discord account",
+    name = "unlink",
+    description = "Unlink your Minecraft account from your Discord account",
     permissionDefault = PermissionDefault.TRUE,
-    usage = "/link"
+    usage = "/unlink"
 )
-class LinkCommand : CommandExecutor {
+class UnlinkCommand: CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         val player = sender as? Player ?: run {
             sender.sendMessagePrefixed("This command is only available to players.")
             return true
         }
+
         val linking = LinkManager.triesToGetLink(player.uniqueId)
 
-        if (linking == null) {
-            sender.sendMessagePrefixed("You aren't trying to link any account. If you want to link an account, use /link ${player.name} in Discord.")
+        if (linking != null) {
+            LinkManager.remove(player.uniqueId)
+            sender.sendMessagePrefixed("You have successfully cancelled the linking process.")
             return true
         }
 
         val linked = getLinkOfUser(player.uniqueId)
 
-        if (linked != null) {
-            sender.sendMessagePrefixed("You are already linked to a Discord account. If you want to link another account, use /unlink in Discord or Minecraft.")
+        if (linked == null) {
+            sender.sendMessagePrefixed("You are not linked to any Discord account.")
             return true
         }
 
-        val link = LinkManager.getLink(player.uniqueId)!!
+        unlinkUser(player.uniqueId)
 
-        linkUser(link)
-
-        LinkManager.remove(player.uniqueId)
-
-
-        sender.sendMessagePrefixed("You have successfully linked your account to ${linking}'s Discord account.")
+        sender.sendMessagePrefixed("You have successfully unlinked your account from ${linked.discordID}'s Discord account.")
 
         return true
     }

@@ -52,7 +52,7 @@ class RankCommand : CommandExecutor, TabCompleter {
         if (!targetPlayer.isOnline) {
             PlayerCache.remove(targetPlayer.uniqueId)
         } else {
-            targetPlayer.player?.sendMessage("§aDein Rang wurde auf §e${rank}§a geändert.")
+            targetPlayer.player?.sendMessagePrefixed("Dein Rang wurde auf <${realRank.color}>$rank<reset> gesetzt")
         }
 
         sender.sendMessagePrefixed("Rang von ${targetPlayer.name} auf <${realRank.color}>$rank<reset> gesetzt")
