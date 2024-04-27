@@ -1,22 +1,18 @@
 package net.blockventuremc.modules.discord.commands
 
-import dev.kord.common.entity.Permission
 import dev.kord.core.Kord
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
-import dev.kord.rest.builder.interaction.integer
-import net.blockventuremc.modules.discord.manager.ChannelManager
+import dev.kord.rest.builder.interaction.string
 import net.blockventuremc.modules.discord.model.AbstractCommand
 import net.blockventuremc.utils.translate
 
-class TestCommand: AbstractCommand() {
-    override val name = "test"
-
-    override val permission = Permission.ManageMessages
+class LinkCommand: AbstractCommand() {
+    override val name = "link"
 
     override val options = fun ChatInputCreateBuilder.() {
-        integer("number", "x") {
+        string("username", "Username") {
             required = true
 
             translate()
@@ -24,9 +20,9 @@ class TestCommand: AbstractCommand() {
     }
 
     override suspend fun execute(bot: Kord, interaction: GuildChatInputCommandInteraction) {
-
+        interaction.deferEphemeralResponse()
         interaction.respondEphemeral {
-            content = "You entered ${interaction.command.options["number"]?.value}"
+            content = "You entered ${interaction.command.options["username"]?.value}"
         }
     }
 }
