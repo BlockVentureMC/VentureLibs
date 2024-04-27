@@ -67,9 +67,11 @@ val deps = listOf(
     "com.google.code.gson:gson:$gsonVersion",
     "org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion",
 
-
     "com.zaxxer:HikariCP:$hikariVersion",
     "org.mariadb.jdbc:mariadb-java-client:$mariadbVersion",
+
+    "dev.kord:kord-core:0.13.1",
+    "dev.kord.x:emoji:0.5.0"
 )
 
 
@@ -119,7 +121,7 @@ tasks {
 
     withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "21"
-        kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
+        kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn" + "-Xopt-in=dev.kord.common.annotation.KordPreview" + "-Xopt-in=dev.kord.common.annotation.KordExperimental" + "-Xopt-in=kotlin.time.ExperimentalTime" + "-Xopt-in=kotlin.contracts.ExperimentalContracts"
     }
 
     withType<ProcessResources> {

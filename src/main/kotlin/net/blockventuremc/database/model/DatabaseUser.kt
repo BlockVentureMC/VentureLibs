@@ -3,6 +3,7 @@ package net.blockventuremc.database.model
 import dev.fruxz.ascend.extension.logging.getItsLogger
 import dev.fruxz.ascend.tool.time.calendar.Calendar
 import net.blockventuremc.consts.AFK_DURATION
+import net.blockventuremc.database.functions.getPlayerTitles
 import net.blockventuremc.modules.general.events.custom.AFKChangeEvent
 import net.blockventuremc.modules.general.model.Languages
 import net.blockventuremc.modules.general.model.Ranks

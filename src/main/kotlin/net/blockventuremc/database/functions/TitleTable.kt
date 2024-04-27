@@ -1,8 +1,8 @@
-package net.blockventuremc.database.model
+package net.blockventuremc.database.functions
 
 import dev.fruxz.ascend.tool.time.calendar.Calendar
-import net.blockventuremc.database.model.TitleTable.awardedAt
-import net.blockventuremc.database.model.TitleTable.title
+import net.blockventuremc.database.functions.TitleTable.awardedAt
+import net.blockventuremc.database.functions.TitleTable.title
 import net.blockventuremc.database.smartTransaction
 import net.blockventuremc.database.toCalendar
 import net.blockventuremc.modules.titles.Title

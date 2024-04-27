@@ -1,10 +1,19 @@
 package net.blockventuremc.utils
 
+import dev.kord.common.Locale
+import dev.kord.common.entity.Permissions
+
+import dev.kord.core.Kord
+import dev.kord.rest.builder.interaction.*
 import io.sentry.Sentry
 import net.blockventuremc.BlockVenture
 import net.blockventuremc.annotations.BlockCommand
 import net.blockventuremc.consts.NAMESPACE_PLUGIN
+import net.blockventuremc.extensions.code
 import net.blockventuremc.extensions.sendMessagePrefixed
+import net.blockventuremc.modules.discord.model.AbstractCommand
+import net.blockventuremc.modules.discord.model.AbstractEvent
+import net.blockventuremc.modules.i18n.TranslationCache
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.PluginCommand
@@ -14,7 +23,95 @@ import org.bukkit.plugin.Plugin
 import org.reflections8.Reflections
 import kotlin.time.measureTime
 
+fun OptionsBuilder.translate() {
+    val enUsDesc = TranslationCache.get(Locale.ENGLISH_UNITED_STATES.code, "discord.options.${name}.description")
+    if (enUsDesc != null) {
+        description = enUsDesc.message
+    }
+
+    val deDesc = TranslationCache.get(Locale.GERMAN.code, "discord.options.${name}.description")
+    if (deDesc != null) {
+        description(Locale.GERMAN, deDesc.message)
+    }
+}
+
+
 object RegisterManager {
+    val dcCommands = mutableListOf<AbstractCommand>()
+
+    private suspend fun registerDiscordCommands(kord: Kord, reflections: Reflections) {
+
+        val timeDiscordCommands = measureTime {
+            for (clazz in reflections.getSubTypesOf(AbstractCommand::class.java)) {
+                try {
+                    val constructor = clazz.declaredConstructors.find { it.parameterCount == 0 } ?: continue
+
+                    constructor.isAccessible = true
+
+                    val command = constructor.newInstance() as AbstractCommand
+
+                    val desc = TranslationCache.get(Locale.ENGLISH_UNITED_STATES.code, "discord.commands.${command.name}.description")
+
+                    kord.createGlobalChatInputCommand(
+                        command.name,
+                        desc?.message ?: "No description"
+                    ) {
+                        if (command.permission != null) {
+                            defaultMemberPermissions = Permissions(command.permission!!)
+                        }
+
+                        command.options.invoke(this)
+
+                        val deDesc = TranslationCache.get(Locale.GERMAN.code, "discord.commands.${command.name}.description")
+
+                        if (deDesc != null) {
+                            description(Locale.GERMAN, deDesc.message)
+                        }
+                    }
+
+                    dcCommands.add(command)
+
+                    println("Command ${command.name} registered")
+
+                } catch (exception: InstantiationError) {
+                    exception.printStackTrace()
+                    Sentry.captureException(exception)
+                } catch (exception: IllegalAccessException) {
+                    exception.printStackTrace()
+                    Sentry.captureException(exception)
+                }
+            }
+        }
+
+        println("Registered discord commands in $timeDiscordCommands")
+    }
+
+    private suspend fun registerDiscordListeners(kord: Kord, reflections: Reflections) {
+        val timeDiscordListeners = measureTime {
+            for (clazz in reflections.getSubTypesOf(AbstractEvent::class.java)) {
+                try {
+                    val constructor = clazz.declaredConstructors.find { it.parameterCount == 0 } ?: continue
+
+                    constructor.isAccessible = true
+
+                    val event = constructor.newInstance() as AbstractEvent
+
+                    event.execute(kord)
+
+                    println("Event ${event.javaClass.simpleName} registered")
+                } catch (exception: InstantiationError) {
+                    exception.printStackTrace()
+                    Sentry.captureException(exception)
+                } catch (exception: IllegalAccessException) {
+                    exception.printStackTrace()
+                    Sentry.captureException(exception)
+                }
+            }
+        }
+        println("Registered discord listeners in $timeDiscordListeners")
+    }
+
+
     private fun registerCommands(reflections: Reflections) {
 
         val timeCommands = measureTime {
@@ -84,13 +181,21 @@ object RegisterManager {
         }
         println("Registered listeners in $timeListeners")
     }
-
-    fun registerAll() {
+    
+    fun registerMC() {
         val reflections = Reflections("net.blockventuremc.modules")
 
         registerListeners(reflections)
 
         registerCommands(reflections)
 
+    }
+
+    suspend fun registerDiscord(kord: Kord) {
+        val reflections = Reflections("net.blockventuremc.modules.discord")
+
+        registerDiscordCommands(kord, reflections)
+
+        registerDiscordListeners(kord, reflections)
     }
 }

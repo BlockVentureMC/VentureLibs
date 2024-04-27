@@ -7,6 +7,7 @@
     "achievement.achieved": "Du hast das Achievement <color:#f78fb3>%achievement%</color> erhalten.",
     "achievement.firstjoin.title": "Willkommen auf dem Server!",
     "achievement.firstjoin.description": "Du bist zum ersten Mal dem Server beigetreten.",
+    "discord.commands.link.description": "Verknüpfe deinen Discord-Account mit deinem Minecraft-Account.",
     "commands.rank_not_found": "Rang <color:#f78fb3>%rank%</color> nicht gefunden.",
     "lock.usage": "Verwendung: /lock <color:#f78fb3><rank></color>.",
     "commands.language.changed": "Sprache geändert auf <color:#f78fb3>%language%",

@@ -2,7 +2,6 @@ package net.blockventuremc.database.functions
 
 import net.blockventuremc.database.functions.TableUsers.userUUID
 import net.blockventuremc.database.model.DatabaseUser
-import net.blockventuremc.database.model.bulkReplacePlayerTitlesDB
 import net.blockventuremc.database.smartTransaction
 import net.blockventuremc.database.toCalendar
 import net.blockventuremc.modules.general.model.Languages
