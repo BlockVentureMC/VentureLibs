@@ -42,7 +42,7 @@ data class BlockUser(
             return ((this.xp.toDouble() / 100.toDouble()).pow(0.6)).toInt()
         }
 
-    fun nextLevelExp(forLevel: Int = level+1): Long {
+    fun nextLevelExp(forLevel: Int = level + 1): Long {
         return (exp(ln(forLevel.toDouble()) / 0.6) * 100).toLong()
     }
 

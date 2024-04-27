@@ -1,14 +1,14 @@
 {
-    "build_mode_toggled": "De bouwmodus is nu %enabled%.",
-    "fly_mode_toggled_by": "De vliegmodus van %player% is nu %enabled%.",
-    "achievement.achieved": "Je hebt de prestatie <color:#f78fb3>%achievement%</color> behaald.",
-    "fly_mode_toggled": "Vliegmodus is nu %enabled%.",
-    "onlinetime": "Je online tijd is %onlinetime%.",
-    "no_permission.club_member": "Dit commando is alleen beschikbaar voor <color:#ea8685>ClubMembers</color>.",
-    "achievement.firstjoin.title": "Welkom op de server!",
-    "achievement.firstjoin.description": "Je bent voor het eerst bij de server gekomen.",
-    "messages.auto-save": "<color:#4cd137>Uw gegevens zijn automatisch opgeslagen.",
-    "commands.rank_not_found": "Rang <color:#f78fb3>%rank%</color> niet gevonden.",
-    "lock.usage": "Gebruik: /lock <color:#f78fb3><rank></color>.",
-    "lock.no_door": "Je moet naar een deur kijken om hem op slot te doen."
+  "build_mode_toggled": "De bouwmodus is nu %enabled%.",
+  "fly_mode_toggled_by": "De vliegmodus van %player% is nu %enabled%.",
+  "achievement.achieved": "Je hebt de prestatie <color:#f78fb3>%achievement%</color> behaald.",
+  "fly_mode_toggled": "Vliegmodus is nu %enabled%.",
+  "onlinetime": "Je online tijd is %onlinetime%.",
+  "no_permission.club_member": "Dit commando is alleen beschikbaar voor <color:#ea8685>ClubMembers</color>.",
+  "achievement.firstjoin.title": "Welkom op de server!",
+  "achievement.firstjoin.description": "Je bent voor het eerst bij de server gekomen.",
+  "messages.auto-save": "<color:#4cd137>Uw gegevens zijn automatisch opgeslagen.",
+  "commands.rank_not_found": "Rang <color:#f78fb3>%rank%</color> niet gevonden.",
+  "lock.usage": "Gebruik: /lock <color:#f78fb3><rank></color>.",
+  "lock.no_door": "Je moet naar een deur kijken om hem op slot te doen."
 }

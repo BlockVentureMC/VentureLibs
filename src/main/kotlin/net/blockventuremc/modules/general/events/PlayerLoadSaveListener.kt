@@ -31,6 +31,8 @@ class PlayerLoadSaveListener : Listener {
             // Award first time visitor title (if applicable)
             Title.FIRST_TIME_VISITOR.award(player)
         }, 10L)
+
+        event.joinMessage(text("<color:#95a5a6>[ <color:#2ecc71>\uD83D\uDC49</color> ] <color:#c8d6e5>${player.name}"))
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -42,5 +44,7 @@ class PlayerLoadSaveListener : Listener {
             )
         )
         PlayerCache.remove(player.uniqueId)
+
+        event.quitMessage(text("<color:#95a5a6>[ <color:#e74c3c>\uD83D\uDC48</color> ] <color:#c8d6e5>${player.name}"))
     }
 }

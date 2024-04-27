@@ -59,7 +59,7 @@ object PlayerCache {
     private var task: BukkitTask? = null
     fun runOnlineTimeScheduler() {
         var lastAutoSave = Calendar.now()
-        var lastVentureTreassure = Calendar.now()
+        var lastVentureTreasure = Calendar.now()
         task = Bukkit.getScheduler().runTaskTimerAsynchronously(BlockVenture.instance, Runnable {
             if (Bukkit.getOnlinePlayers().isEmpty()) return@Runnable
 
@@ -72,12 +72,17 @@ object PlayerCache {
             }
 
             // Give venture bits and xp every minute
-            if (lastVentureTreassure.plus(1.minutes) < Calendar.now()) {
+            if (lastVentureTreasure.plus(1.minutes) < Calendar.now()) {
                 Bukkit.getOnlinePlayers().forEach { player ->
                     val dbUser = get(player.uniqueId)
-                    updateCached(dbUser.copy(ventureBits = dbUser.ventureBits + dbUser.bitsPerMinute, xp = dbUser.xp + 1))
+                    updateCached(
+                        dbUser.copy(
+                            ventureBits = dbUser.ventureBits + dbUser.bitsPerMinute,
+                            xp = dbUser.xp + 1
+                        )
+                    )
                 }
-                lastVentureTreassure = Calendar.now()
+                lastVentureTreasure = Calendar.now()
             }
 
             // Save all players every 15 minutes
