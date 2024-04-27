@@ -7,6 +7,7 @@ import java.util.*
 data class DatabaseAchievement(
     val uuid: UUID,
     val achievement: Achievement,
-
-    val receivedAt: Calendar = Calendar.now()
+    val receivedAt: Calendar = Calendar.now(),
+    val counter: Int = 1,
+    val lastReceivedAt: Calendar = Calendar.now()
 )

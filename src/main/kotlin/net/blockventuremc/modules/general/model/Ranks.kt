@@ -1,7 +1,6 @@
 package net.blockventuremc.modules.general.model
 
 import dev.kord.common.entity.Snowflake
-import dev.kord.core.entity.Role
 import net.blockventuremc.BlockVenture
 
 enum class Ranks(val color: String, val bitsPerMinute: Long = 1, val role: String? = null) {

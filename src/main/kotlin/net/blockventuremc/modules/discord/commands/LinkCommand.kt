@@ -13,7 +13,7 @@ import net.blockventuremc.modules.discord.model.AbstractCommand
 import net.blockventuremc.utils.translate
 import org.bukkit.Bukkit
 
-class LinkCommand: AbstractCommand() {
+class LinkCommand : AbstractCommand() {
     override val name = "link"
 
     override val options = fun ChatInputCreateBuilder.() {
@@ -38,7 +38,7 @@ class LinkCommand: AbstractCommand() {
 
         if (tries != null) {
             interaction.respondEphemeral {
-                content = "You are already trying to link to ${ Bukkit.getPlayer(tries.uuid)?.name }"
+                content = "You are already trying to link to ${Bukkit.getPlayer(tries.uuid)?.name}"
             }
             return
         }
@@ -47,7 +47,7 @@ class LinkCommand: AbstractCommand() {
 
         if (dbLink != null) {
             interaction.respondEphemeral {
-                content = "You are already linked to ${ Bukkit.getPlayer(dbLink.uuid)?.name }"
+                content = "You are already linked to ${Bukkit.getPlayer(dbLink.uuid)?.name}"
             }
             return
         }
