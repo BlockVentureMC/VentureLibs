@@ -5,6 +5,9 @@ import net.blockventuremc.database.functions.getLinkOfUser
 import net.blockventuremc.database.functions.linkUser
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.modules.discord.manager.LinkManager
+import net.blockventuremc.modules.general.manager.RankManager
+import net.blockventuremc.utils.mcasync
+import net.blockventuremc.utils.mcroutine
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -42,6 +45,12 @@ class LinkCommand : CommandExecutor {
         linkUser(link)
 
         LinkManager.remove(player.uniqueId)
+
+        mcroutine {
+            mcasync {
+                RankManager.updateDiscordRank(link.discordID)
+            }
+        }
 
 
         sender.sendMessagePrefixed("You have successfully linked your account to ${linking}'s Discord account.")

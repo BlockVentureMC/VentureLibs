@@ -6,6 +6,7 @@ import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.sendSuccessSound
 import net.blockventuremc.extensions.toDatabaseUser
 import net.blockventuremc.extensions.translate
+import net.blockventuremc.modules.general.manager.RankManager
 import net.blockventuremc.modules.general.model.Ranks
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -36,7 +37,6 @@ class RankCommand : CommandExecutor, TabCompleter {
         }
 
         val targetPlayer = sender.server.getOfflinePlayer(args[0])
-        var targetCringeUser = targetPlayer.uniqueId.toDatabaseUser()
         val rank = args[1]
 
         val realRank = Ranks.entries.find { it.name.equals(rank, true) }
@@ -47,8 +47,7 @@ class RankCommand : CommandExecutor, TabCompleter {
             return true
         }
 
-        targetCringeUser = targetCringeUser.copy(rank = realRank)
-        PlayerCache.updateCached(targetCringeUser)
+        RankManager.updateRank(realRank, targetPlayer.uniqueId.toDatabaseUser())
         if (!targetPlayer.isOnline) {
             PlayerCache.remove(targetPlayer.uniqueId)
         } else {
