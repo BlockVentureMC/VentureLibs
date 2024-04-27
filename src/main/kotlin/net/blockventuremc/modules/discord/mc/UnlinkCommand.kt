@@ -1,10 +1,13 @@
 package net.blockventuremc.modules.discord.mc
 
+import dev.kord.common.entity.Snowflake
+import net.blockventuremc.BlockVenture
 import net.blockventuremc.annotations.BlockCommand
 import net.blockventuremc.database.functions.getLinkOfUser
 import net.blockventuremc.database.functions.unlinkUser
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.modules.discord.manager.LinkManager
+import net.blockventuremc.utils.mcroutine
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -41,7 +44,12 @@ class UnlinkCommand: CommandExecutor {
 
         unlinkUser(player.uniqueId)
 
-        sender.sendMessagePrefixed("You have successfully unlinked your account from ${linked.discordID}'s Discord account.")
+        mcroutine {
+            val name = BlockVenture.bot.kord.getUser(Snowflake(linked.discordID))?.username ?: "Unknown"
+
+            sender.sendMessagePrefixed("You have successfully unlinked your account from $name's Discord account.")
+
+        }
 
         return true
     }
