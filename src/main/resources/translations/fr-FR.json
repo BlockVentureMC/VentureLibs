@@ -1,3 +1,6 @@
 {
-
+    "fly_mode_toggled": "Le mode vol est maintenant %enabled%.",
+    "fly_mode_toggled_by": "Le mode vol de %player% est maintenant %enabled%.",
+    "onlinetime": "Votre temps en ligne est %onlinetime%.",
+    "build_mode_toggled": "Le mode construction est maintenant %enabled%."
 }
