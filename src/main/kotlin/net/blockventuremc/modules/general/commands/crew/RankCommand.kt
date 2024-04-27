@@ -4,7 +4,7 @@ import net.blockventuremc.annotations.BlockCommand
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.sendSuccessSound
-import net.blockventuremc.extensions.toDatabaseUser
+import net.blockventuremc.extensions.toBlockUser
 import net.blockventuremc.extensions.translate
 import net.blockventuremc.modules.general.manager.RankManager
 import net.blockventuremc.modules.general.model.Ranks
@@ -47,7 +47,7 @@ class RankCommand : CommandExecutor, TabCompleter {
             return true
         }
 
-        RankManager.updateRank(realRank, targetPlayer.uniqueId.toDatabaseUser())
+        RankManager.updateRank(realRank, targetPlayer.uniqueId.toBlockUser())
         if (!targetPlayer.isOnline) {
             PlayerCache.remove(targetPlayer.uniqueId)
         } else {

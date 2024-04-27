@@ -9,13 +9,18 @@ import net.blockventuremc.modules.general.model.Languages
 import net.blockventuremc.modules.general.model.Ranks
 import net.blockventuremc.modules.titles.Title
 import java.util.*
+import kotlin.math.exp
+import kotlin.math.ln
+import kotlin.math.pow
 import kotlin.time.Duration
 
-data class DatabaseUser(
+data class BlockUser(
     val uuid: UUID,
     val username: String,
     val rank: Ranks = Ranks.Guest,
     val language: Languages = Languages.EN,
+
+    val xp: Long = 0,
 
     val ventureBits: Long = 0,
 
@@ -31,6 +36,15 @@ data class DatabaseUser(
 
     val titles: MutableMap<Title, Calendar> = getPlayerTitles(uuid)
 ) {
+
+    val level: Int
+        get() {
+            return ((this.xp.toDouble() / 100.toDouble()).pow(0.6)).toInt()
+        }
+
+    fun nextLevelExp(forLevel: Int = level+1): Long {
+        return (exp(ln(forLevel.toDouble()) / 0.6) * 100).toLong()
+    }
 
     fun testForActivity() {
         if (afk) return

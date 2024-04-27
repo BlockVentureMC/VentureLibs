@@ -4,12 +4,12 @@ import dev.kord.common.entity.Snowflake
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.database.functions.getLinkOfDiscord
 import net.blockventuremc.database.functions.getLinkOfUser
-import net.blockventuremc.database.model.DatabaseUser
+import net.blockventuremc.database.model.BlockUser
 import net.blockventuremc.modules.general.model.Ranks
 import net.blockventuremc.utils.mcasyncBlocking
 
 object RankManager {
-    fun updateRank(rank: Ranks, u: DatabaseUser) {
+    fun updateRank(rank: Ranks, u: BlockUser) {
 
         val user = u.copy(rank = rank)
         PlayerCache.updateCached(user)

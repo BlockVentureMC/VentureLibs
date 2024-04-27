@@ -8,7 +8,7 @@ import net.blockventuremc.database.functions.addAchievementToUser
 import net.blockventuremc.database.functions.getAchievementOfUser
 import net.blockventuremc.database.model.DatabaseAchievement
 import net.blockventuremc.extensions.sendMessagePrefixed
-import net.blockventuremc.extensions.toDatabaseUser
+import net.blockventuremc.extensions.toBlockUser
 import net.blockventuremc.extensions.translate
 import net.blockventuremc.modules.archievements.model.Achievement
 import org.bukkit.Bukkit
@@ -28,16 +28,16 @@ object AchievementManager {
      */
     private fun addAchievement(uuid: UUID, achievement: Achievement) {
         val player = Bukkit.getPlayer(uuid) ?: return
-        val title = player.toDatabaseUser().translate("achievement.${achievement.name.lowercase()}.title")?.message
+        val title = player.toBlockUser().translate("achievement.${achievement.name.lowercase()}.title")?.message
             ?: achievement.title
         val description =
-            player.toDatabaseUser().translate("achievement.${achievement.name.lowercase()}.description")?.message
+            player.toBlockUser().translate("achievement.${achievement.name.lowercase()}.description")?.message
                 ?: achievement.description
 
         player.showTitle(Title(text(title), text(description)))
 
         player.sendMessagePrefixed(
-            player.toDatabaseUser().translate("achievement.achieved", mapOf("achievement" to title))
+            player.toBlockUser().translate("achievement.achieved", mapOf("achievement" to title))
                 ?.message ?: "Achievement achieved: $title"
         )
 

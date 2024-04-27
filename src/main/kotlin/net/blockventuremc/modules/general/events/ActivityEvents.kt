@@ -1,7 +1,7 @@
 package net.blockventuremc.modules.general.events
 
 import io.papermc.paper.event.player.AsyncChatEvent
-import net.blockventuremc.extensions.toDatabaseUser
+import net.blockventuremc.extensions.toBlockUser
 import net.blockventuremc.modules.general.events.custom.AFKChangeEvent
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -16,7 +16,7 @@ class ActivityEvents : Listener {
 
     private fun handleMovement(from: Location, to: Location, player: Player) {
         if (from.blockX != to.blockX || from.blockZ != to.blockZ) {
-            player.toDatabaseUser().addActivity(AFKChangeEvent.Cause.MOVE)
+            player.toBlockUser().addActivity(AFKChangeEvent.Cause.MOVE)
         }
     }
 
@@ -40,19 +40,19 @@ class ActivityEvents : Listener {
     @EventHandler
     fun onChat(event: AsyncChatEvent) {
         val player = event.player
-        player.toDatabaseUser().addActivity(AFKChangeEvent.Cause.CHAT)
+        player.toBlockUser().addActivity(AFKChangeEvent.Cause.CHAT)
     }
 
     @EventHandler
     fun onCommand(event: PlayerCommandPreprocessEvent) {
         val player = event.player
-        player.toDatabaseUser().addActivity(AFKChangeEvent.Cause.CHAT)
+        player.toBlockUser().addActivity(AFKChangeEvent.Cause.CHAT)
     }
 
     @EventHandler
     fun onInteract(event: PlayerInteractEvent) {
         val player = event.player
-        player.toDatabaseUser().addActivity(AFKChangeEvent.Cause.INTERACT)
+        player.toBlockUser().addActivity(AFKChangeEvent.Cause.INTERACT)
     }
 
 }

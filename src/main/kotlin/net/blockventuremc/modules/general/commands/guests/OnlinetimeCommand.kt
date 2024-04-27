@@ -3,7 +3,7 @@ package net.blockventuremc.modules.general.commands.guests
 import net.blockventuremc.annotations.BlockCommand
 import net.blockventuremc.extensions.getLogger
 import net.blockventuremc.extensions.sendMessagePrefixed
-import net.blockventuremc.extensions.toDatabaseUser
+import net.blockventuremc.extensions.toBlockUser
 import net.blockventuremc.extensions.translate
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -39,7 +39,7 @@ class OnlinetimeCommand : CommandExecutor {
         }
 
         val player = sender
-        val onlinetime = player.toDatabaseUser().onlineTime
+        val onlinetime = player.toBlockUser().onlineTime
 
         player.sendMessagePrefixed(
             player.translate("onlinetime", mapOf("onlinetime" to onlinetime.toString()))?.message

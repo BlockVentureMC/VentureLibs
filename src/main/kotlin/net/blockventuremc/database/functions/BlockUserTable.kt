@@ -1,7 +1,7 @@
 package net.blockventuremc.database.functions
 
-import net.blockventuremc.database.functions.TableUsers.userUUID
-import net.blockventuremc.database.model.DatabaseUser
+import net.blockventuremc.database.functions.BlockUserTable.userUUID
+import net.blockventuremc.database.model.BlockUser
 import net.blockventuremc.database.smartTransaction
 import net.blockventuremc.database.toCalendar
 import net.blockventuremc.modules.general.model.Languages
@@ -13,11 +13,13 @@ import org.jetbrains.exposed.sql.javatime.timestamp
 import java.util.*
 import kotlin.time.Duration.Companion.seconds
 
-object TableUsers : Table("users") {
+object BlockUserTable : Table("users") {
     val userUUID = varchar("uuid", 45)
     val userName = varchar("username", 24)
     val userRank = enumerationByName("rank", 24, Ranks::class).default(Ranks.Guest)
     val userLanguage = enumerationByName("language", 2, Languages::class).default(Languages.EN)
+
+    val xp = long("xp").default(0)
 
     val ventureBits = long("ventureBits").default(0) // Currency
 
@@ -31,39 +33,41 @@ object TableUsers : Table("users") {
 }
 
 
-fun getDatabaseUserOrNull(uuid: UUID): DatabaseUser? = smartTransaction {
-    return@smartTransaction TableUsers.selectAll().where { userUUID eq uuid.toString() }.firstOrNull()
+fun getDatabaseUserOrNull(uuid: UUID): BlockUser? = smartTransaction {
+    return@smartTransaction BlockUserTable.selectAll().where { userUUID eq uuid.toString() }.firstOrNull()
         ?.let(::mapToDatabaseUser)
 }
 
-private fun mapToDatabaseUser(row: ResultRow): DatabaseUser = with(row) {
-    return DatabaseUser(
+private fun mapToDatabaseUser(row: ResultRow): BlockUser = with(row) {
+    return BlockUser(
         uuid = UUID.fromString(this[userUUID]),
-        username = this[TableUsers.userName],
-        rank = this[TableUsers.userRank],
-        language = this[TableUsers.userLanguage],
-        ventureBits = this[TableUsers.ventureBits],
-        firstJoined = this[TableUsers.userFirstJoined].toCalendar(),
-        lastTimeJoined = this[TableUsers.userLastJoined].toCalendar(),
-        onlineTime = this[TableUsers.onlineTime].seconds,
-        selectedTitle = this[TableUsers.selectedTitle]?.let { Title.valueOf(it) }
+        username = this[BlockUserTable.userName],
+        rank = this[BlockUserTable.userRank],
+        language = this[BlockUserTable.userLanguage],
+        xp = this[BlockUserTable.xp],
+        ventureBits = this[BlockUserTable.ventureBits],
+        firstJoined = this[BlockUserTable.userFirstJoined].toCalendar(),
+        lastTimeJoined = this[BlockUserTable.userLastJoined].toCalendar(),
+        onlineTime = this[BlockUserTable.onlineTime].seconds,
+        selectedTitle = this[BlockUserTable.selectedTitle]?.let { Title.valueOf(it) }
     )
 }
 
 
-fun createDatabaseUser(user: DatabaseUser): DatabaseUser = smartTransaction {
-    TableUsers.insert {
+fun createDatabaseUser(user: BlockUser): BlockUser = smartTransaction {
+    BlockUserTable.insert {
         it[userUUID] = user.uuid.toString()
         it[userName] = user.username
     }
     return@smartTransaction user
 }
 
-fun updateDatabaseUser(user: DatabaseUser) = smartTransaction {
-    TableUsers.update({ userUUID eq user.uuid.toString() }) {
+fun updateDatabaseUser(user: BlockUser) = smartTransaction {
+    BlockUserTable.update({ userUUID eq user.uuid.toString() }) {
         it[userName] = user.username
         it[userRank] = user.rank
         it[userLanguage] = user.language
+        it[xp] = user.xp
         it[ventureBits] = user.ventureBits
         it[userFirstJoined] = user.firstJoined.javaInstant
         it[userLastJoined] = user.lastTimeJoined.javaInstant

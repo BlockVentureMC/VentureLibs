@@ -5,10 +5,10 @@ import dev.fruxz.stacked.text
 import net.blockventuremc.BlockVenture
 import net.blockventuremc.database.functions.getDatabaseUserOrNull
 import net.blockventuremc.database.functions.updateDatabaseUser
-import net.blockventuremc.database.model.DatabaseUser
+import net.blockventuremc.database.model.BlockUser
 import net.blockventuremc.extensions.bitsPerMinute
 import net.blockventuremc.extensions.getLogger
-import net.blockventuremc.extensions.toDatabaseUserDB
+import net.blockventuremc.extensions.toBlockUserDB
 import net.blockventuremc.extensions.translate
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitTask
@@ -17,13 +17,13 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 object PlayerCache {
-    private var _cache = mapOf<UUID, DatabaseUser>()
+    private var _cache = mapOf<UUID, BlockUser>()
 
-    fun getOrNull(uuid: UUID): DatabaseUser? = _cache[uuid]
+    fun getOrNull(uuid: UUID): BlockUser? = _cache[uuid]
 
-    fun get(uuid: UUID): DatabaseUser = _cache[uuid] ?: addToCache(uuid.toDatabaseUserDB())
+    fun get(uuid: UUID): BlockUser = _cache[uuid] ?: addToCache(uuid.toBlockUserDB())
 
-    fun addToCache(user: DatabaseUser): DatabaseUser {
+    fun addToCache(user: BlockUser): BlockUser {
         _cache += Pair(user.uuid, user)
         return user
     }
@@ -33,11 +33,11 @@ object PlayerCache {
      *
      * @param user The user to be saved to the database.
      */
-    fun saveToDB(user: DatabaseUser) {
+    fun saveToDB(user: BlockUser) {
         updateDatabaseUser(user)
     }
 
-    fun updateCached(user: DatabaseUser): DatabaseUser {
+    fun updateCached(user: BlockUser): BlockUser {
         _cache -= user.uuid
         _cache += Pair(user.uuid, user)
         return user
@@ -47,12 +47,12 @@ object PlayerCache {
         _cache -= uuid
     }
 
-    private fun loadPlayer(uuid: UUID): DatabaseUser {
-        val player = getDatabaseUserOrNull(uuid) ?: return DatabaseUser(uuid, "Unknown")
+    private fun loadPlayer(uuid: UUID): BlockUser {
+        val player = getDatabaseUserOrNull(uuid) ?: return BlockUser(uuid, "Unknown")
         return addToCache(player)
     }
 
-    fun reloadPlayer(uuid: UUID): DatabaseUser {
+    fun reloadPlayer(uuid: UUID): BlockUser {
         return loadPlayer(uuid)
     }
 
@@ -71,11 +71,11 @@ object PlayerCache {
                 updateCached(dbUser.copy(onlineTime = dbUser.onlineTime + 1.seconds))
             }
 
-            // Give venture bits every minute
+            // Give venture bits and xp every minute
             if (lastVentureTreassure.plus(1.minutes) < Calendar.now()) {
                 Bukkit.getOnlinePlayers().forEach { player ->
                     val dbUser = get(player.uniqueId)
-                    updateCached(dbUser.copy(ventureBits = dbUser.ventureBits + dbUser.bitsPerMinute))
+                    updateCached(dbUser.copy(ventureBits = dbUser.ventureBits + dbUser.bitsPerMinute, xp = dbUser.xp + 1))
                 }
                 lastVentureTreassure = Calendar.now()
             }

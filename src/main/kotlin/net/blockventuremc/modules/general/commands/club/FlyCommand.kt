@@ -3,7 +3,7 @@ package net.blockventuremc.modules.general.commands.club
 import net.blockventuremc.annotations.BlockCommand
 import net.blockventuremc.extensions.isRankOrHigher
 import net.blockventuremc.extensions.sendMessagePrefixed
-import net.blockventuremc.extensions.toDatabaseUser
+import net.blockventuremc.extensions.toBlockUser
 import net.blockventuremc.extensions.translate
 import net.blockventuremc.modules.general.model.Ranks
 import org.bukkit.command.Command
@@ -100,7 +100,7 @@ class FlyCommand : CommandExecutor {
      * @param flightModeStatusMessage The status message indicating whether the flight mode is enabled or disabled.
      */
     private fun sendFlightModeToggleMessage(player: Player, flightModeStatusMessage: String) {
-        val message = player.toDatabaseUser().translate(
+        val message = player.toBlockUser().translate(
             "fly_mode_toggled",
             mapOf("enabled" to flightModeStatusMessage)
         )?.message ?: "Fly mode is now $flightModeStatusMessage"
@@ -120,7 +120,7 @@ class FlyCommand : CommandExecutor {
         flightModeStatusMessage: String
     ) {
         val message = if (commandExecutor is Player) {
-            val translatedMessage = commandExecutor.toDatabaseUser().translate(
+            val translatedMessage = commandExecutor.toBlockUser().translate(
                 "fly_mode_toggled_by",
                 mapOf(
                     "enabled" to flightModeStatusMessage,

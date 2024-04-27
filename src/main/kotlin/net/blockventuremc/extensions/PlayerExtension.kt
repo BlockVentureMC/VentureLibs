@@ -5,7 +5,7 @@ import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.consts.*
 import net.blockventuremc.database.functions.createDatabaseUser
 import net.blockventuremc.database.functions.getDatabaseUserOrNull
-import net.blockventuremc.database.model.DatabaseUser
+import net.blockventuremc.database.model.BlockUser
 import net.blockventuremc.modules.general.model.Languages
 import net.blockventuremc.modules.general.model.Ranks
 import net.blockventuremc.modules.i18n.TranslationCache
@@ -59,7 +59,7 @@ fun String.toOfflinePlayerIfCached(): OfflinePlayer? {
 
 
 val Player.canBuild: Boolean
-    get() = gameMode == GameMode.SPECTATOR || (this.toDatabaseUser().rank.isHigherOrEqual(Ranks.Trial) && hasBuildTag)
+    get() = gameMode == GameMode.SPECTATOR || (this.toBlockUser().rank.isHigherOrEqual(Ranks.Trial) && hasBuildTag)
 
 var Player.hasBuildTag: Boolean
     get() = this.scoreboardTags.contains("builder")
@@ -67,30 +67,30 @@ var Player.hasBuildTag: Boolean
         if (value) this.addScoreboardTag("builder") else this.removeScoreboardTag("builder")
     }
 
-fun DatabaseUser.translate(message: String, placeholders: Map<String, Any?> = emptyMap()): Translation? {
+fun BlockUser.translate(message: String, placeholders: Map<String, Any?> = emptyMap()): Translation? {
     return TranslationCache.get(language.getLanguageCode(), message, placeholders)
 }
 
 fun CommandSender.translate(message: String, placeholders: Map<String, Any?> = emptyMap()): Translation? {
-    if (this is Player) return toDatabaseUser().translate(message, placeholders)
+    if (this is Player) return toBlockUser().translate(message, placeholders)
     return TranslationCache.get(Languages.EN.getLanguageCode(), message, placeholders)
 }
 
 fun Player.translate(message: String, placeholders: Map<String, Any?> = emptyMap()): Translation? {
-    return toDatabaseUser().translate(message, placeholders)
+    return toBlockUser().translate(message, placeholders)
 }
 
-fun Player.toDatabaseUser(): DatabaseUser {
+fun Player.toBlockUser(): BlockUser {
     return PlayerCache.get(uniqueId)
 }
 
-fun UUID.toDatabaseUser(): DatabaseUser {
+fun UUID.toBlockUser(): BlockUser {
     return PlayerCache.get(this)
 }
 
-fun UUID.toDatabaseUserDB(): DatabaseUser {
+fun UUID.toBlockUserDB(): BlockUser {
     return getDatabaseUserOrNull(this) ?: createDatabaseUser(
-        DatabaseUser(
+        BlockUser(
             this,
             Bukkit.getPlayer(this)?.name ?: Bukkit.getOfflinePlayer(this).name ?: "Unknown"
         )
@@ -99,11 +99,11 @@ fun UUID.toDatabaseUserDB(): DatabaseUser {
 
 fun CommandSender.isRankOrHigher(rank: Ranks): Boolean {
     return if (this is Player) {
-        this.toDatabaseUser().rank.isHigherOrEqual(rank)
+        this.toBlockUser().rank.isHigherOrEqual(rank)
     } else {
         true
     }
 }
 
-val DatabaseUser.bitsPerMinute: Long
+val BlockUser.bitsPerMinute: Long
     get() = (rank.bitsPerMinute).toLong()
