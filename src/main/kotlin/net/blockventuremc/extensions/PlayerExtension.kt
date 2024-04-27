@@ -37,12 +37,44 @@ fun CommandSender.sendTextPrefixedIf(message: String, condition: Boolean) =
 fun CommandSender.sendTextPrefixed(message: String) = sendMessage(text(PREFIX + message))
 
 fun Player.sendDeniedSound() = playSound(location, "minecraft:block.note_block.bass", 1f, 1f)
+fun CommandSender.sendDeniedSound(): Boolean {
+    return if (this is Player) {
+        sendDeniedSound()
+        true
+    } else {
+        false
+    }
+}
 
 fun Player.sendSuccessSound() = playSound(location, "minecraft:block.note_block.pling", 1f, 1f)
+fun CommandSender.sendSuccessSound(): Boolean {
+    return if (this is Player) {
+        sendSuccessSound()
+        true
+    } else {
+        false
+    }
+}
 
 fun Player.sendTeleportSound() = playSound(location, "minecraft:block.note_block.harp", 1f, 1f)
+fun CommandSender.sendTeleportSound(): Boolean {
+    return if (this is Player) {
+        sendTeleportSound()
+        true
+    } else {
+        false
+    }
+}
 
 fun Player.sendOpenSound() = playSound(location, "minecraft:block.note_block.chime", 1f, 1f)
+fun CommandSender.sendOpenSound(): Boolean {
+    return if (this is Player) {
+        sendOpenSound()
+        true
+    } else {
+        false
+    }
+}
 
 
 fun UUID.toOfflinePlayer(): OfflinePlayer {

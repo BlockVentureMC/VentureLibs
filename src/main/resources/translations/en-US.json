@@ -4,6 +4,7 @@
   "fly_mode_toggled_by": "Fly mode of %player% is now %enabled%.",
   "onlinetime": "Your online time is %onlinetime%.",
   "no_permission.club_member": "This command is only available to <color:#ea8685>Club Members</color>.",
+  "no_permission.rank": "This command is only available to <color:#f78fb3>%rank%</color>.",
   "achievement.achieved": "You have achieved the achievement <color:#f78fb3>%achievement%</color>.",
   "achievement.firstjoin.title": "Welcome to the server!",
   "achievement.firstjoin.description": "You have joined the server for the first time.",
@@ -31,5 +32,13 @@
   "title.none": "<color:#4b6584>No title",
   "commands.language.usage": "Usage: /language <color:#f78fb3><language>",
   "commands.language.invalid": "Invalid language. Available languages: <color:#f78fb3>%languages%",
-  "commands.language.changed": "Language changed to <color:#f78fb3>%language%"
+  "commands.language.changed": "Language changed to <color:#f78fb3>%language%",
+  "commands.warp.delete.usage": "Usage: /warp delete <color:#f78fb3><warp>",
+  "commands.warp.create.usage": "Usage: /warp create <color:#f78fb3><warp>",
+  "commands.warp.reload.success": "<green>Warps reloaded.",
+  "commands.warp.not_found": "<color:#e74c3c>Warp <color:#f78fb3>%warp% not found.",
+  "commands.warp.delete.success": "<green>Warp <yellow>%warp%</yellow> deleted.",
+  "commands.warp.create.success": "<green>Warp <yellow>%warp%</yellow> created for rank %rank%.",
+  "commands.warp.invalid_usage": "<color:#e74c3c>Invalid usage. Use <color:#f78fb3>/warp <color:#e74c3c>to teleport to a warp.",
+  "commands.warp.invalid_rank": "<color:#f78fb3>%rank% <color:#e74c3c>is no valid rank."
 }
