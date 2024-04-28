@@ -119,11 +119,6 @@ tasks {
         dependsOn("shadowJar")
     }
 
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "21"
-        kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn" + "-Xopt-in=dev.kord.common.annotation.KordPreview" + "-Xopt-in=dev.kord.common.annotation.KordExperimental" + "-Xopt-in=kotlin.time.ExperimentalTime" + "-Xopt-in=kotlin.contracts.ExperimentalContracts"
-    }
-
     withType<ProcessResources> {
         filesMatching("plugin.yml") {
             expand(project.properties)
@@ -157,4 +152,12 @@ tasks {
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
+        freeCompilerArgs.addAll(listOf("-opt-in=kotlin.RequiresOptIn", "-Xopt-in=dev.kord.common.annotation.KordPreview", "-Xopt-in=dev.kord.common.annotation.KordExperimental", "-Xopt-in=kotlin.time.ExperimentalTime", "-Xopt-in=kotlin.contracts.ExperimentalContracts"))
+    }
 }
