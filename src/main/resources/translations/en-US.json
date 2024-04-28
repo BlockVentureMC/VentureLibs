@@ -46,6 +46,6 @@
   "booster.category.user_activated": "User Activated Booster",
   "booster.category.crew_activated": "Crew Activated Booster",
   "booster.time_left": "Time left: %time%",
-  "booster.modifier": "Modifier: %modifier%"
-
+  "booster.modifier": "Modifier: %modifier%",
+  "commands.warp.click_to_warp": "Click to warp."
 }
