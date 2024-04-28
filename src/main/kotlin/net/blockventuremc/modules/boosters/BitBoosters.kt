@@ -5,6 +5,7 @@ import java.util.UUID
 
 data class BitBoosters(
     val owner: UUID,
+    val startTime: Calendar,
     val endTime: Calendar,
     val modifier: Long
 )
