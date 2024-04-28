@@ -40,5 +40,6 @@
   "commands.warp.delete.success": "<green>Warp <yellow>%warp%</yellow> deleted.",
   "commands.warp.create.success": "<green>Warp <yellow>%warp%</yellow> created for rank %rank%.",
   "commands.warp.invalid_usage": "<color:#e74c3c>Invalid usage. Use <color:#f78fb3>/warp <color:#e74c3c>to teleport to a warp.",
-  "commands.warp.invalid_rank": "<color:#f78fb3>%rank% <color:#e74c3c>is no valid rank."
+  "commands.warp.invalid_rank": "<color:#f78fb3>%rank% <color:#e74c3c>is no valid rank.",
+  "commands.warp.click_to_warp": "Click to warp."
 }
