@@ -30,7 +30,7 @@ object BoosterGUI {
     private fun getBoosterItem(booster: BitBoosters, player: Player): ItemStack {
         return Material.GOLD_NUGGET.toItemBuilder {
             display(
-                player.translate("booster.category.${booster.category}")?.message ?: ("Unknown Booster"),
+                player.translate("booster.category.${booster.category.toString().lowercase()}")?.message ?: ("Unknown Booster"),
             )
 
             lore(

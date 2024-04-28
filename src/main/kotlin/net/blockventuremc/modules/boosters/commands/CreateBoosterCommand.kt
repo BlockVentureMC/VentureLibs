@@ -65,6 +65,8 @@ class CreateBoosterCommand: CommandExecutor, TabExecutor {
 
         BoosterManager.addBooster(booster)
 
+        sender.sendMessagePrefixed("Booster created for ${target.name} with a modifier of $mod, duration of $duration, and userOnly set to $userOnly.")
+
         return true
     }
 

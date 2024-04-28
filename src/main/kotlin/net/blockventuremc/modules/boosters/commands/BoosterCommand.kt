@@ -10,7 +10,7 @@ import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
 
 @BlockCommand(
-    name = "booster",
+    name = "boosters",
     description = "List all boosters",
     permissionDefault = PermissionDefault.TRUE,
 )

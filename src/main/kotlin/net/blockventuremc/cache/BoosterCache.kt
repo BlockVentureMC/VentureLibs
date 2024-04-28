@@ -3,12 +3,13 @@ package net.blockventuremc.cache
 import net.blockventuremc.database.functions.BoosterTable
 import net.blockventuremc.database.functions.mapToBooster
 import net.blockventuremc.database.model.BitBoosters
+import net.blockventuremc.database.smartTransaction
 import org.jetbrains.exposed.sql.selectAll
 
 object BoosterCache {
     private val _cache = mutableListOf<BitBoosters>()
 
-    fun load() {
+    fun load() = smartTransaction {
         BoosterTable.selectAll().forEach {
             val booster = mapToBooster(it)
 

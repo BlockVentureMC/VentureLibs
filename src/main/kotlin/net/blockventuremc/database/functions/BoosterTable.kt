@@ -5,12 +5,13 @@ import net.blockventuremc.database.toCalendar
 import net.blockventuremc.modules.boosters.BoosterCategory
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ResultRow
+import net.blockventuremc.database.smartTransaction
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.CurrentTimestamp
 import org.jetbrains.exposed.sql.javatime.timestamp
 import java.util.*
 
-object BoosterTable : IntIdTable("dc_link") {
+object BoosterTable : IntIdTable("boosters") {
 
     val userUUID = varchar("uuid", 45)
 
@@ -33,7 +34,7 @@ fun mapToBooster(row: ResultRow): BitBoosters = with(row) {
     )
 }
 
-fun makeBooster(booster: BitBoosters) {
+fun makeBooster(booster: BitBoosters) = smartTransaction {
     BoosterTable.insert {
         it[userUUID] = booster.owner.toString()
         it[modifier] = booster.modifier
