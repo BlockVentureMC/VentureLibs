@@ -190,8 +190,10 @@ class WarpCommand : CommandExecutor, TabExecutor {
      * @param sender The command sender.
      */
     private fun listWarps(sender: CommandSender) {
+        val translatedClickToWarp = sender.translate("commands.warp.click_to_warp")?.message ?: "Click to warp."
+
         val warps = WarpManager.getWarps().filter { sender.isRankOrHigher(it.rankNeeded) }
-            .map { "<color:${it.rankNeeded.color}>${it.name}</color>" }
+            .map { "<click:run_command:'/warp ${it.name}'><hover:show_text:'<color:#2ecc71>$translatedClickToWarp</color>'><color:${it.rankNeeded.color}>${it.name}</color></hover></click>" }
         sender.sendMessagePrefixed("Warps: ${warps.joinToString(", ")}")
         sender.sendOpenSound()
     }
