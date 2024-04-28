@@ -2,6 +2,7 @@ package net.blockventuremc
 
 import dev.kord.core.Kord
 import io.github.cdimascio.dotenv.dotenv
+import net.blockventuremc.cache.BoosterCache
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.database.DatabaseManager
 import net.blockventuremc.modules.discord.DiscordBot
@@ -50,6 +51,7 @@ class BlockVenture : JavaPlugin() {
         registerMC()
 
         PlayerCache.runOnlineTimeScheduler()
+        BoosterCache.load()
 
         logger.info("Starting Discord bot...")
 
