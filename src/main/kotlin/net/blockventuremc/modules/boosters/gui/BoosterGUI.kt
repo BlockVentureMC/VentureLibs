@@ -34,9 +34,9 @@ object BoosterGUI {
             )
 
             lore(
-                player.translate("booster.time_left")?.message?.replace("{time}", booster.endTime.formatToDay())
+                player.translate("booster.time_left", mapOf("time" to booster.endTime.formatToDay()))?.message
                     ?: (booster.endTime.formatToDay()),
-                player.translate("booster.modifier")?.message?.replace("{modifier}", booster.modifier.toString())
+                player.translate("booster.modifier", mapOf("modifier" to booster.modifier.toString()))?.message
                     ?: (booster.modifier.toString())
             )
         }.build()
