@@ -1,4 +1,4 @@
-package com.rainbowislands.utility.utils
+package net.blockventuremc.utils.itembuilder
 
 import com.destroystokyo.paper.profile.ProfileProperty
 import com.google.gson.Gson
@@ -6,9 +6,6 @@ import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import dev.fruxz.ascend.extension.logging.getItsLogger
 import dev.fruxz.stacked.text
-import net.blockventuremc.utils.itembuilder.ItemClickListener
-import net.blockventuremc.utils.itembuilder.MineSkinResponse
-import net.blockventuremc.utils.itembuilder.SkinTexture
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
@@ -283,7 +280,7 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
 
         val target = URL("https://api.mineskin.org/get/uuid/$mineSkinUUID")
         val connection = target.openConnection()
-        connection.setRequestProperty("User-Agent", "RainbowIslands/1.0")
+        connection.setRequestProperty("User-Agent", "BlockVentureMC/1.0")
         val inputStream = connection.getInputStream()
         val scanner = Scanner(inputStream)
         val response = StringBuilder()

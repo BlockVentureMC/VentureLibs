@@ -1,7 +1,7 @@
 package net.blockventuremc.modules.titles
 
-import com.rainbowislands.utility.utils.ItemBuilder
-import com.rainbowislands.utility.utils.toItemBuilder
+import net.blockventuremc.utils.itembuilder.ItemBuilder
+import net.blockventuremc.utils.itembuilder.toItemBuilder
 import net.blockventuremc.extensions.translate
 import org.bukkit.Material
 import org.bukkit.entity.Player

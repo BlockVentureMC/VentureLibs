@@ -1,6 +1,6 @@
 package net.blockventuremc.modules.titles
 
-import com.rainbowislands.utility.utils.toItemBuilder
+import net.blockventuremc.utils.itembuilder.toItemBuilder
 import dev.fruxz.stacked.extension.asPlainString
 import dev.fruxz.stacked.text
 import net.blockventuremc.cache.PlayerCache
