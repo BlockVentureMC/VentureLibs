@@ -22,7 +22,7 @@ class BoosterCommand: CommandExecutor {
         }
 
         BoosterGUI.openBoosterGUI(player)
-        
+
         return true
     }
 }

@@ -10,6 +10,7 @@ import net.blockventuremc.extensions.bitsPerMinute
 import net.blockventuremc.extensions.getLogger
 import net.blockventuremc.extensions.toBlockUserDB
 import net.blockventuremc.extensions.translate
+import net.blockventuremc.modules.boosters.BoosterManager
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitTask
 import java.util.UUID
@@ -77,7 +78,7 @@ object PlayerCache {
                     val dbUser = get(player.uniqueId)
                     updateCached(
                         dbUser.copy(
-                            ventureBits = dbUser.ventureBits + dbUser.bitsPerMinute,
+                            ventureBits = dbUser.ventureBits + dbUser.bitsPerMinute + BoosterManager.getModifiers(dbUser.uuid.toString()),
                             xp = dbUser.xp + 1
                         )
                     )
