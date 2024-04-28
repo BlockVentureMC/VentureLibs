@@ -47,5 +47,7 @@
   "booster.category.crew_activated": "Crew Activated Booster",
   "booster.until": "Until: %time%",
   "booster.modifier": "Modifier: %modifier%",
+  "booster.user_only": "Only active for: %user%",
+  "booster.global": "Global",
   "commands.warp.click_to_warp": "Click to warp."
 }

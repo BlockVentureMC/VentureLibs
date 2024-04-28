@@ -5,6 +5,7 @@ import net.blockventuremc.cache.BoosterCache
 import net.blockventuremc.database.model.BitBoosters
 import net.blockventuremc.extensions.fillEmptyAndOpenInventory
 import net.blockventuremc.extensions.formatToDay
+import net.blockventuremc.extensions.toBlockUser
 import net.blockventuremc.extensions.translate
 import net.blockventuremc.utils.itembuilder.toItemBuilder
 import org.bukkit.Bukkit
@@ -28,16 +29,19 @@ object BoosterGUI {
     }
 
     private fun getBoosterItem(booster: BitBoosters, player: Player): ItemStack {
+        val lang = player.toBlockUser().language.locale
         return Material.GOLD_NUGGET.toItemBuilder {
             display(
                 player.translate("booster.category.${booster.category.toString().lowercase()}")?.message ?: ("Unknown Booster"),
             )
 
             lore(
-                player.translate("booster.until", mapOf("time" to booster.endTime.formatToDay()))?.message
-                    ?: (booster.endTime.formatToDay()),
+                player.translate("booster.until", mapOf("time" to booster.endTime.formatToDay(lang)))?.message
+                    ?: (booster.endTime.formatToDay(lang)),
                 player.translate("booster.modifier", mapOf("modifier" to booster.modifier.toString()))?.message
-                    ?: (booster.modifier.toString())
+                    ?: (booster.modifier.toString()),
+                if (booster.user) player.translate("booster.user_only", mapOf("user" to booster.owner.toString()))?.message ?: ("Only for ${booster.owner}")
+                else player.translate("booster.global")?.message ?: ("Global Booster")
             )
         }.build()
     }

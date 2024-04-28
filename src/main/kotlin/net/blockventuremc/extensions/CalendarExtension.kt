@@ -12,6 +12,6 @@ fun calendarFromDateString(dateFormat: String): Calendar {
     return Calendar.fromLegacy(cal)
 }
 
-fun Calendar.formatToDay(): String {
-    return SimpleDateFormat.getDateInstance(Calendar.FormatStyle.FULL.ordinal, Locale.GERMANY).format(javaDate)
+fun Calendar.formatToDay(locale: Locale): String {
+    return SimpleDateFormat.getDateInstance(Calendar.FormatStyle.FULL.ordinal, locale).format(javaDate)
 }
