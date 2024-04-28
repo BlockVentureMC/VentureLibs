@@ -40,5 +40,12 @@
   "commands.warp.delete.success": "<green>Warp <yellow>%warp%</yellow> deleted.",
   "commands.warp.create.success": "<green>Warp <yellow>%warp%</yellow> created for rank %rank%.",
   "commands.warp.invalid_usage": "<color:#e74c3c>Invalid usage. Use <color:#f78fb3>/warp <color:#e74c3c>to teleport to a warp.",
-  "commands.warp.invalid_rank": "<color:#f78fb3>%rank% <color:#e74c3c>is no valid rank."
+  "commands.warp.invalid_rank": "<color:#f78fb3>%rank% <color:#e74c3c>is no valid rank.",
+  "booster.category.event": "Event Booster",
+  "booster.category.shop_refill": "Shop Refill Booster",
+  "booster.category.user_activated": "User Activated Booster",
+  "booster.category.crew_activated": "Crew Activated Booster",
+  "booster.time_left": "Time left: %time%",
+  "booster.modifier": "Modifier: %modifier%"
+
 }
