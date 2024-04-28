@@ -71,7 +71,9 @@ val deps = listOf(
     "org.mariadb.jdbc:mariadb-java-client:$mariadbVersion",
 
     "dev.kord:kord-core:0.13.1",
-    "dev.kord.x:emoji:0.5.0"
+    "dev.kord.x:emoji:0.5.0",
+
+    "io.javalin:javalin:6.1.3"
 )
 
 

@@ -4,6 +4,7 @@ import dev.kord.core.Kord
 import io.github.cdimascio.dotenv.dotenv
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.database.DatabaseManager
+import net.blockventuremc.modules.backend.Server
 import net.blockventuremc.modules.discord.DiscordBot
 import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.modules.placeholders.PlayerPlaceholderManager
@@ -16,6 +17,7 @@ class BlockVenture : JavaPlugin() {
     companion object {
         lateinit var instance: BlockVenture
         lateinit var bot: DiscordBot
+        lateinit var backend: Server
     }
 
     val dotenv = dotenv()
@@ -51,6 +53,11 @@ class BlockVenture : JavaPlugin() {
 
         PlayerCache.runOnlineTimeScheduler()
 
+        logger.info("Starting backend...")
+        backend = Server()
+        backend.start()
+
+
         logger.info("Starting Discord bot...")
 
         if (dotenv["BOT_TOKEN"] != null) mcasyncBlocking {
@@ -73,6 +80,7 @@ class BlockVenture : JavaPlugin() {
             PlayerCache.saveToDB(pixelPlayer.copy(username = player.name))
         }
 
+        backend.stop()
         logger.info("Plugin has been disabled")
     }
 }
