@@ -21,7 +21,7 @@ val placeholderApiVersion: String by project
 val customBlockDataVersion: String by project
 
 plugins {
-    kotlin("jvm") version "2.0.0-RC1"
+    kotlin("jvm") version "2.0.0-RC2"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     kotlin("plugin.serialization") version "1.9.23"
     id("org.jetbrains.dokka") version  "1.9.20"
