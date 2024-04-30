@@ -88,6 +88,8 @@ class BlockVenture : JavaPlugin() {
             PlayerCache.saveToDB(pixelPlayer.copy(username = player.name))
         }
 
+        AudioServer.disconnect()
+
         logger.info("Plugin has been disabled")
     }
 }
