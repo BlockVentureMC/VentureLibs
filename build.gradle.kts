@@ -56,8 +56,8 @@ repositories {
     maven {
         url = uri("https://maven.pkg.github.com/BlockVentureMC/AudioServer")
         credentials {
-            username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR") ?: providers.environmentVariable("GITHUB_ACTOR").get()
-            password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN") ?: providers.environmentVariable("GITHUB_TOKEN").get()
+            username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR") ?: System.getenv("PACKAGE_USER")
+            password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN") ?: System.getenv("PACKAGE_TOKEN")
         }
     }
 }
