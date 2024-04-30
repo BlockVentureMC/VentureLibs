@@ -19,6 +19,7 @@ val minecraftVersion: String by project
 val authlibVersion: String by project
 val placeholderApiVersion: String by project
 val customBlockDataVersion: String by project
+val audioServerVersion: String by project
 
 plugins {
     kotlin("jvm") version "2.0.0-RC2"
@@ -52,6 +53,13 @@ version = "1.0"
 
 repositories {
     maven("https://nexus.flawcra.cc/repository/maven-mirrors/")
+    maven {
+        url = uri("https://maven.pkg.github.com/BlockVentureMC/AudioServer")
+        credentials {
+            username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR") ?: providers.environmentVariable("GITHUB_ACTOR").get()
+            password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN") ?: providers.environmentVariable("GITHUB_TOKEN").get()
+        }
+    }
 }
 
 val deps = listOf(
@@ -71,12 +79,15 @@ val deps = listOf(
     "org.mariadb.jdbc:mariadb-java-client:$mariadbVersion",
 
     "dev.kord:kord-core:0.13.1",
-    "dev.kord.x:emoji:0.5.0"
+    "dev.kord.x:emoji:0.5.0",
+
+    "de.themeparkcraft.audioserver:minecraft:$audioServerVersion"
 )
 
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:$minecraftVersion")
+    compileOnly("de.themeparkcraft.audioserver:common:$audioServerVersion")
 
     // External dependencies
     compileOnly("com.mojang:authlib:$authlibVersion")
