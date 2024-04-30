@@ -10,7 +10,7 @@
   <p align="center">
     A Minecraft Theme Park Server
     <br />
-    Tribute to CraftVenture <3
+    Tribute to Craftventure <3
     <br />
     <a href="https://discord.com/users/216487432667791360"><strong>Contact »</strong></a>
     <br />
