@@ -1,5 +1,7 @@
 package net.blockventuremc
 
+import de.themeparkcraft.audioserver.common.data.RabbitConfiguration
+import de.themeparkcraft.audioserver.minecraft.AudioServer
 import dev.kord.core.Kord
 import io.github.cdimascio.dotenv.dotenv
 import net.blockventuremc.cache.PlayerCache
@@ -41,6 +43,19 @@ class BlockVenture : JavaPlugin() {
 
         logger.info("Loading translations...")
         TranslationCache.loadAll()
+
+
+        logger.info("Connecting to audioserver...")
+        AudioServer.connect(
+            RabbitConfiguration(
+                dotenv["RABBITMQ_HOST"] ?: "localhost",
+                dotenv["RABBITMQ_PORT"]?.toInt() ?: 5672,
+                dotenv["RABBITMQ_VHOST"] ?: "/",
+                dotenv["RABBITMQ_USER"] ?: "guest",
+                dotenv["RABBITMQ_PASSWORD"] ?: "guest"
+            )
+        )
+
 
         logger.info("Registering placeholders...")
         PlayerPlaceholderManager()
