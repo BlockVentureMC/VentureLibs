@@ -21,7 +21,7 @@ val placeholderApiVersion: String by project
 val customBlockDataVersion: String by project
 
 plugins {
-    kotlin("jvm") version "2.0.0-RC1"
+    kotlin("jvm") version "2.0.0-RC2"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     kotlin("plugin.serialization") version "1.9.23"
     id("org.jetbrains.dokka") version  "1.9.20"
@@ -121,11 +121,6 @@ tasks {
         dependsOn("shadowJar")
     }
 
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "21"
-        kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn" + "-Xopt-in=dev.kord.common.annotation.KordPreview" + "-Xopt-in=dev.kord.common.annotation.KordExperimental" + "-Xopt-in=kotlin.time.ExperimentalTime" + "-Xopt-in=kotlin.contracts.ExperimentalContracts"
-    }
-
     withType<ProcessResources> {
         filesMatching("plugin.yml") {
             expand(project.properties)
@@ -159,4 +154,12 @@ tasks {
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
+        freeCompilerArgs.addAll(listOf("-opt-in=kotlin.RequiresOptIn", "-Xopt-in=dev.kord.common.annotation.KordPreview", "-Xopt-in=dev.kord.common.annotation.KordExperimental", "-Xopt-in=kotlin.time.ExperimentalTime", "-Xopt-in=kotlin.contracts.ExperimentalContracts"))
+    }
 }

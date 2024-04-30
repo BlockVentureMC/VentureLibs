@@ -1,10 +1,11 @@
 <br />
 <div align="center">
-  <a href="https://discord.gg/84VT8gv5Ya">
+  <a href="https://discord.gg/m27MDData7">
     <img src=".github/assets/blockventure.jpg" alt="Logo">
   </a>
 
 <h3 align="center">BlockVenture - Your journey awaits!</h3>
+<h4 align="center">Part of the ThemeParkCraft Hub!</h4>
 
   <p align="center">
     A Minecraft Theme Park Server
@@ -14,7 +15,7 @@
     <a href="https://discord.com/users/216487432667791360"><strong>Contact »</strong></a>
     <br />
     <br />
-    <a href="https://discord.gg/84VT8gv5Ya">Discord-Server</a>
+    <a href="https://discord.gg/m27MDData7">Discord-Server</a>
     ·
     <a href="https://weblate.flawcra.cc/engage/blockventureplugin/">
       Help us translate the server!
