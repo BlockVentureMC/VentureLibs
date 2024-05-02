@@ -47,7 +47,7 @@ class PlayerPlaceholderManager {
         val placeholderManager = TabAPI.getInstance().placeholderManager
 
         placeholders += placeholderManager.registerPlayerPlaceholder("%rank%", 5000) { player ->
-            (player.player as Player).rank.name
+            (player.player as Player).rank.displayName
         }
 
         placeholders += placeholderManager.registerPlayerPlaceholder("%rankord%", 5000) { player ->

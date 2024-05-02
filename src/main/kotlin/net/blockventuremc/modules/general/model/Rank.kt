@@ -3,7 +3,7 @@ package net.blockventuremc.modules.general.model
 import dev.kord.common.entity.Snowflake
 import net.blockventuremc.VentureLibs
 
-data class Rank(val name: String, val color: String, val bitsPerMinute: Long = 1, val weight: Int = 0, val parent: Rank? = null, val discordRoleID: String? = null) {
+data class Rank(val name: String, val displayName: String, val color: String, val bitsPerMinute: Long = 1, val weight: Int = 0, val parent: Rank? = null, val discordRoleID: String? = null) {
 
     fun isHigherOrEqual(rank: Ranks): Boolean {
         return this.weight <= rank.rank.weight

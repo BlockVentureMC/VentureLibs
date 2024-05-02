@@ -14,7 +14,7 @@ import org.bukkit.event.Listener
 class ChatEvent : Listener {
 
     private val chatFormat =
-        "<color:%color%>%rank% <color:#3d3d3d>»</color> <color:#c8d6e5>%playername%</color> <color:#f6e58d>"
+        "%luckperms_prefix%%luckperms_primary_group_name% <color:#3d3d3d>»</color> <color:#c8d6e5>%playername%</color> <color:#f6e58d>"
 
     private val urlRegex =
         Regex("http[s]?:\\/\\/(?:[a-zA-Z]|[0-9]|[\$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
@@ -37,7 +37,7 @@ class ChatEvent : Listener {
         parsed = parsed.replace("%playername%", player.name)
         parsed = parsed.replace("%displayname%", player.displayName().asPlainString)
         parsed = parsed.replace("%color%", player.rank.color)
-        parsed = parsed.replace("%rank%", player.rank.name)
+        parsed = parsed.replace("%rank%", player.rank.displayName)
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             parsed = PlaceholderAPI.setPlaceholders(player, parsed)

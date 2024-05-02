@@ -9,6 +9,9 @@ import net.blockventuremc.modules.general.model.Rank
 import net.blockventuremc.utils.mcasyncBlocking
 import net.luckperms.api.LuckPermsProvider
 import net.luckperms.api.node.NodeType
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
+import java.util.UUID
 
 
 object RankManager {
@@ -30,8 +33,9 @@ object RankManager {
     private fun loadRanks() {
         ranks = emptyList()
         luckPerms.groupManager.loadedGroups.forEach { rank ->
-            val prefix = rank.getNodes(NodeType.PREFIX).firstOrNull()?.key ?: ""
-            val color = prefix.substring(2, 8)
+            val displayName = rank.displayName ?: rank.name
+            val prefix = rank.getNodes(NodeType.PREFIX).firstOrNull()?.key
+            val color = prefix?.substringAfterLast(".")?.substring(1, 8) ?: "#ffffff"
             val weight = rank.weight.orElse(0)
             val parent = rank.getNodes(NodeType.INHERITANCE).firstOrNull()?.key
                 ?.let { parent -> ranks.find { it.name == parent } }
@@ -44,7 +48,7 @@ object RankManager {
                 .firstOrNull { it.key.startsWith("venturelibs.discordRole") }?.key
                 ?.substringAfterLast(".")
 
-            ranks += Rank(rank.name, color, bitsPerMinute, weight, parent, discordRoleId)
+            ranks += Rank(rank.name, displayName, color, bitsPerMinute, weight, parent, discordRoleId)
             getLogger().info("Loaded rank ${rank.name}")
         }
 
@@ -68,12 +72,12 @@ object RankManager {
      * @param uuid the UUID of the user
      * @return the rank of the user
      */
-    fun getRankOfUser(uuid: String): Rank {
-        luckPerms.userManager.getUser(uuid)?.let { user ->
-            return ranks.find { it.name == user.primaryGroup } ?: ranks.first()
-        }
+    fun getRankOfUser(uuid: UUID): Rank {
+        val userFuture = luckPerms.userManager.loadUser(uuid)
 
-        return ranks.first()
+        userFuture.join().primaryGroup.let { primaryGroup ->
+            return getRankByName(primaryGroup)
+        }
     }
 
 
@@ -84,13 +88,11 @@ object RankManager {
      * @param rank The new rank to assign to the user.
      * @param blockUser The user to update the rank for.
      */
-    fun updateRank(rank: Rank, blockUser: BlockUser) {
-        luckPerms.userManager.modifyUser(blockUser.uuid) {
-            it.setPrimaryGroup(rank.name)
-        }
+    fun updateRank(rank: Rank, uuid: UUID) {
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user $uuid parent set ${rank.name}")
 
         mcasyncBlocking {
-            val link = getLinkOfUser(blockUser.uuid) ?: return@mcasyncBlocking
+            val link = getLinkOfUser(uuid) ?: return@mcasyncBlocking
 
             rank.updateRole(Snowflake(link.discordID))
         }
@@ -103,7 +105,7 @@ object RankManager {
      */
     suspend fun updateDiscordRank(discordID: String) {
         val link = getLinkOfDiscord(discordID) ?: return
-        val rank = getRankOfUser(link.uuid.toString())
+        val rank = getRankOfUser(link.uuid)
 
         rank.updateRole(Snowflake(discordID))
     }

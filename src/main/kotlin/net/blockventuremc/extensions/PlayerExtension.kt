@@ -134,7 +134,7 @@ fun UUID.toBlockUserDB(): BlockUser {
 }
 
 val Player.rank: Rank
-    get() = RankManager.getRankOfUser(uniqueId.toString())
+    get() = RankManager.getRankOfUser(uniqueId)
 
 fun CommandSender.isRankOrHigher(ranks: Ranks): Boolean {
     return if (this is Player) {

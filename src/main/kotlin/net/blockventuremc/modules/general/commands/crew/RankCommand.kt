@@ -2,10 +2,7 @@ package net.blockventuremc.modules.general.commands.crew
 
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.cache.PlayerCache
-import net.blockventuremc.extensions.sendMessagePrefixed
-import net.blockventuremc.extensions.sendSuccessSound
-import net.blockventuremc.extensions.toBlockUser
-import net.blockventuremc.extensions.translate
+import net.blockventuremc.extensions.*
 import net.blockventuremc.modules.general.manager.RankManager
 import net.blockventuremc.modules.general.model.Ranks
 import org.bukkit.command.Command
@@ -20,13 +17,17 @@ import org.bukkit.permissions.PermissionDefault
     description = "Set the rank of a player",
     permission = "blockventure.rank",
     permissionDefault = PermissionDefault.OP,
-    aliases = ["perms"]
+    aliases = ["perms", "ranks"]
 )
 class RankCommand : CommandExecutor, TabCompleter {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 
         if (args.size < 2) {
             sender.sendMessagePrefixed("/rank <player> <rank>")
+            sender.sendMessageBlock(
+                "Ranks:",
+                Ranks.entries.joinToString(", ") { "<color:${it.rank.color}>${it.name}</color>" }
+            )
             return true
         }
 
@@ -41,9 +42,9 @@ class RankCommand : CommandExecutor, TabCompleter {
             return true
         }
 
-        RankManager.updateRank(realRank, targetPlayer.uniqueId.toBlockUser())
+        RankManager.updateRank(realRank, targetPlayer.uniqueId)
         if (targetPlayer.isOnline) {
-            targetPlayer.player?.sendMessagePrefixed(targetPlayer.player?.translate("commands.rank_changed", mapOf("rank" to realRank.name, "color" to realRank.color))?.message ?: "Your rank was updated to <color:${realRank.color}>$rank</color>.")
+            targetPlayer.player?.sendMessagePrefixed(targetPlayer.player?.translate("commands.rank_changed", mapOf("rank" to realRank.displayName, "color" to realRank.color))?.message ?: "Your rank was updated to <color:${realRank.color}>$rank</color>.")
         }
 
         if (sender is Player) {
@@ -51,13 +52,13 @@ class RankCommand : CommandExecutor, TabCompleter {
 
             if (sender.uniqueId != targetPlayer.uniqueId) {
                 sender.sendMessagePrefixed(sender.translate("commands.rank_changed_other",
-                    mapOf("other" to targetPlayer.name, "rank" to realRank.name, "color" to realRank.color))?.message ?: "${targetPlayer.name}'s rank was set to  <color:${realRank.color}>$rank</color>.")
+                    mapOf("other" to targetPlayer.name, "rank" to realRank.displayName, "color" to realRank.color))?.message ?: "${targetPlayer.name}'s rank was set to  <color:${realRank.color}>$rank</color>.")
             }
             return true
         }
 
         sender.sendMessagePrefixed(sender.translate("commands.rank_changed_other",
-            mapOf("other" to targetPlayer.name, "rank" to realRank.name, "color" to realRank.color))?.message ?: "${targetPlayer.name}'s rank was set to  <color:${realRank.color}>$rank</color>.")
+            mapOf("other" to targetPlayer.name, "rank" to realRank.displayName, "color" to realRank.color))?.message ?: "${targetPlayer.name}'s rank was set to  <color:${realRank.color}>$rank</color>.")
         return true
     }
 
