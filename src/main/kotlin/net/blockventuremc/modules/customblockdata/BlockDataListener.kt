@@ -22,7 +22,7 @@
 
 package net.blockventuremc.modules.customblockdata
 
-import net.blockventuremc.BlockVenture
+import net.blockventuremc.VentureLibs
 import net.blockventuremc.modules.customblockdata.events.CustomBlockDataMoveEvent
 import net.blockventuremc.modules.customblockdata.events.CustomBlockDataRemoveEvent
 import org.bukkit.Bukkit
@@ -42,14 +42,14 @@ import java.util.function.Predicate
 
 internal class BlockDataListener : Listener {
     private val customDataPredicate: Predicate<Block> =
-        Predicate<Block> { block -> CustomBlockData.hasCustomBlockData(block, BlockVenture.instance) }
+        Predicate<Block> { block -> CustomBlockData.hasCustomBlockData(block, VentureLibs.instance) }
 
     private fun getCbd(event: BlockEvent): CustomBlockData {
         return getCbd(event.block)
     }
 
     private fun getCbd(block: Block): CustomBlockData {
-        return CustomBlockData(block, BlockVenture.instance)
+        return CustomBlockData(block, VentureLibs.instance)
     }
 
     private fun callAndRemove(blockEvent: BlockEvent) {
@@ -63,11 +63,11 @@ internal class BlockDataListener : Listener {
     }
 
     private fun callEvent(block: Block, bukkitEvent: Event): Boolean {
-        if (!CustomBlockData.hasCustomBlockData(block, BlockVenture.instance)) {
+        if (!CustomBlockData.hasCustomBlockData(block, VentureLibs.instance)) {
             return false
         }
 
-        val cbdEvent = CustomBlockDataRemoveEvent(BlockVenture.instance, block, bukkitEvent)
+        val cbdEvent = CustomBlockDataRemoveEvent(VentureLibs.instance, block, bukkitEvent)
         Bukkit.getPluginManager().callEvent(cbdEvent)
 
         return !cbdEvent.isCancelled()
@@ -158,16 +158,16 @@ internal class BlockDataListener : Listener {
         val map = LinkedHashMap<Block, CustomBlockData>()
         val direction = bukkitEvent.direction
         blocks.stream().filter(customDataPredicate).forEach { block ->
-            val cbd = CustomBlockData(block, BlockVenture.instance)
+            val cbd = CustomBlockData(block, VentureLibs.instance)
             if (cbd.isEmpty) return@forEach
             val destinationBlock = block.getRelative(direction)
-            val moveEvent = CustomBlockDataMoveEvent(BlockVenture.instance, block, destinationBlock, bukkitEvent)
+            val moveEvent = CustomBlockDataMoveEvent(VentureLibs.instance, block, destinationBlock, bukkitEvent)
             Bukkit.getPluginManager().callEvent(moveEvent)
             if (moveEvent.isCancelled) return@forEach
             map[destinationBlock] = cbd
         }
         Utils.reverse(map).forEach { (block, cbd) ->
-            cbd.copyTo(block, BlockVenture.instance)
+            cbd.copyTo(block, VentureLibs.instance)
             cbd.clear()
         }
     }

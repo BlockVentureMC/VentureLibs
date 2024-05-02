@@ -1,6 +1,6 @@
 package net.blockventuremc.modules.titles
 
-import net.blockventuremc.annotations.BlockCommand
+import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.translate
@@ -12,7 +12,7 @@ import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
 
-@BlockCommand(
+@VentureCommand(
     name = "title",
     permission = "blockventuremc.title",
     permissionDefault = PermissionDefault.TRUE,

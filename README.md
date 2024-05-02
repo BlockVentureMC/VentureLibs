@@ -1,14 +1,14 @@
 <br />
 <div align="center">
   <a href="https://discord.gg/m27MDData7">
-    <img src=".github/assets/blockventure.jpg" alt="Logo">
+    <img src=".github/assets/venturelibs.jpg" alt="Logo">
   </a>
 
-<h3 align="center">BlockVenture - Your journey awaits!</h3>
-<h4 align="center">Part of the ThemeParkCraft Hub!</h4>
+<h3 align="center">VentureLibs - Your journey awaits!</h3>
+<h4 align="center">Official Partner of <a href="https://themeparkcraft.com">ThemeParkCraft!</a></h4>
 
   <p align="center">
-    A Minecraft Theme Park Server
+    A Minecraft Theme Park Plugin for Spigot and Paper
     <br />
     Tribute to Craftventure <3
     <br />
@@ -28,8 +28,9 @@
 
 </div>
 
-
 ## Developer Documentation
 
-We are working on providing all the needed informations for development on our [KTDocs](https://docs.blockventuremc.net).
-If you feel like there is something missing, feel free to [open a issue](https://github.com/BlockVentureMC/BlockVenturePlugin/issues/new)
+We are working on providing all the needed informations for development on
+our [KTDocs](https://docs.blockventuremc.net).
+If you feel like there is something missing, feel free
+to [open a issue](https://github.com/BlockVentureMC/VentureLibs/issues/new)

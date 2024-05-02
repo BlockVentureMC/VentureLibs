@@ -1,12 +1,7 @@
 package net.blockventuremc.modules.warps
 
-import net.blockventuremc.annotations.BlockCommand
-import net.blockventuremc.extensions.isRankOrHigher
-import net.blockventuremc.extensions.sendDeniedSound
-import net.blockventuremc.extensions.sendMessagePrefixed
-import net.blockventuremc.extensions.sendOpenSound
-import net.blockventuremc.extensions.sendSuccessSound
-import net.blockventuremc.extensions.translate
+import net.blockventuremc.annotations.VentureCommand
+import net.blockventuremc.extensions.*
 import net.blockventuremc.modules.general.model.Ranks
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -14,10 +9,8 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
-import kotlin.collections.filter
-import kotlin.text.startsWith
 
-@BlockCommand(
+@VentureCommand(
     name = "warp",
     permission = "blockventure.crew.warp",
     description = "Teleport to a warp",

@@ -1,8 +1,8 @@
 package net.blockventuremc.modules.general.commands.crew
 
 import com.destroystokyo.paper.MaterialSetTag
-import net.blockventuremc.BlockVenture
-import net.blockventuremc.annotations.BlockCommand
+import net.blockventuremc.VentureLibs
+import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.consts.BLOCKVENTURE_DOOR_LOCKS
 import net.blockventuremc.extensions.sendDeniedSound
 import net.blockventuremc.extensions.sendMessagePrefixed
@@ -20,7 +20,7 @@ import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
 import org.bukkit.persistence.PersistentDataType
 
-@BlockCommand(
+@VentureCommand(
     name = "lock",
     description = "Lock a door",
     permission = "blockventure.lock",
@@ -64,7 +64,7 @@ class LockCommand : CommandExecutor, TabCompleter {
         val bottomBlock =
             if ((lookingAtBlock.blockData as Door).half == Bisected.Half.TOP) lookingAtBlock.getRelative(org.bukkit.block.BlockFace.DOWN) else lookingAtBlock
 
-        val customBlockData = CustomBlockData(bottomBlock, BlockVenture.instance)
+        val customBlockData = CustomBlockData(bottomBlock, VentureLibs.instance)
         customBlockData[BLOCKVENTURE_DOOR_LOCKS, PersistentDataType.BYTE] = rank.ordinal.toByte()
 
         sender.sendMessagePrefixed(

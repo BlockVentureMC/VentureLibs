@@ -1,6 +1,6 @@
 package net.blockventuremc.modules.general.commands.guests
 
-import net.blockventuremc.annotations.BlockCommand
+import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.extensions.getLogger
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.toBlockUser
@@ -14,7 +14,7 @@ import java.lang.management.ManagementFactory
 import kotlin.time.Duration.Companion.milliseconds
 
 
-@BlockCommand(
+@VentureCommand(
     name = "onlinetime",
     description = "Check your onlinetime",
     permission = "blockventure.onlinetime",

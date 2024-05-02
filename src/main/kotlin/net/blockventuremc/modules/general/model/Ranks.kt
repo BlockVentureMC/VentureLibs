@@ -1,7 +1,7 @@
 package net.blockventuremc.modules.general.model
 
 import dev.kord.common.entity.Snowflake
-import net.blockventuremc.BlockVenture
+import net.blockventuremc.VentureLibs
 
 enum class Ranks(val color: String, val bitsPerMinute: Long = 1, val role: String? = null) {
     Crew("#54a0ff", 3),
@@ -15,8 +15,8 @@ enum class Ranks(val color: String, val bitsPerMinute: Long = 1, val role: Strin
 
     suspend fun updateRole(userID: Snowflake) {
         if (this.role == null) return
-        val r = BlockVenture.instance.dotenv[this.role] ?: return
-        val g = BlockVenture.bot.kord.getGuild(Snowflake(BlockVenture.instance.dotenv["GUILD_ID"]?.toLong() ?: 0))
+        val r = VentureLibs.instance.dotenv[this.role] ?: return
+        val g = VentureLibs.bot.kord.getGuild(Snowflake(VentureLibs.instance.dotenv["GUILD_ID"]?.toLong() ?: 0))
         val m = g.getMember(userID)
 
         m.addRole(Snowflake(r))

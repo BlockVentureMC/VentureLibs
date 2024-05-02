@@ -3,7 +3,7 @@ package net.blockventuremc.annotations
 import org.bukkit.permissions.PermissionDefault
 
 @Retention(AnnotationRetention.RUNTIME)
-annotation class BlockCommand(
+annotation class VentureCommand(
     val name: String,
     val aliases: Array<String> = [],
     val description: String = "",

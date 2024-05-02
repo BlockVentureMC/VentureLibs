@@ -2,12 +2,11 @@ package net.blockventuremc.utils
 
 import dev.kord.common.Locale
 import dev.kord.common.entity.Permissions
-
 import dev.kord.core.Kord
-import dev.kord.rest.builder.interaction.*
+import dev.kord.rest.builder.interaction.OptionsBuilder
 import io.sentry.Sentry
-import net.blockventuremc.BlockVenture
-import net.blockventuremc.annotations.BlockCommand
+import net.blockventuremc.VentureLibs
+import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.consts.NAMESPACE_PLUGIN
 import net.blockventuremc.extensions.code
 import net.blockventuremc.extensions.sendMessagePrefixed
@@ -119,16 +118,16 @@ object RegisterManager {
     private fun registerCommands(reflections: Reflections) {
 
         val timeCommands = measureTime {
-            for (clazz in reflections.getTypesAnnotatedWith(BlockCommand::class.java)) {
+            for (clazz in reflections.getTypesAnnotatedWith(VentureCommand::class.java)) {
                 try {
-                    val annotation: BlockCommand = clazz.getAnnotation(BlockCommand::class.java)
+                    val annotation: VentureCommand = clazz.getAnnotation(VentureCommand::class.java)
 
                     val pluginClass: Class<PluginCommand> = PluginCommand::class.java
                     val constructor = pluginClass.getDeclaredConstructor(String::class.java, Plugin::class.java)
 
                     constructor.isAccessible = true
 
-                    val command: PluginCommand = constructor.newInstance(annotation.name, BlockVenture.instance)
+                    val command: PluginCommand = constructor.newInstance(annotation.name, VentureLibs.instance)
 
                     command.aliases = annotation.aliases.toList()
                     command.description = annotation.description
@@ -171,7 +170,7 @@ object RegisterManager {
 
                     val event = constructor.newInstance() as Listener
 
-                    Bukkit.getPluginManager().registerEvents(event, BlockVenture.instance)
+                    Bukkit.getPluginManager().registerEvents(event, VentureLibs.instance)
                     Bukkit.getConsoleSender()
                         .sendMessage("Listener ${event.javaClass.simpleName} registered")
                 } catch (exception: InstantiationError) {

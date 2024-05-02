@@ -1,6 +1,6 @@
 package net.blockventuremc.modules.general.commands.club
 
-import net.blockventuremc.annotations.BlockCommand
+import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.extensions.isRankOrHigher
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.toBlockUser
@@ -21,7 +21,7 @@ import org.bukkit.permissions.PermissionDefault
  * @property permissionDefault The default permission level for the command.
  * @property usage The usage of the command.
  */
-@BlockCommand(
+@VentureCommand(
     name = "fly",
     description = "Toggle fly mode",
     permission = "blockventure.fly",

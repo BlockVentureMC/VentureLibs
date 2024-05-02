@@ -1,6 +1,6 @@
 package net.blockventuremc.utils
 
-import net.blockventuremc.BlockVenture
+import net.blockventuremc.VentureLibs
 import org.bukkit.configuration.InvalidConfigurationException
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
@@ -31,7 +31,7 @@ class FileConfig(fileName: String) : YamlConfiguration() {
         if (seperator == null) {
             seperator = "/"
         }
-        path = "plugins${seperator}${BlockVenture.instance.dataFolder.name}$seperator$fileName"
+        path = "plugins${seperator}${VentureLibs.instance.dataFolder.name}$seperator$fileName"
         val file = File(path)
         try {
             if (!file.exists()) {
