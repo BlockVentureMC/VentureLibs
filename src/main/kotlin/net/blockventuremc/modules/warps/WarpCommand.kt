@@ -21,10 +21,10 @@ import org.bukkit.permissions.PermissionDefault
 class WarpCommand : CommandExecutor, TabExecutor {
 
     private val subcommandRanks = mapOf(
-        "list" to Ranks.Guest,
-        "delete" to Ranks.Crew,
-        "create" to Ranks.Crew,
-        "reload" to Ranks.Crew
+        "list" to Ranks.GUEST,
+        "delete" to Ranks.DEVELOPER,
+        "create" to Ranks.TEAM,
+        "reload" to Ranks.DEVELOPER
     )
 
     /**
@@ -131,7 +131,7 @@ class WarpCommand : CommandExecutor, TabExecutor {
             }
 
             2 -> {
-                if (!sender.isRankOrHigher(Ranks.Crew)) return emptyList()
+                if (!sender.isRankOrHigher(Ranks.DEVELOPER)) return emptyList()
                 when (args[0]) {
                     "delete" -> {
                         // Return all warps
@@ -143,7 +143,7 @@ class WarpCommand : CommandExecutor, TabExecutor {
             }
 
             3 -> {
-                if (!sender.isRankOrHigher(Ranks.Crew)) return emptyList()
+                if (!sender.isRankOrHigher(Ranks.TEAM)) return emptyList()
                 when (args[0]) {
                     "create" -> {
                         // Return all ranks
@@ -186,7 +186,7 @@ class WarpCommand : CommandExecutor, TabExecutor {
         val translatedClickToWarp = sender.translate("commands.warp.click_to_warp")?.message ?: "Click to warp."
 
         val warps = WarpManager.getWarps().filter { sender.isRankOrHigher(it.rankNeeded) }
-            .map { "<click:run_command:'/warp ${it.name}'><hover:show_text:'<color:#2ecc71>$translatedClickToWarp</color>'><color:${it.rankNeeded.color}>${it.name}</color></hover></click>" }
+            .map { "<click:run_command:'/warp ${it.name}'><hover:show_text:'<color:#2ecc71>$translatedClickToWarp</color>'><color:${it.rankNeeded.rank.color}>${it.name}</color></hover></click>" }
         sender.sendMessagePrefixed("Warps: ${warps.joinToString(", ")}")
         sender.sendOpenSound()
     }
@@ -237,7 +237,7 @@ class WarpCommand : CommandExecutor, TabExecutor {
      * @param arg the name of the warp
      * @param ranks the minimum rank required to access the warp, default is [Ranks.Crew]
      */
-    private fun createWarp(sender: CommandSender, arg: String, ranks: Ranks = Ranks.Crew) {
+    private fun createWarp(sender: CommandSender, arg: String, ranks: Ranks = Ranks.TEAM) {
         // Create warp
         if (sender !is Player) {
             sender.sendMessagePrefixed("Only players can use this command.")
@@ -250,7 +250,7 @@ class WarpCommand : CommandExecutor, TabExecutor {
         sender.sendMessagePrefixed(
             sender.translate(
                 "commands.warp.create.success",
-                mapOf("warp" to arg, "rank" to "<color:${ranks.color}>${ranks.name}</color>")
+                mapOf("warp" to arg, "rank" to "<color:${ranks.rank.color}>${ranks.name}</color>")
             )?.message ?: "Warp $arg created."
         )
         sender.sendSuccessSound()

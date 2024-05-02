@@ -2,10 +2,7 @@ package net.blockventuremc.modules.general.commands.crew
 
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.cache.PlayerCache
-import net.blockventuremc.extensions.sendMessagePrefixed
-import net.blockventuremc.extensions.sendSuccessSound
-import net.blockventuremc.extensions.toBlockUser
-import net.blockventuremc.extensions.translate
+import net.blockventuremc.extensions.*
 import net.blockventuremc.modules.general.manager.RankManager
 import net.blockventuremc.modules.general.model.Ranks
 import org.bukkit.command.Command
@@ -20,20 +17,24 @@ import org.bukkit.permissions.PermissionDefault
     description = "Set the rank of a player",
     permission = "blockventure.rank",
     permissionDefault = PermissionDefault.OP,
-    aliases = ["perms"]
+    aliases = ["perms", "ranks"]
 )
 class RankCommand : CommandExecutor, TabCompleter {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 
         if (args.size < 2) {
             sender.sendMessagePrefixed("/rank <player> <rank>")
+            sender.sendMessageBlock(
+                "Ranks:",
+                Ranks.entries.joinToString(", ") { "<color:${it.rank.color}>${it.name}</color>" }
+            )
             return true
         }
 
         val targetPlayer = sender.server.getOfflinePlayer(args[0])
         val rank = args[1]
 
-        val realRank = Ranks.entries.find { it.name.equals(rank, true) }
+        val realRank = Ranks.entries.find { it.name.equals(rank, true) }?.rank
         if (realRank == null) {
             sender.sendMessagePrefixed(
                 sender.translate("commands.rank_not_found", mapOf("rank" to args[0]))?.message ?: "Rank not found"
@@ -41,19 +42,23 @@ class RankCommand : CommandExecutor, TabCompleter {
             return true
         }
 
-        RankManager.updateRank(realRank, targetPlayer.uniqueId.toBlockUser())
-        if (!targetPlayer.isOnline) {
-            PlayerCache.remove(targetPlayer.uniqueId)
-        } else {
-            targetPlayer.player?.sendMessagePrefixed("Dein Rang wurde auf <${realRank.color}>$rank<reset> gesetzt")
+        RankManager.updateRank(realRank, targetPlayer.uniqueId)
+        if (targetPlayer.isOnline) {
+            targetPlayer.player?.sendMessagePrefixed(targetPlayer.player?.translate("commands.rank_changed", mapOf("rank" to realRank.displayName, "color" to realRank.color))?.message ?: "Your rank was updated to <color:${realRank.color}>$rank</color>.")
         }
-
-        sender.sendMessagePrefixed("Rang von ${targetPlayer.name} auf <${realRank.color}>$rank<reset> gesetzt")
 
         if (sender is Player) {
             sender.sendSuccessSound()
+
+            if (sender.uniqueId != targetPlayer.uniqueId) {
+                sender.sendMessagePrefixed(sender.translate("commands.rank_changed_other",
+                    mapOf("other" to targetPlayer.name, "rank" to realRank.displayName, "color" to realRank.color))?.message ?: "${targetPlayer.name}'s rank was set to  <color:${realRank.color}>$rank</color>.")
+            }
+            return true
         }
 
+        sender.sendMessagePrefixed(sender.translate("commands.rank_changed_other",
+            mapOf("other" to targetPlayer.name, "rank" to realRank.displayName, "color" to realRank.color))?.message ?: "${targetPlayer.name}'s rank was set to  <color:${realRank.color}>$rank</color>.")
         return true
     }
 
