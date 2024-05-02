@@ -88,6 +88,10 @@ class VentureLibs : JavaPlugin() {
             PlayerCache.saveToDB(pixelPlayer.copy(username = player.name))
         }
 
+        mcasyncBlocking {
+            bot.kord.shutdown()
+        }
+
         AudioServer.disconnect()
 
         logger.info("Plugin has been disabled")
