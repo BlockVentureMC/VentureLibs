@@ -11,7 +11,7 @@ import org.jetbrains.exposed.sql.batchReplace
 import org.jetbrains.exposed.sql.javatime.CurrentTimestamp
 import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.selectAll
-import java.util.UUID
+import java.util.*
 
 object TitleTable : Table("player_titles") {
     val id = uuid("id")

@@ -1,8 +1,8 @@
 package net.blockventuremc.modules.discord.mc
 
 import dev.kord.common.entity.Snowflake
-import net.blockventuremc.BlockVenture
-import net.blockventuremc.annotations.BlockCommand
+import net.blockventuremc.VentureLibs
+import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.database.functions.getLinkOfUser
 import net.blockventuremc.database.functions.unlinkUser
 import net.blockventuremc.extensions.sendMessagePrefixed
@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
 
-@BlockCommand(
+@VentureCommand(
     name = "unlink",
     description = "Unlink your Minecraft account from your Discord account",
     permissionDefault = PermissionDefault.TRUE,
@@ -45,7 +45,7 @@ class UnlinkCommand : CommandExecutor {
         unlinkUser(player.uniqueId)
 
         mcroutine {
-            val name = BlockVenture.bot.kord.getUser(Snowflake(linked.discordID))?.username ?: "Unknown"
+            val name = VentureLibs.bot.kord.getUser(Snowflake(linked.discordID))?.username ?: "Unknown"
 
             sender.sendMessagePrefixed("You have successfully unlinked your account from $name's Discord account.")
 

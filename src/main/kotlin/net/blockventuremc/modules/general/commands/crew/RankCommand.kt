@@ -1,6 +1,6 @@
 package net.blockventuremc.modules.general.commands.crew
 
-import net.blockventuremc.annotations.BlockCommand
+import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.sendSuccessSound
@@ -14,14 +14,8 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
-import kotlin.collections.filter
-import kotlin.collections.find
-import kotlin.collections.map
-import kotlin.collections.sortedByDescending
-import kotlin.text.equals
-import kotlin.text.startsWith
 
-@BlockCommand(
+@VentureCommand(
     name = "rank",
     description = "Set the rank of a player",
     permission = "blockventure.rank",

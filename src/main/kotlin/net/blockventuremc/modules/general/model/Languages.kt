@@ -1,6 +1,6 @@
 package net.blockventuremc.modules.general.model
 
-import java.util.Locale
+import java.util.*
 
 enum class Languages(val locale: Locale) {
     DE(Locale.GERMAN),

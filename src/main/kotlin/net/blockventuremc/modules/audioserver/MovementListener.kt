@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerTeleportEvent
 import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
 
-class MovementListener: Listener {
+class MovementListener : Listener {
 
     private val lastMovements = mutableMapOf<UUID, Calendar>()
 

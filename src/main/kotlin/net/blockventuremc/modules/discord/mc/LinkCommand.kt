@@ -1,6 +1,6 @@
 package net.blockventuremc.modules.discord.mc
 
-import net.blockventuremc.annotations.BlockCommand
+import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.database.functions.getLinkOfUser
 import net.blockventuremc.database.functions.linkUser
 import net.blockventuremc.extensions.sendMessagePrefixed
@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
 
-@BlockCommand(
+@VentureCommand(
     name = "link",
     description = "Link your Minecraft account to your Discord account",
     permissionDefault = PermissionDefault.TRUE,

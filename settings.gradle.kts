@@ -4,4 +4,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "BlockVenturePlugin"
+rootProject.name = "VentureLibs"

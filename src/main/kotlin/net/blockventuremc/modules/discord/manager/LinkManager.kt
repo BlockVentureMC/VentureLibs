@@ -2,7 +2,7 @@ package net.blockventuremc.modules.discord.manager
 
 import dev.kord.common.entity.Snowflake
 import net.blockventuremc.database.model.Link
-import java.util.UUID
+import java.util.*
 
 /**
  * Store for all setup processes on the link between a Minecraft account and a Discord account.

@@ -1,6 +1,6 @@
-name: BlockVenture
+name: VentureLibs
 version: '1.0'
-main: net.blockventuremc.BlockVenture
+main: net.blockventuremc.VentureLibs
 description: Plugin
 api-version: '1.20'
 

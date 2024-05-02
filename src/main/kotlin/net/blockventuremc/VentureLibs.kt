@@ -14,9 +14,9 @@ import net.blockventuremc.utils.mcasyncBlocking
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
-class BlockVenture : JavaPlugin() {
+class VentureLibs : JavaPlugin() {
     companion object {
-        lateinit var instance: BlockVenture
+        lateinit var instance: VentureLibs
         lateinit var bot: DiscordBot
     }
 
@@ -28,7 +28,7 @@ class BlockVenture : JavaPlugin() {
 
     override fun onLoad() {
         server.spigot().spigotConfig["messages.unknown-command"] = "§c" + "Unknown Command"
-        server.spigot().spigotConfig["messages.server-full"] = "${"server full"} - Club Members can join at any time"
+        server.spigot().spigotConfig["messages.server-full"] = "server full - Club Members can join at any time"
         server.spigot().spigotConfig["messages.outdated-client"] =
             "Your client is outdated, please use the latest version of Minecraft"
         server.spigot().spigotConfig["messages.outdated-server"] =

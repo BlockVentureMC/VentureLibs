@@ -2,7 +2,7 @@ package net.blockventuremc.modules.general.events
 
 import dev.fruxz.ascend.tool.time.calendar.Calendar
 import dev.fruxz.stacked.text
-import net.blockventuremc.BlockVenture
+import net.blockventuremc.VentureLibs
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.modules.titles.Title
 import org.bukkit.Bukkit
@@ -18,7 +18,7 @@ class PlayerLoadSaveListener : Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     fun onJoin(event: PlayerJoinEvent): Unit = with(event) {
         player.sendActionBar(text("<green>" + "Loading userdata..."))
-        Bukkit.getScheduler().runTaskLater(BlockVenture.instance, Runnable {
+        Bukkit.getScheduler().runTaskLater(VentureLibs.instance, Runnable {
             val pixelPlayer = PlayerCache.reloadPlayer(player.uniqueId).copy(
                 username = player.name,
                 lastTimeJoined = Calendar.now()
