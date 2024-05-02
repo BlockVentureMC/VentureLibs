@@ -41,5 +41,7 @@
     "commands.warp.create.success": "<green>Warp <yellow>%warp%</yellow> für den Rang %rank% erstellt.",
     "commands.warp.invalid_usage": "<color:#e74c3c>Falsche Verwendung. Benutze <color:#f78fb3>/warp <color:#e74c3c>um zu einem Warp zu teleportieren.",
     "commands.warp.invalid_rank": "<color:#f78fb3>%rank% ist kein gültiger Rang.",
-    "commands.warp.click_to_warp": "Klicke zum teleportieren."
+    "commands.warp.click_to_warp": "Klicke zum teleportieren.",
+    "commands.rank_changed": "Dein Rang wurde auf <color:%color%>%rank%</color> gesetzt.",
+    "commands.rank_changed_other": "%other%s Rang wurde auf <color:%color%>%rank%</color> gesetzt."
 }
