@@ -1,5 +1,7 @@
 package net.blockventuremc
 
+import de.themeparkcraft.audioserver.common.data.RabbitConfiguration
+import de.themeparkcraft.audioserver.minecraft.AudioServer
 import dev.kord.core.Kord
 import io.github.cdimascio.dotenv.dotenv
 import net.blockventuremc.cache.BoosterCache
@@ -13,9 +15,9 @@ import net.blockventuremc.utils.mcasyncBlocking
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
-class BlockVenture : JavaPlugin() {
+class VentureLibs : JavaPlugin() {
     companion object {
-        lateinit var instance: BlockVenture
+        lateinit var instance: VentureLibs
         lateinit var bot: DiscordBot
     }
 
@@ -27,7 +29,7 @@ class BlockVenture : JavaPlugin() {
 
     override fun onLoad() {
         server.spigot().spigotConfig["messages.unknown-command"] = "§c" + "Unknown Command"
-        server.spigot().spigotConfig["messages.server-full"] = "${"server full"} - Club Members can join at any time"
+        server.spigot().spigotConfig["messages.server-full"] = "server full - Club Members can join at any time"
         server.spigot().spigotConfig["messages.outdated-client"] =
             "Your client is outdated, please use the latest version of Minecraft"
         server.spigot().spigotConfig["messages.outdated-server"] =
@@ -42,6 +44,19 @@ class BlockVenture : JavaPlugin() {
 
         logger.info("Loading translations...")
         TranslationCache.loadAll()
+
+
+        logger.info("Connecting to audioserver...")
+        AudioServer.connect(
+            RabbitConfiguration(
+                dotenv["RABBITMQ_HOST"] ?: "localhost",
+                dotenv["RABBITMQ_PORT"]?.toInt() ?: 5672,
+                dotenv["RABBITMQ_VHOST"] ?: "/",
+                dotenv["RABBITMQ_USER"] ?: "guest",
+                dotenv["RABBITMQ_PASSWORD"] ?: "guest"
+            )
+        )
+
 
         logger.info("Registering placeholders...")
         PlayerPlaceholderManager()
@@ -74,6 +89,8 @@ class BlockVenture : JavaPlugin() {
             val pixelPlayer = PlayerCache.getOrNull(player.uniqueId) ?: continue
             PlayerCache.saveToDB(pixelPlayer.copy(username = player.name))
         }
+
+        AudioServer.disconnect()
 
         logger.info("Plugin has been disabled")
     }

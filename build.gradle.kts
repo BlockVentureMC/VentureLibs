@@ -1,5 +1,4 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.dokka.gradle.DokkaTask
 import java.net.URL
 
@@ -19,12 +18,13 @@ val minecraftVersion: String by project
 val authlibVersion: String by project
 val placeholderApiVersion: String by project
 val customBlockDataVersion: String by project
+val audioServerVersion: String by project
 
 plugins {
-    kotlin("jvm") version "2.0.0-RC1"
+    kotlin("jvm") version "2.0.0-RC2"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     kotlin("plugin.serialization") version "1.9.23"
-    id("org.jetbrains.dokka") version  "1.9.20"
+    id("org.jetbrains.dokka") version "1.9.20"
     id("org.sonarqube") version "5.0.0.4638"
     id("io.sentry.jvm.gradle") version "4.5.0"
 }
@@ -52,6 +52,13 @@ version = "1.0"
 
 repositories {
     maven("https://nexus.flawcra.cc/repository/maven-mirrors/")
+    maven {
+        url = uri("https://maven.pkg.github.com/BlockVentureMC/AudioServer")
+        credentials {
+            username = System.getenv("PACKAGE_USER") ?: System.getenv("GITHUB_ACTOR")
+            password =  System.getenv("PACKAGE_TOKEN") ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
 }
 
 val deps = listOf(
@@ -71,12 +78,15 @@ val deps = listOf(
     "org.mariadb.jdbc:mariadb-java-client:$mariadbVersion",
 
     "dev.kord:kord-core:0.13.1",
-    "dev.kord.x:emoji:0.5.0"
+    "dev.kord.x:emoji:0.5.0",
+
+    "de.themeparkcraft.audioserver:minecraft:$audioServerVersion"
 )
 
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:$minecraftVersion")
+    compileOnly("de.themeparkcraft.audioserver:common:$audioServerVersion")
 
     // External dependencies
     compileOnly("com.mojang:authlib:$authlibVersion")
@@ -119,13 +129,8 @@ tasks {
         dependsOn("shadowJar")
     }
 
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "21"
-        kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn" + "-Xopt-in=dev.kord.common.annotation.KordPreview" + "-Xopt-in=dev.kord.common.annotation.KordExperimental" + "-Xopt-in=kotlin.time.ExperimentalTime" + "-Xopt-in=kotlin.contracts.ExperimentalContracts"
-    }
-
     withType<ProcessResources> {
-        filesMatching("plugin.yml") {
+        filesMatching("paper-plugin.yml") {
             expand(project.properties)
         }
     }
@@ -133,7 +138,7 @@ tasks {
     withType<ShadowJar> {
         mergeServiceFiles()
         configurations = listOf(project.configurations.shadow.get())
-        archiveFileName.set("BlockVenturePlugin.jar")
+        archiveFileName.set("VentureLibs.jar")
     }
 
     withType<DokkaTask>().configureEach {
@@ -148,7 +153,7 @@ tasks {
 
             sourceLink {
                 localDirectory.set(projectDir.resolve("src"))
-                remoteUrl.set(URL("https://github.com/BlockVentureMC/BlockVenturePlugin/tree/main/src"))
+                remoteUrl.set(URL("https://github.com/BlockVentureMC/VentureLibs/tree/main/src"))
                 remoteLineSuffix.set("#L")
             }
         }
@@ -157,4 +162,20 @@ tasks {
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
+        freeCompilerArgs.addAll(
+            listOf(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-Xopt-in=dev.kord.common.annotation.KordPreview",
+                "-Xopt-in=dev.kord.common.annotation.KordExperimental",
+                "-Xopt-in=kotlin.time.ExperimentalTime",
+                "-Xopt-in=kotlin.contracts.ExperimentalContracts"
+            )
+        )
+    }
 }

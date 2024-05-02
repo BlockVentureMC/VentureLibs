@@ -3,11 +3,7 @@ package net.blockventuremc.modules.i18n
 import com.google.gson.Gson
 import net.blockventuremc.extensions.getLogger
 import net.blockventuremc.modules.i18n.model.Translation
-import java.nio.file.FileSystem
-import java.nio.file.FileSystems
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
+import java.nio.file.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReadWriteLock
 import java.util.concurrent.locks.ReentrantReadWriteLock

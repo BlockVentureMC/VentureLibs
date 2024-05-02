@@ -2,7 +2,7 @@ package net.blockventuremc.cache
 
 import dev.fruxz.ascend.tool.time.calendar.Calendar
 import dev.fruxz.stacked.text
-import net.blockventuremc.BlockVenture
+import net.blockventuremc.VentureLibs
 import net.blockventuremc.database.functions.getDatabaseUserOrNull
 import net.blockventuremc.database.functions.updateDatabaseUser
 import net.blockventuremc.database.model.BlockUser
@@ -13,7 +13,7 @@ import net.blockventuremc.extensions.translate
 import net.blockventuremc.modules.boosters.BoosterManager
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitTask
-import java.util.UUID
+import java.util.*
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
@@ -61,7 +61,7 @@ object PlayerCache {
     fun runOnlineTimeScheduler() {
         var lastAutoSave = Calendar.now()
         var lastVentureTreasure = Calendar.now()
-        task = Bukkit.getScheduler().runTaskTimerAsynchronously(BlockVenture.instance, Runnable {
+        task = Bukkit.getScheduler().runTaskTimerAsynchronously(VentureLibs.instance, Runnable {
             if (Bukkit.getOnlinePlayers().isEmpty()) return@Runnable
 
             Bukkit.getOnlinePlayers().forEach { player ->

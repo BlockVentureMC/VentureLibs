@@ -1,7 +1,7 @@
 package net.blockventuremc.modules.general.events
 
 import com.destroystokyo.paper.MaterialSetTag
-import net.blockventuremc.BlockVenture
+import net.blockventuremc.VentureLibs
 import net.blockventuremc.consts.BLOCKVENTURE_DOOR_LOCKS
 import net.blockventuremc.extensions.canBuild
 import net.blockventuremc.extensions.isRankOrHigher
@@ -28,7 +28,7 @@ class LockableDoorListener : Listener {
         val bottomBlock =
             if ((block.blockData as Door).half == Bisected.Half.TOP) block.getRelative(org.bukkit.block.BlockFace.DOWN) else block
 
-        val customBlockData = CustomBlockData(bottomBlock, BlockVenture.instance)
+        val customBlockData = CustomBlockData(bottomBlock, VentureLibs.instance)
         if (!customBlockData.has(BLOCKVENTURE_DOOR_LOCKS, PersistentDataType.BYTE)) return
 
         val customRankData = customBlockData[BLOCKVENTURE_DOOR_LOCKS, PersistentDataType.BYTE] ?: return

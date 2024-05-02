@@ -1,6 +1,6 @@
 package net.blockventuremc.modules.general.commands.guests
 
-import net.blockventuremc.annotations.BlockCommand
+import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.extensions.bitsPerMinute
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.toBlockUser
@@ -10,10 +10,9 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
-import kotlin.to
 
 
-@BlockCommand(
+@VentureCommand(
     name = "money",
     description = "Check your balance",
     permission = "blockventure.balance",
