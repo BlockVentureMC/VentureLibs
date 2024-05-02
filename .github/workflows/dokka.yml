@@ -25,6 +25,9 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Generate API documentation
+        env:
+          PACKAGE_USER: ${{ secrets.PACKAGE_USER }}
+          PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
         run: ./gradlew dokkaHtml
 
       - name: Setup Pages
