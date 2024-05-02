@@ -35,4 +35,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          PACKAGE_USER: ${{ secrets.PACKAGE_USER }}
+          PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
         run: ./gradlew build sonar runSentry --info
