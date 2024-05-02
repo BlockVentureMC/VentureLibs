@@ -45,7 +45,7 @@ class FlyCommand : CommandExecutor {
         label: String,
         args: Array<out String>
     ): Boolean {
-        if (args.isNotEmpty() && sender.isRankOrHigher(Ranks.Trial)) {
+        if (args.isNotEmpty() && sender.isRankOrHigher(Ranks.TEAM)) {
             val target = sender.server.getPlayerExact(args[0])
             if (target == null) {
                 sender.sendMessagePrefixed("Player not found.")
@@ -60,7 +60,7 @@ class FlyCommand : CommandExecutor {
             return true
         }
 
-        if (!sender.isRankOrHigher(Ranks.ClubMember)) {
+        if (!sender.isRankOrHigher(Ranks.CLUBMEMBER)) {
             sender.sendMessagePrefixed(
                 sender.translate("no_permission.club_member")?.message
                     ?: "This command is only available to Club Members."

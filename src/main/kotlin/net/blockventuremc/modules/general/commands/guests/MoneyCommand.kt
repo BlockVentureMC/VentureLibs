@@ -37,10 +37,10 @@ class MoneyCommand : CommandExecutor {
             player.translate(
                 "venturebits.self", mapOf(
                     "venturebits" to dbUser.ventureBits.toString(),
-                    "bitsPerMinute" to dbUser.bitsPerMinute.toString()
+                    "bitsPerMinute" to player.bitsPerMinute.toString()
                 )
             )?.message ?: ("You have ${dbUser.ventureBits} VentureBits.\n" +
-                    "You currently earn ${dbUser.bitsPerMinute} VentureBits per minute.")
+                    "You currently earn ${player.bitsPerMinute} VentureBits per minute.")
         )
         return true
     }

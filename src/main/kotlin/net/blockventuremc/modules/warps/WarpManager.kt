@@ -40,7 +40,7 @@ object WarpManager {
                 val warp = Warp(
                     warpKey,
                     warpSection.getLocation("location") ?: error("Invalid location for warp $warpKey"),
-                    warpSection.getString("rankNeeded")?.let { Ranks.valueOf(it) } ?: Ranks.Trial
+                    warpSection.getString("rankNeeded")?.let { Ranks.valueOf(it) } ?: Ranks.TEAM
                 )
                 warps[warpKey] = warp
             } catch (exception: Exception) {

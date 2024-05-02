@@ -33,7 +33,7 @@ class RankCommand : CommandExecutor, TabCompleter {
         val targetPlayer = sender.server.getOfflinePlayer(args[0])
         val rank = args[1]
 
-        val realRank = Ranks.entries.find { it.name.equals(rank, true) }
+        val realRank = Ranks.entries.find { it.name.equals(rank, true) }?.rank
         if (realRank == null) {
             sender.sendMessagePrefixed(
                 sender.translate("commands.rank_not_found", mapOf("rank" to args[0]))?.message ?: "Rank not found"
@@ -42,18 +42,22 @@ class RankCommand : CommandExecutor, TabCompleter {
         }
 
         RankManager.updateRank(realRank, targetPlayer.uniqueId.toBlockUser())
-        if (!targetPlayer.isOnline) {
-            PlayerCache.remove(targetPlayer.uniqueId)
-        } else {
-            targetPlayer.player?.sendMessagePrefixed("Dein Rang wurde auf <${realRank.color}>$rank<reset> gesetzt")
+        if (targetPlayer.isOnline) {
+            targetPlayer.player?.sendMessagePrefixed(targetPlayer.player?.translate("commands.rank_changed", mapOf("rank" to realRank.name, "color" to realRank.color))?.message ?: "Your rank was updated to <color:${realRank.color}>$rank</color>.")
         }
-
-        sender.sendMessagePrefixed("Rang von ${targetPlayer.name} auf <${realRank.color}>$rank<reset> gesetzt")
 
         if (sender is Player) {
             sender.sendSuccessSound()
+
+            if (sender.uniqueId != targetPlayer.uniqueId) {
+                sender.sendMessagePrefixed(sender.translate("commands.rank_changed_other",
+                    mapOf("other" to targetPlayer.name, "rank" to realRank.name, "color" to realRank.color))?.message ?: "${targetPlayer.name}'s rank was set to  <color:${realRank.color}>$rank</color>.")
+            }
+            return true
         }
 
+        sender.sendMessagePrefixed(sender.translate("commands.rank_changed_other",
+            mapOf("other" to targetPlayer.name, "rank" to realRank.name, "color" to realRank.color))?.message ?: "${targetPlayer.name}'s rank was set to  <color:${realRank.color}>$rank</color>.")
         return true
     }
 

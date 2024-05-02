@@ -6,7 +6,6 @@ import net.blockventuremc.consts.AFK_DURATION
 import net.blockventuremc.database.functions.getPlayerTitles
 import net.blockventuremc.modules.general.events.custom.AFKChangeEvent
 import net.blockventuremc.modules.general.model.Languages
-import net.blockventuremc.modules.general.model.Ranks
 import net.blockventuremc.modules.titles.Title
 import java.util.*
 import kotlin.math.exp
@@ -17,7 +16,6 @@ import kotlin.time.Duration
 data class BlockUser(
     val uuid: UUID,
     val username: String,
-    val rank: Ranks = Ranks.Guest,
     val language: Languages = Languages.EN,
 
     val xp: Long = 0,

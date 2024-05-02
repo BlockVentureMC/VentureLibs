@@ -1,29 +1,109 @@
 package net.blockventuremc.modules.general.manager
 
 import dev.kord.common.entity.Snowflake
-import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.database.functions.getLinkOfDiscord
 import net.blockventuremc.database.functions.getLinkOfUser
 import net.blockventuremc.database.model.BlockUser
-import net.blockventuremc.modules.general.model.Ranks
+import net.blockventuremc.extensions.getLogger
+import net.blockventuremc.modules.general.model.Rank
 import net.blockventuremc.utils.mcasyncBlocking
+import net.luckperms.api.LuckPermsProvider
+import net.luckperms.api.node.NodeType
+
 
 object RankManager {
-    fun updateRank(rank: Ranks, u: BlockUser) {
 
-        val user = u.copy(rank = rank)
-        PlayerCache.updateCached(user)
+    private var ranks = emptyList<Rank>()
+    private val luckPerms = LuckPermsProvider.get()
+
+    init {
+        loadRanks()
+    }
+
+    /**
+     * Loads ranks from the `luckPerms.groupManager.loadedGroups` list
+     * and populates the `ranks` list with Rank objects.
+     * Each Rank object contains information about the rank's name, color, bitsPerMinute, weight, parent, and discordRoleID.
+     * Once loaded, the `ranks` list is sorted by weight in ascending order.
+     * This method also logs the loaded ranks and their count.
+     */
+    private fun loadRanks() {
+        ranks = emptyList()
+        luckPerms.groupManager.loadedGroups.forEach { rank ->
+            val prefix = rank.getNodes(NodeType.PREFIX).firstOrNull()?.key ?: ""
+            val color = prefix.substring(2, 8)
+            val weight = rank.weight.orElse(0)
+            val parent = rank.getNodes(NodeType.INHERITANCE).firstOrNull()?.key
+                ?.let { parent -> ranks.find { it.name == parent } }
+
+            val bitsPerMinute = rank.getNodes(NodeType.PERMISSION)
+                .filter { it.key.startsWith("venturelibs.bitsPerMinute") }
+                .maxOfOrNull { it.key.substringAfterLast(".").toLong() } ?: 1
+
+            val discordRoleId = rank.getNodes(NodeType.PERMISSION)
+                .firstOrNull { it.key.startsWith("venturelibs.discordRole") }?.key
+                ?.substringAfterLast(".")
+
+            ranks += Rank(rank.name, color, bitsPerMinute, weight, parent, discordRoleId)
+            getLogger().info("Loaded rank ${rank.name}")
+        }
+
+        ranks = ranks.sortedBy { it.weight }
+        getLogger().info("Loaded ${ranks.size} ranks")
+    }
+
+    /**
+     * Retrieves the [Rank] object matching the specified rank name.
+     *
+     * @param rank The name of the rank to retrieve.
+     * @return The [Rank] object matching the specified rank name, or the first rank in the list if no match is found.
+     */
+    fun getRankByName(rank: String): Rank {
+        return ranks.find { it.name == rank } ?: ranks.first()
+    }
+
+    /**
+     * Returns the rank of a user based on their UUID.
+     *
+     * @param uuid the UUID of the user
+     * @return the rank of the user
+     */
+    fun getRankOfUser(uuid: String): Rank {
+        luckPerms.userManager.getUser(uuid)?.let { user ->
+            return ranks.find { it.name == user.primaryGroup } ?: ranks.first()
+        }
+
+        return ranks.first()
+    }
+
+
+    /**
+     * Updates the rank of a user by setting their primary group and updating their role in Discord.
+     * This method modifies the user's rank in the LuckPerms plugin and updates their role in Discord if they are linked.
+     *
+     * @param rank The new rank to assign to the user.
+     * @param blockUser The user to update the rank for.
+     */
+    fun updateRank(rank: Rank, blockUser: BlockUser) {
+        luckPerms.userManager.modifyUser(blockUser.uuid) {
+            it.setPrimaryGroup(rank.name)
+        }
 
         mcasyncBlocking {
-            val link = getLinkOfUser(user.uuid) ?: return@mcasyncBlocking
+            val link = getLinkOfUser(blockUser.uuid) ?: return@mcasyncBlocking
 
             rank.updateRole(Snowflake(link.discordID))
         }
     }
 
+    /**
+     * Updates the Discord rank of a user based on their Discord ID.
+     *
+     * @param discordID the Discord ID of the user
+     */
     suspend fun updateDiscordRank(discordID: String) {
         val link = getLinkOfDiscord(discordID) ?: return
-        val rank = PlayerCache.get(link.uuid).rank
+        val rank = getRankOfUser(link.uuid.toString())
 
         rank.updateRole(Snowflake(discordID))
     }

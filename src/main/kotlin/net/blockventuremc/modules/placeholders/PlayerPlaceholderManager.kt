@@ -5,6 +5,7 @@ import me.neznamy.tab.api.TabAPI
 import me.neznamy.tab.api.event.plugin.TabLoadEvent
 import me.neznamy.tab.api.placeholder.Placeholder
 import net.blockventuremc.extensions.getLogger
+import net.blockventuremc.extensions.rank
 import net.blockventuremc.extensions.toBlockUser
 import net.blockventuremc.extensions.translate
 import org.bukkit.Bukkit
@@ -31,8 +32,8 @@ class PlayerPlaceholderManager {
      * This method registers TabLoadEvent listener and reloads the placeholders.
      * @see PlayerPlaceholderManager.reloadPlaceholders
      */
-    fun setupReload() {
-        TabAPI.getInstance().getEventBus()?.register(TabLoadEvent::class.java) { _ ->
+    private fun setupReload() {
+        TabAPI.getInstance().eventBus?.register(TabLoadEvent::class.java) { _ ->
             reloadPlaceholders()
         }
     }
@@ -40,21 +41,21 @@ class PlayerPlaceholderManager {
     /**
      * Registers the placeholders for the player.
      */
-    fun registerPlaceholders() {
+    private fun registerPlaceholders() {
         placeholders.clear()
 
         val placeholderManager = TabAPI.getInstance().placeholderManager
 
         placeholders += placeholderManager.registerPlayerPlaceholder("%rank%", 5000) { player ->
-            (player.player as Player).toBlockUser().rank
+            (player.player as Player).rank.name
         }
 
         placeholders += placeholderManager.registerPlayerPlaceholder("%rankord%", 5000) { player ->
-            (player.player as Player).toBlockUser().rank.ordinal
+            (player.player as Player).rank.weight
         }
 
         placeholders += placeholderManager.registerPlayerPlaceholder("%color%", 5000) { player ->
-            (player.player as Player).toBlockUser().rank.color
+            (player.player as Player).rank.color
         }
 
         placeholders += placeholderManager.registerRelationalPlaceholder("%rel_title%", 5000) { viewer, player ->
@@ -82,7 +83,7 @@ class PlayerPlaceholderManager {
     /**
      * Reloads the placeholders for the player.
      */
-    fun reloadPlaceholders() {
+    private fun reloadPlaceholders() {
         registerPlaceholders()
         Bukkit.getOnlinePlayers().forEach { player ->
             player.kick(text("TAB reload. Please rejoin."))

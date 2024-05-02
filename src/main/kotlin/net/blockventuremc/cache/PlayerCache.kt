@@ -77,7 +77,7 @@ object PlayerCache {
                     val dbUser = get(player.uniqueId)
                     updateCached(
                         dbUser.copy(
-                            ventureBits = dbUser.ventureBits + dbUser.bitsPerMinute,
+                            ventureBits = dbUser.ventureBits + player.bitsPerMinute,
                             xp = dbUser.xp + 1
                         )
                     )

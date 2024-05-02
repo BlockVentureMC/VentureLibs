@@ -8,7 +8,9 @@ import net.blockventuremc.consts.TEXT_GRAY
 import net.blockventuremc.database.functions.createDatabaseUser
 import net.blockventuremc.database.functions.getDatabaseUserOrNull
 import net.blockventuremc.database.model.BlockUser
+import net.blockventuremc.modules.general.manager.RankManager
 import net.blockventuremc.modules.general.model.Languages
+import net.blockventuremc.modules.general.model.Rank
 import net.blockventuremc.modules.general.model.Ranks
 import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.modules.i18n.model.Translation
@@ -93,7 +95,7 @@ fun String.toOfflinePlayerIfCached(): OfflinePlayer? {
 
 
 val Player.canBuild: Boolean
-    get() = gameMode == GameMode.SPECTATOR || (this.toBlockUser().rank.isHigherOrEqual(Ranks.Trial) && hasBuildTag)
+    get() = gameMode == GameMode.SPECTATOR || (this.rank.isHigherOrEqual(Ranks.BUILDER) && hasBuildTag)
 
 var Player.hasBuildTag: Boolean
     get() = this.scoreboardTags.contains("builder")
@@ -131,13 +133,16 @@ fun UUID.toBlockUserDB(): BlockUser {
     )
 }
 
-fun CommandSender.isRankOrHigher(rank: Ranks): Boolean {
+val Player.rank: Rank
+    get() = RankManager.getRankOfUser(uniqueId.toString())
+
+fun CommandSender.isRankOrHigher(ranks: Ranks): Boolean {
     return if (this is Player) {
-        this.toBlockUser().rank.isHigherOrEqual(rank)
+        this.rank.isHigherOrEqual(ranks)
     } else {
         true
     }
 }
 
-val BlockUser.bitsPerMinute: Long
-    get() = (rank.bitsPerMinute).toLong()
+val Player.bitsPerMinute: Long
+    get() = rank.bitsPerMinute
