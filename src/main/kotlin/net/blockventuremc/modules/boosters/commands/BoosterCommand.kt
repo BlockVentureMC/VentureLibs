@@ -1,6 +1,6 @@
 package net.blockventuremc.modules.boosters.commands
 
-import net.blockventuremc.annotations.BlockCommand
+import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.modules.boosters.gui.BoosterGUI
 import org.bukkit.command.Command
@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
 
-@BlockCommand(
+@VentureCommand(
     name = "boosters",
     description = "List all boosters",
     permissionDefault = PermissionDefault.TRUE,

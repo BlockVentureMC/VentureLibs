@@ -1,7 +1,7 @@
 package net.blockventuremc.modules.boosters.commands
 
 import dev.fruxz.ascend.tool.time.calendar.Calendar
-import net.blockventuremc.annotations.BlockCommand
+import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.database.model.BitBoosters
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.modules.boosters.BoosterCategory
@@ -16,7 +16,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 
 
-@BlockCommand(
+@VentureCommand(
     name = "createbooster",
     description = "Create a booster",
     permissionDefault = PermissionDefault.OP,
