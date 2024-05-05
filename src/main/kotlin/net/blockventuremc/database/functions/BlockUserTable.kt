@@ -16,7 +16,6 @@ import kotlin.time.Duration.Companion.seconds
 object BlockUserTable : Table("users") {
     val userUUID = varchar("uuid", 45)
     val userName = varchar("username", 24)
-    val userRank = enumerationByName("rank", 24, Ranks::class).default(Ranks.Guest)
     val userLanguage = enumerationByName("language", 2, Languages::class).default(Languages.EN)
 
     val xp = long("xp").default(0)
@@ -42,7 +41,6 @@ private fun mapToDatabaseUser(row: ResultRow): BlockUser = with(row) {
     return BlockUser(
         uuid = UUID.fromString(this[userUUID]),
         username = this[BlockUserTable.userName],
-        rank = this[BlockUserTable.userRank],
         language = this[BlockUserTable.userLanguage],
         xp = this[BlockUserTable.xp],
         ventureBits = this[BlockUserTable.ventureBits],
@@ -65,7 +63,6 @@ fun createDatabaseUser(user: BlockUser): BlockUser = smartTransaction {
 fun updateDatabaseUser(user: BlockUser) = smartTransaction {
     BlockUserTable.update({ userUUID eq user.uuid.toString() }) {
         it[userName] = user.username
-        it[userRank] = user.rank
         it[userLanguage] = user.language
         it[xp] = user.xp
         it[ventureBits] = user.ventureBits
