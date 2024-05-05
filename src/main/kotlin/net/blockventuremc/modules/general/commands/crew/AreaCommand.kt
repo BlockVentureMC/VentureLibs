@@ -19,7 +19,7 @@ import java.util.*
 @VentureCommand(
     name = "area",
     description = "Create or modify areas",
-    permission = "pixel.area.build",
+    permission = "blockventure.area.build",
     permissionDefault = PermissionDefault.OP,
     usage = "/area",
 )
