@@ -1,4 +1,4 @@
-package com.rainbowislands.utility.utils
+package net.blockventuremc.utils.itembuilder
 
 import com.destroystokyo.paper.profile.ProfileProperty
 import com.google.gson.Gson
@@ -6,9 +6,6 @@ import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import dev.fruxz.ascend.extension.logging.getItsLogger
 import dev.fruxz.stacked.text
-import net.blockventuremc.utils.itembuilder.ItemClickListener
-import net.blockventuremc.utils.itembuilder.MineSkinResponse
-import net.blockventuremc.utils.itembuilder.SkinTexture
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit

@@ -19,6 +19,7 @@ val authlibVersion: String by project
 val placeholderApiVersion: String by project
 val customBlockDataVersion: String by project
 val audioServerVersion: String by project
+val fastNBTVersion: String by project
 
 plugins {
     kotlin("jvm") version "2.0.0-RC2"
@@ -80,7 +81,9 @@ val deps = listOf(
     "dev.kord:kord-core:0.13.1",
     "dev.kord.x:emoji:0.5.0",
 
-    "de.themeparkcraft.audioserver:minecraft:$audioServerVersion"
+    "de.themeparkcraft.audioserver:minecraft:$audioServerVersion",
+
+    "dev.lone:FastNbt-jar:$fastNBTVersion",
 )
 
 
