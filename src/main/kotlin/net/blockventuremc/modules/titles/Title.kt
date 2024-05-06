@@ -1,6 +1,6 @@
 package net.blockventuremc.modules.titles
 
-import com.rainbowislands.utility.utils.ItemBuilder
+import net.blockventuremc.utils.itembuilder.ItemBuilder
 import dev.fruxz.ascend.tool.time.calendar.Calendar
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.extensions.sendMessageBlock
