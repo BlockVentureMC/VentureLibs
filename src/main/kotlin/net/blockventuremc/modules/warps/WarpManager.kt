@@ -1,9 +1,16 @@
 package net.blockventuremc.modules.warps
 
+import dev.fruxz.stacked.extension.asPlainString
 import io.sentry.Sentry
+import net.blockventuremc.VentureLibs
 import net.blockventuremc.extensions.getLogger
+import net.blockventuremc.extensions.sendMessagePrefixed
+import net.blockventuremc.extensions.translate
+import net.blockventuremc.modules.general.events.custom.*
 import net.blockventuremc.modules.general.model.Ranks
 import net.blockventuremc.utils.FileConfig
+import org.bukkit.Bukkit
+import org.bukkit.WorldCreator
 
 object WarpManager {
 
@@ -37,19 +44,67 @@ object WarpManager {
             try {
                 val warpSection =
                     warpConfig.getConfigurationSection(warpKey) ?: error("Invalid warp section for $warpKey")
-                val warp = Warp(
-                    warpKey,
-                    warpSection.getLocation("location") ?: error("Invalid location for warp $warpKey"),
-                    warpSection.getString("rankNeeded")?.let { Ranks.valueOf(it) } ?: Ranks.TEAM
-                )
-                warps[warpKey] = warp
+
+                if (warpSection.contains("old_location")) {
+                    migrateLocation(warpConfig, warpKey)
+                }
+
+
+                val locationString = warpSection.getString("location") ?: error("Invalid location for warp $warpKey")
+                val ventureLocation = convertToBlockLocation(locationString)
+                val world = Bukkit.getWorld(ventureLocation.world)
+
+                if (world == null) {
+                    Bukkit.createWorld(WorldCreator(ventureLocation.world))
+                    getLogger().info("World ${ventureLocation.world} created successfully")
+                }
+
+                Bukkit.getScheduler().runTaskLater(VentureLibs.instance, Runnable {
+                    val warp = Warp(
+                        warpKey,
+                        ventureLocation.toBukkitLocation(),
+                        warpSection.getString("rankNeeded")?.let { Ranks.valueOf(it) } ?: Ranks.TEAM
+                    )
+                    warps[warpKey] = warp
+                }, 1L)
             } catch (exception: Exception) {
                 // Log error
                 exception.printStackTrace()
                 Sentry.captureException(exception)
             }
         }
-        getLogger().info("Warps reloaded. ${warps.size} warps loaded.")
+
+        Bukkit.getScheduler().runTaskLater(VentureLibs.instance, Runnable {
+            getLogger().info("Warps reloaded. ${warps.size} warps loaded.")
+        }, 10L)
+    }
+
+    private fun migrateLocation(warpConfig: FileConfig, warpKey: String) {
+        val warpSection =
+            warpConfig.getConfigurationSection(warpKey) ?: error("Invalid warp section for $warpKey")
+
+        val oldWorld = warpSection.getString("old_location.world") ?: error("Invalid old location for warp $warpKey")
+        val oldX = warpSection.getDouble("old_location.x")
+        val oldY = warpSection.getDouble("old_location.y")
+        val oldZ = warpSection.getDouble("old_location.z")
+        val oldYaw = warpSection.getDouble("old_location.yaw").toFloat()
+        val oldPitch = warpSection.getDouble("old_location.pitch").toFloat()
+
+        val ventureLocation = VentureLocation(
+            x = oldX,
+            y = oldY,
+            z = oldZ,
+            yaw = oldYaw,
+            pitch = oldPitch,
+            world = oldWorld,
+            server = Bukkit.getServer().motd().asPlainString
+        )
+
+        warpConfig.set("${warpKey}.location", ventureLocation.toSimpleString())
+        warpConfig.set("${warpKey}.old_location", null)
+        warpConfig.saveConfig()
+
+        getLogger().info("Warp $warpKey migrated.")
     }
 
     /**
@@ -86,7 +141,7 @@ object WarpManager {
         try {
             val warpConfig = FileConfig(WARP_CONFIG_FILE)
             warpConfig.set(warp.name, null)
-            warpConfig.set("${warp.name}.location", warp.location)
+            warpConfig.set("${warp.name}.location", warp.location.toVentureLocation().toSimpleString())
             warpConfig.set("${warp.name}.rankNeeded", warp.rankNeeded.name)
             warpConfig.saveConfig()
             getLogger().info("Warp ${warp.name} added.")
