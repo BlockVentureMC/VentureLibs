@@ -9,10 +9,12 @@ import net.blockventuremc.database.DatabaseManager
 import net.blockventuremc.modules.discord.DiscordBot
 import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.modules.placeholders.PlayerPlaceholderManager
+import net.blockventuremc.modules.warps.WarpManager
 import net.blockventuremc.utils.RegisterManager.registerMC
 import net.blockventuremc.utils.mcasyncBlocking
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
+import kotlin.math.log
 
 class VentureLibs : JavaPlugin() {
     companion object {
@@ -77,7 +79,10 @@ class VentureLibs : JavaPlugin() {
             logger.warning("BOT_TOKEN is not set in .env file, Discord bot will not be started")
         }
 
-        logger.info("Hello, Minecraft!")
+        logger.info("Preloading warps...")
+        WarpManager
+
+        logger.info("Plugin has been enabled.")
     }
 
     override fun onDisable() {
