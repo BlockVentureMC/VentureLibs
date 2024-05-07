@@ -81,7 +81,7 @@ val deps = listOf(
     "dev.kord:kord-core:0.13.1",
     "dev.kord.x:emoji:0.5.0",
 
-    "de.themeparkcraft.audioserver:minecraft:$audioServerVersion",
+    "net.blockventuremc.audioserver:minecraft:$audioServerVersion",
 
     "dev.lone:FastNbt-jar:$fastNBTVersion",
 )
@@ -89,7 +89,7 @@ val deps = listOf(
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:$minecraftVersion")
-    compileOnly("de.themeparkcraft.audioserver:common:$audioServerVersion")
+    compileOnly("net.blockventuremc.audioserver:common:$audioServerVersion")
 
     // External dependencies
     compileOnly("com.mojang:authlib:$authlibVersion")
