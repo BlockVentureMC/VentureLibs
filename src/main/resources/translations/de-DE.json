@@ -43,5 +43,11 @@
     "commands.warp.invalid_rank": "<color:#f78fb3>%rank% ist kein gültiger Rang.",
     "commands.warp.click_to_warp": "Klicke zum teleportieren.",
     "commands.rank_changed": "Dein Rang wurde auf <color:%color%>%rank%</color> gesetzt.",
-    "commands.rank_changed_other": "%other%s Rang wurde auf <color:%color%>%rank%</color> gesetzt."
+    "commands.rank_changed_other": "%other%s Rang wurde auf <color:%color%>%rank%</color> gesetzt.",
+    "commands.world.created": "Welt <color:#f78fb3>%world%</color> erstellt.",
+    "commands.skull.usage": "Verwendung: /skull <color:#f78fb3><Spieler/Textur>",
+    "commands.skull.name": "<gray>Kopf von <color:#f78fb3>%name%</color>.",
+    "commands.skull.given": "Du hast den Kopf von <color:#f78fb3>%name%</color> erhalten.",
+    "commands.world.usage": "Verwendung: /world <color:#f78fb3><Welt>",
+    "commands.world.teleported": "In die Welt <color:#f78fb3>%world%</color> teleportiert."
 }
