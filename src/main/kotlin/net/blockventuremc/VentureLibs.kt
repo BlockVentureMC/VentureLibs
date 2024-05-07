@@ -1,15 +1,16 @@
 package net.blockventuremc
 
-import de.themeparkcraft.audioserver.common.data.RabbitConfiguration
-import de.themeparkcraft.audioserver.minecraft.AudioServer
 import dev.kord.core.Kord
 import io.github.cdimascio.dotenv.dotenv
 import net.blockventuremc.cache.BoosterCache
+import net.blockventuremc.audioserver.common.data.RabbitConfiguration
+import net.blockventuremc.audioserver.minecraft.AudioServer
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.database.DatabaseManager
 import net.blockventuremc.modules.discord.DiscordBot
 import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.modules.placeholders.PlayerPlaceholderManager
+import net.blockventuremc.modules.warps.WarpManager
 import net.blockventuremc.utils.RegisterManager.registerMC
 import net.blockventuremc.utils.mcasyncBlocking
 import org.bukkit.Bukkit
@@ -79,7 +80,10 @@ class VentureLibs : JavaPlugin() {
             logger.warning("BOT_TOKEN is not set in .env file, Discord bot will not be started")
         }
 
-        logger.info("Hello, Minecraft!")
+        logger.info("Preloading warps...")
+        WarpManager
+
+        logger.info("Plugin has been enabled.")
     }
 
     override fun onDisable() {

@@ -1,6 +1,6 @@
 package net.blockventuremc.modules.general.commands.crew
 
-import com.rainbowislands.utility.utils.toItemBuilder
+import net.blockventuremc.utils.itembuilder.toItemBuilder
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.translate

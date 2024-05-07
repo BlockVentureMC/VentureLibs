@@ -1,7 +1,7 @@
 package net.blockventuremc.modules.general.events
 
-import de.themeparkcraft.audioserver.minecraft.AudioServer
 import io.papermc.paper.event.player.AsyncChatEvent
+import net.blockventuremc.audioserver.minecraft.AudioServer
 import net.blockventuremc.extensions.toBlockUser
 import net.blockventuremc.modules.general.events.custom.*
 import org.bukkit.Location
