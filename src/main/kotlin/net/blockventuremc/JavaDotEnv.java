@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.util.HashSet;
 import java.util.Set;
 
-public class JavaDotEnv {
+public class  JavaDotEnv {
 
     private File envFile = new File(".env");
 

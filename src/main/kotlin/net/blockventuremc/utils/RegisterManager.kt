@@ -3,7 +3,6 @@ package net.blockventuremc.utils
 import dev.kord.common.Locale
 import dev.kord.common.entity.Permissions
 import dev.kord.core.Kord
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import io.sentry.Sentry
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
@@ -19,35 +18,28 @@ import org.bukkit.command.PluginCommand
 import org.bukkit.event.Listener
 import org.bukkit.permissions.Permission
 import org.bukkit.plugin.Plugin
-import org.reflections8.Reflections
 import kotlin.time.measureTime
+import com.google.common.reflect.ClassPath
+import dev.kord.core.event.Event
+import net.blockventuremc.extensions.getLogger
+import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.full.primaryConstructor
 
-fun OptionsBuilder.translate() {
-    val enUsDesc = TranslationCache.get(Locale.ENGLISH_UNITED_STATES.code, "discord.options.${name}.description")
-    if (enUsDesc != null) {
-        description = enUsDesc.message
-    }
-
-    val deDesc = TranslationCache.get(Locale.GERMAN.code, "discord.options.${name}.description")
-    if (deDesc != null) {
-        description(Locale.GERMAN, deDesc.message)
-    }
-}
 
 
 object RegisterManager {
     val dcCommands = mutableListOf<AbstractCommand>()
+    private val logger = getLogger()
 
-    private suspend fun registerDiscordCommands(kord: Kord, reflections: Reflections) {
+    private suspend fun registerDiscordCommands(kord: Kord, pkg: String) {
 
         val timeDiscordCommands = measureTime {
-            for (clazz in reflections.getSubTypesOf(AbstractCommand::class.java)) {
-                try {
-                    val constructor = clazz.declaredConstructors.find { it.parameterCount == 0 } ?: continue
-
-                    constructor.isAccessible = true
-
-                    val command = constructor.newInstance() as AbstractCommand
+            val reflections = ClassPath.from(Thread.currentThread().contextClassLoader).getTopLevelClasses(pkg)
+            for (clazz in reflections) {
+                val kclass = Class.forName(clazz.name).kotlin
+                if (kclass.isSubclassOf(AbstractCommand::class)) {
+                    val command = kclass.primaryConstructor?.call() as AbstractCommand
 
                     val desc = TranslationCache.get(
                         Locale.ENGLISH_UNITED_STATES.code,
@@ -74,121 +66,89 @@ object RegisterManager {
 
                     dcCommands.add(command)
 
-                    println("Command ${command.name} registered")
-
-                } catch (exception: InstantiationError) {
-                    exception.printStackTrace()
-                    Sentry.captureException(exception)
-                } catch (exception: IllegalAccessException) {
-                    exception.printStackTrace()
-                    Sentry.captureException(exception)
+                    logger.info("Registered command ${command.name}")
                 }
             }
         }
-
-        println("Registered discord commands in $timeDiscordCommands")
     }
 
-    private suspend fun registerDiscordListeners(kord: Kord, reflections: Reflections) {
-        val timeDiscordListeners = measureTime {
-            for (clazz in reflections.getSubTypesOf(AbstractEvent::class.java)) {
-                try {
-                    val constructor = clazz.declaredConstructors.find { it.parameterCount == 0 } ?: continue
-
-                    constructor.isAccessible = true
-
-                    val event = constructor.newInstance() as AbstractEvent
+    private suspend fun registerDiscordListeners(kord: Kord, pkg: String) {
+        val timeDiscordEvents = measureTime {
+            val reflections = ClassPath.from(Thread.currentThread().contextClassLoader).getTopLevelClasses(pkg)
+            for (clazz in reflections) {
+                val kclass = Class.forName(clazz.name).kotlin
+                if (kclass.isSubclassOf(AbstractEvent::class)) {
+                    val event = kclass.primaryConstructor?.call() as AbstractEvent
 
                     event.execute(kord)
 
-                    println("Event ${event.javaClass.simpleName} registered")
-                } catch (exception: InstantiationError) {
-                    exception.printStackTrace()
-                    Sentry.captureException(exception)
-                } catch (exception: IllegalAccessException) {
-                    exception.printStackTrace()
-                    Sentry.captureException(exception)
+                    logger.info("Registered event ${event.javaClass.simpleName}")
                 }
             }
         }
-        println("Registered discord listeners in $timeDiscordListeners")
     }
 
-
-    private fun registerCommands(reflections: Reflections) {
-
+    private fun registerCommands(pkg: String) {
+        val reflections = ClassPath.from(Thread.currentThread().contextClassLoader).getTopLevelClasses(pkg)
         var amountCommands = 0
-        val timeCommands = measureTime {
-            for (clazz in reflections.getTypesAnnotatedWith(VentureCommand::class.java)) {
-                try {
-                    val annotation: VentureCommand = clazz.getAnnotation(VentureCommand::class.java)
+        for (clazz in reflections) {
+            val kclass = Class.forName(clazz.name).kotlin
+            if (kclass.isSubclassOf(CommandExecutor::class)) {
 
-                    val pluginClass: Class<PluginCommand> = PluginCommand::class.java
-                    val constructor = pluginClass.getDeclaredConstructor(String::class.java, Plugin::class.java)
+                val annotation: VentureCommand = kclass.annotations.first { it is VentureCommand } as VentureCommand
 
-                    constructor.isAccessible = true
+                val pluginClass: Class<PluginCommand> = PluginCommand::class.java
 
-                    val command: PluginCommand = constructor.newInstance(annotation.name, VentureLibs.instance)
+                val constructor = pluginClass.getDeclaredConstructor(String::class.java, Plugin::class.java)
 
-                    command.aliases = annotation.aliases.toList()
-                    command.description = annotation.description
-                    command.permission = Permission(annotation.permission, annotation.permissionDefault).name
-                    command.usage = annotation.usage
-                    val commandInstance = clazz.getDeclaredConstructor().newInstance() as CommandExecutor
-                    command.setExecutor { sender, command, label, args ->
-                        try {
-                            commandInstance.onCommand(sender, command, label, args)
-                        } catch (e: Exception) {
-                            sender.sendMessagePrefixed("An error occurred while executing the command.")
-                            Sentry.captureException(e)
-                            throw e
-                        }
+                constructor.isAccessible = true
+
+                val command: PluginCommand = constructor.newInstance(annotation.name, VentureLibs.instance)
+
+
+                command.aliases = annotation.aliases.toList()
+                command.description = annotation.description
+                command.permission = Permission(annotation.permission, annotation.permissionDefault).name
+                command.usage = annotation.usage
+                val commandInstance = kclass.primaryConstructor?.call() as CommandExecutor
+                command.setExecutor { sender, command, label, args ->
+                    try {
+                        commandInstance.onCommand(sender, command, label, args)
+                    } catch (e: Exception) {
+                        sender.sendMessagePrefixed("An error occurred while executing the command.")
+                        Sentry.captureException(e)
+                        throw e
                     }
-                    command.tabCompleter = commandInstance as? org.bukkit.command.TabCompleter
-
-
-                    Bukkit.getCommandMap().register(NAMESPACE_PLUGIN, command)
-                    Bukkit.getConsoleSender().sendMessage("Command ${command.name} registered")
-                    amountCommands++
-                } catch (exception: InstantiationError) {
-                    exception.printStackTrace()
-                } catch (exception: IllegalAccessException) {
-                    exception.printStackTrace()
                 }
+                command.tabCompleter = commandInstance as? org.bukkit.command.TabCompleter
+
+
+                Bukkit.getCommandMap().register(NAMESPACE_PLUGIN, command)
+                Bukkit.getConsoleSender().sendMessage("Command ${command.name} registered")
+                amountCommands++
             }
         }
-        println("Registered $amountCommands commands in $timeCommands")
+
+        logger.info("Registered $amountCommands commands")
     }
 
-    private fun registerListeners(reflections: Reflections) {
-        val timeListeners = measureTime {
-            for (clazz in reflections.getSubTypesOf(Listener::class.java)) {
-                try {
-                    val constructor = clazz.declaredConstructors.find { it.parameterCount == 0 } ?: continue
-
-                    if (clazz.`package`.name.contains("conversations")) continue
-
-                    constructor.isAccessible = true
-
-                    val event = constructor.newInstance() as Listener
-
-                    Bukkit.getPluginManager().registerEvents(event, VentureLibs.instance)
-                    Bukkit.getConsoleSender()
-                        .sendMessage("Listener ${event.javaClass.simpleName} registered")
-                } catch (exception: InstantiationError) {
-                    exception.printStackTrace()
-                    Sentry.captureException(exception)
-                } catch (exception: IllegalAccessException) {
-                    exception.printStackTrace()
-                    Sentry.captureException(exception)
-                }
+    private fun registerListeners(pkg: String) {
+        val reflections = ClassPath.from(Thread.currentThread().contextClassLoader).getTopLevelClasses(pkg)
+        var amountListeners = 0
+        for (clazz in reflections) {
+            val kclass = Class.forName(clazz.name).kotlin
+            if (kclass.isSubclassOf(Listener::class)) {
+                val listener = kclass.primaryConstructor?.call() as Listener
+                Bukkit.getPluginManager().registerEvents(listener, VentureLibs.instance)
+                amountListeners++
             }
         }
-        println("Registered listeners in $timeListeners")
+        logger.info("Registered $amountListeners listeners")
     }
+
 
     fun registerMC() {
-        val reflections = Reflections("net.blockventuremc.modules")
+        val reflections = "net.blockventuremc.modules"
 
         registerListeners(reflections)
 
@@ -197,7 +157,7 @@ object RegisterManager {
     }
 
     suspend fun registerDiscord(kord: Kord) {
-        val reflections = Reflections("net.blockventuremc.modules.discord")
+        val reflections = "net.blockventuremc.modules.discord"
 
         registerDiscordCommands(kord, reflections)
 
