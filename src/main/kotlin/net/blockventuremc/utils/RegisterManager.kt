@@ -117,6 +117,7 @@ object RegisterManager {
 
     private fun registerCommands(reflections: Reflections) {
 
+        var amountCommands = 0
         val timeCommands = measureTime {
             for (clazz in reflections.getTypesAnnotatedWith(VentureCommand::class.java)) {
                 try {
@@ -148,6 +149,7 @@ object RegisterManager {
 
                     Bukkit.getCommandMap().register(NAMESPACE_PLUGIN, command)
                     Bukkit.getConsoleSender().sendMessage("Command ${command.name} registered")
+                    amountCommands++
                 } catch (exception: InstantiationError) {
                     exception.printStackTrace()
                 } catch (exception: IllegalAccessException) {
@@ -155,7 +157,7 @@ object RegisterManager {
                 }
             }
         }
-        println("Registered commands in $timeCommands")
+        println("Registered $amountCommands commands in $timeCommands")
     }
 
     private fun registerListeners(reflections: Reflections) {

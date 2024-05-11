@@ -3,7 +3,7 @@ package net.blockventuremc.database.functions
 import net.blockventuremc.database.model.DatabaseAchievement
 import net.blockventuremc.database.smartTransaction
 import net.blockventuremc.database.toCalendar
-import net.blockventuremc.modules.archievements.model.Achievement
+import net.blockventuremc.modules.achievements.model.Achievement
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.javatime.CurrentTimestamp
 import org.jetbrains.exposed.sql.javatime.timestamp
