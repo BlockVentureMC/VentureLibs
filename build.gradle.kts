@@ -86,6 +86,12 @@ val deps = listOf(
     "dev.lone:FastNbt-jar:$fastNBTVersion",
 )
 
+val includedDependencies = mutableListOf<String>()
+
+fun Dependency?.deliver() = this?.apply {
+    val computedVersion = version ?: kotlin.coreLibrariesVersion
+    includedDependencies += "${group}:${name}:${computedVersion}"
+}
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:$minecraftVersion")
@@ -98,8 +104,7 @@ dependencies {
     compileOnly("net.luckperms", "api", "5.4")
 
     deps.forEach {
-        implementation(it)
-        shadow(it)
+        implementation(it).deliver()
     }
 }
 
@@ -134,9 +139,11 @@ tasks {
     }
 
     withType<ProcessResources> {
-        filesMatching("paper-plugin.yml") {
-            expand(project.properties)
-        }
+        expand(
+            "version" to project.version,
+            "name" to project.name,
+            "vendeps" to includedDependencies.joinToString("\n"),
+        )
     }
 
     withType<ShadowJar> {
@@ -161,6 +168,12 @@ tasks {
                 remoteLineSuffix.set("#L")
             }
         }
+    }
+}
+
+configure<SourceSetContainer> { // allowing java files appearing next to kotlin files
+    named("main") {
+        java.srcDir("src/main/kotlin")
     }
 }
 

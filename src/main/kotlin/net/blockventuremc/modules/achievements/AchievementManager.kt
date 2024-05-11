@@ -1,4 +1,4 @@
-package net.blockventuremc.modules.archievements
+package net.blockventuremc.modules.achievements
 
 import dev.fruxz.ascend.extension.logging.getItsLogger
 import dev.fruxz.ascend.tool.time.calendar.Calendar
@@ -10,7 +10,7 @@ import net.blockventuremc.database.model.DatabaseAchievement
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.toBlockUser
 import net.blockventuremc.extensions.translate
-import net.blockventuremc.modules.archievements.model.Achievement
+import net.blockventuremc.modules.achievements.model.Achievement
 import org.bukkit.Bukkit
 import java.util.*
 

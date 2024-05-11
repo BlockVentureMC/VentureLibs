@@ -1,7 +1,7 @@
-package net.blockventuremc.modules.archievements.events
+package net.blockventuremc.modules.achievements.events
 
-import net.blockventuremc.modules.archievements.AchievementManager
-import net.blockventuremc.modules.archievements.model.Achievement
+import net.blockventuremc.modules.achievements.AchievementManager
+import net.blockventuremc.modules.achievements.model.Achievement
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener

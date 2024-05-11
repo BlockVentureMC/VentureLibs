@@ -163,6 +163,19 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
         return this
     }
 
+    /**
+     * Sets whether the item should have a glint effect or not.
+     *
+     * @param glinting true if the item should have a glint effect, false otherwise
+     * @return the updated ItemBuilder instance
+     */
+    fun setGlinting(glinting: Boolean): ItemBuilder {
+        meta<ItemMeta> {
+            this.setEnchantmentGlintOverride(glinting)
+        }
+        return this
+    }
+
 
     /**
      * Sets the custom model data for an item.
