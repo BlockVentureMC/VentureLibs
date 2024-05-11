@@ -96,7 +96,8 @@ dependencies {
     compileOnly("net.blockventuremc.audioserver:common:$audioServerVersion")
 
     // reflections
-    kotlin("reflect")
+    implementation(kotlin("stdlib")).deliver()
+    implementation(kotlin("reflect")).deliver()
 
     // External dependencies
     compileOnly("com.mojang:authlib:$authlibVersion")
@@ -107,6 +108,7 @@ dependencies {
     deps.forEach {
         implementation(it).deliver()
     }
+
 }
 
 open class RunSentryTask : DefaultTask() {

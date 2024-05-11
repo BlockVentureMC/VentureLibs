@@ -61,10 +61,6 @@ class VentureLibs : JavaPlugin() {
         logger.info("Registering placeholders...")
         PlayerPlaceholderManager()
 
-
-        logger.info("Registering modules...")
-        registerMC()
-
         PlayerCache.runOnlineTimeScheduler()
 
         logger.info("Starting Discord bot...")
@@ -82,6 +78,11 @@ class VentureLibs : JavaPlugin() {
         WarpManager
 
         logger.info("Plugin has been enabled.")
+
+        Bukkit.getScheduler().runTaskLater(this, Runnable {
+            logger.info("Registering modules...")
+            registerMC()
+        }, 20L)
     }
 
     override fun onDisable() {

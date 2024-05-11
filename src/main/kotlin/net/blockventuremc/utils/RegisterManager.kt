@@ -29,35 +29,40 @@ object RegisterManager {
     val dcCommands = mutableListOf<AbstractCommand>()
     private val logger = getLogger()
 
-
-    private fun <T : Any> loadClassesInPackage(packageName: String): List<KClass<T>>? {
-        return loadClassesInPackage(packageName, null)
-    }
-
-    private fun <T : Any> loadClassesInPackage(packageName: String, forEach: (() -> Boolean)?): List<KClass<T>>? {
-        val classLoader = ClassLoader.getSystemClassLoader()
-        return ClassPath.from(classLoader)
-            .allClasses
-            .filter {
-                it.packageName.startsWith(packageName) &&
-                        !it.name.contains('$')
-            }
-            .map {
-                val clazz = it.load().kotlin
-
-                if (forEach?.invoke() == false) {
-                    return null
+    private fun <T : Any> loadClassesInPackage(packageName: String, clazzType: KClass<T>): List<KClass<out T>> {
+        logger.info("Loading classes in package $packageName")
+        try {
+            val classLoader = VentureLibs.instance.javaClass.classLoader
+            val allClasses = ClassPath.from(classLoader).allClasses
+            val classes = mutableListOf<KClass<out T>>()
+            for (classInfo in allClasses) {
+                if (!classInfo.name.startsWith("net.blockventuremc.modules")) continue
+                if (classInfo.packageName.startsWith(packageName) && !classInfo.name.contains('$')) {
+                    logger.info("Loading class: ${classInfo.name}")
+                    try {
+                        val loadedClass = classInfo.load().kotlin
+                        if (clazzType.isInstance(loadedClass.javaObjectType.newInstance())) {
+                            classes.add(loadedClass as KClass<out T>)
+                        } else {
+                            logger.error("Type mismatch for class ${classInfo.name}: expected ${clazzType.simpleName}")
+                        }
+                    } catch (e: Exception) {
+                        logger.error("Failed to load class ${classInfo.name}: ${e.message}")
+                    }
                 }
-
-                @Suppress("UNCHECKED_CAST")
-                clazz as KClass<T>
             }
+            return classes
+        } catch (e: Exception) {
+            logger.error("Failed to load classes: ${e.message}")
+            return emptyList()
+        }
     }
+
 
     private suspend fun registerDiscordCommands(kord: Kord, pkg: String) {
-        val commandClasses = loadClassesInPackage<AbstractCommand>(pkg)
+        val commandClasses = loadClassesInPackage(pkg, AbstractCommand::class)
 
-        commandClasses?.forEach {
+        commandClasses.forEach {
             val command = it.primaryConstructor?.call() as AbstractCommand
 
             val desc = TranslationCache.get(
@@ -92,20 +97,20 @@ object RegisterManager {
     }
 
     private suspend fun registerDiscordListeners(kord: Kord, pkg: String) {
-        val eventClasses = loadClassesInPackage<AbstractEvent>(pkg)
+        val eventClasses = loadClassesInPackage(pkg, AbstractEvent::class)
 
-        eventClasses?.forEach {
+        eventClasses.forEach {
             val event = it.primaryConstructor?.call() as AbstractEvent
             event.execute(kord)
         }
 
-        logger.info("Registered ${eventClasses?.size} discord events")
+        logger.info("Registered ${eventClasses.size} discord events")
     }
 
     private fun registerCommands(pkg: String) {
-        val commandClasses = loadClassesInPackage<CommandExecutor>(pkg)
+        val commandClasses = loadClassesInPackage(pkg, CommandExecutor::class)
 
-        commandClasses?.forEach {
+        commandClasses.forEach {
             val annotation: VentureCommand = it.annotations.first { it is VentureCommand } as VentureCommand
 
             val pluginClass: Class<PluginCommand> = PluginCommand::class.java
@@ -138,13 +143,13 @@ object RegisterManager {
             Bukkit.getConsoleSender().sendMessage("Command ${command.name} registered")
         }
 
-        logger.info("Registered ${commandClasses?.size} commands")
+        logger.info("Registered ${commandClasses.size} minecraft commands")
     }
 
     private fun registerListeners(pkg: String) {
-        val listenerClasses = loadClassesInPackage<Listener>(pkg)
+        val listenerClasses = loadClassesInPackage(pkg, Listener::class)
         var amountListeners = 0
-        listenerClasses?.forEach {
+        listenerClasses.forEach {
             val listener = it.primaryConstructor?.call() as Listener
             Bukkit.getPluginManager().registerEvents(listener, VentureLibs.instance)
             amountListeners++
@@ -157,9 +162,7 @@ object RegisterManager {
         val reflections = "net.blockventuremc.modules"
 
         registerListeners(reflections)
-
         registerCommands(reflections)
-
     }
 
     suspend fun registerDiscord(kord: Kord) {
