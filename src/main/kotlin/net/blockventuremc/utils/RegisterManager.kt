@@ -20,6 +20,7 @@ import org.bukkit.permissions.Permission
 import org.bukkit.plugin.Plugin
 import com.google.common.reflect.ClassPath
 import net.blockventuremc.extensions.getLogger
+import kotlin.math.log
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
@@ -30,7 +31,6 @@ object RegisterManager {
     private val logger = getLogger()
 
     private fun <T : Any> loadClassesInPackage(packageName: String, clazzType: KClass<T>): List<KClass<out T>> {
-        logger.info("Loading classes in package $packageName")
         try {
             val classLoader = VentureLibs.instance.javaClass.classLoader
             val allClasses = ClassPath.from(classLoader).allClasses
@@ -38,16 +38,13 @@ object RegisterManager {
             for (classInfo in allClasses) {
                 if (!classInfo.name.startsWith("net.blockventuremc.modules")) continue
                 if (classInfo.packageName.startsWith(packageName) && !classInfo.name.contains('$')) {
-                    logger.info("Loading class: ${classInfo.name}")
                     try {
                         val loadedClass = classInfo.load().kotlin
-                        if (clazzType.isInstance(loadedClass.javaObjectType.newInstance())) {
+                        if (clazzType.isInstance(loadedClass.javaObjectType.getDeclaredConstructor().newInstance())) {
                             classes.add(loadedClass as KClass<out T>)
-                        } else {
-                            logger.error("Type mismatch for class ${classInfo.name}: expected ${clazzType.simpleName}")
                         }
-                    } catch (e: Exception) {
-                        logger.error("Failed to load class ${classInfo.name}: ${e.message}")
+                    } catch (_: Exception) {
+                        // Ignore
                     }
                 }
             }
