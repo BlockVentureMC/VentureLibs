@@ -9,7 +9,6 @@ val exposedVersion: String by project
 val gsonVersion: String by project
 val hikariVersion: String by project
 val mariadbVersion: String by project
-val reflectionsVersion: String by project
 val dotenvVersion: String by project
 val fruxzAscendVersion: String by project
 val fruxzStackedVersion: String by project
@@ -63,7 +62,6 @@ repositories {
 }
 
 val deps = listOf(
-    "net.oneandone.reflections8:reflections8:$reflectionsVersion",
     "dev.fruxz:ascend:$fruxzAscendVersion",
     "dev.fruxz:stacked:$fruxzStackedVersion",
     "io.github.cdimascio:dotenv-kotlin:$dotenvVersion",
@@ -97,6 +95,10 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:$minecraftVersion")
     compileOnly("net.blockventuremc.audioserver:common:$audioServerVersion")
 
+    // reflections
+    implementation(kotlin("stdlib")).deliver()
+    implementation(kotlin("reflect")).deliver()
+
     // External dependencies
     compileOnly("com.mojang:authlib:$authlibVersion")
     compileOnly("me.clip:placeholderapi:$placeholderApiVersion")
@@ -106,6 +108,7 @@ dependencies {
     deps.forEach {
         implementation(it).deliver()
     }
+
 }
 
 open class RunSentryTask : DefaultTask() {
