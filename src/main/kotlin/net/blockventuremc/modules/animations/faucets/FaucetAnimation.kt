@@ -93,7 +93,7 @@ class FaucetAnimation(
             if (entity is Player) {
                 val effectLocation = location.clone().add(0.5, 0.35, 0.5)
                 entity.apply {
-                    spawnParticle(Particle.DRIPPING_WATER, effectLocation, 3)
+                    spawnParticle(Particle.DRIPPING_DRIPSTONE_WATER, effectLocation, 3)
                     spawnParticle(Particle.SPLASH, effectLocation, 1)
                     playSound(effectLocation, Sound.ITEM_BUCKET_FILL, SoundCategory.PLAYERS, 0.1f, 1.7f)
                 }
