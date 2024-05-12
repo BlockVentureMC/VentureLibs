@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-## Bug Report
+# Bug Report
 
 Your issue may already be reported!
 Please search on the [issue tracker](../) before creating one.
@@ -36,8 +36,3 @@ Please search on the [issue tracker](../) before creating one.
 2.
 3.
 4.
-
-## Context
-
-<!--- How has this issue affected you? What are you trying to accomplish? -->
-<!--- Providing context helps us come up with a solution that is most useful in the real world -->
