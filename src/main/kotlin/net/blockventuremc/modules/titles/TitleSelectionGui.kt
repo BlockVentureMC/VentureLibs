@@ -55,12 +55,12 @@ class TitleSelectionGui : Listener {
         inventory.setItem(
             16,
             TitleCategory.GENERIC.getIcon(player).clone()
-                .enchantIf(mapOf(Enchantment.DAMAGE_ALL to 1), titleCategory == TitleCategory.GENERIC).build()
+                .setGlinting(titleCategory == TitleCategory.GENERIC).build()
         )
         inventory.setItem(
             25,
             TitleCategory.RIDE_COUNTER.getIcon(player).clone()
-                .enchantIf(mapOf(Enchantment.DAMAGE_ALL to 1), titleCategory == TitleCategory.RIDE_COUNTER).build()
+                .setGlinting(titleCategory == TitleCategory.RIDE_COUNTER).build()
         )
         inventory.setItem(34, Material.BLACK_STAINED_GLASS_PANE.toItemBuilder { display("Soon...") }.build())
         inventory.setItem(43, Material.BLACK_STAINED_GLASS_PANE.toItemBuilder { display("Soon...") }.build())

@@ -57,15 +57,13 @@ class VentureLibs : JavaPlugin() {
             )
         )
 
-
         logger.info("Registering placeholders...")
         PlayerPlaceholderManager()
 
+        PlayerCache.runOnlineTimeScheduler()
 
         logger.info("Registering modules...")
         registerMC()
-
-        PlayerCache.runOnlineTimeScheduler()
 
         logger.info("Starting Discord bot...")
 

@@ -1,7 +1,7 @@
 package net.blockventuremc.database.model
 
 import dev.fruxz.ascend.tool.time.calendar.Calendar
-import net.blockventuremc.modules.archievements.model.Achievement
+import net.blockventuremc.modules.achievements.model.Achievement
 import java.util.*
 
 data class DatabaseAchievement(
