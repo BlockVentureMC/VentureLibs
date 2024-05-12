@@ -50,5 +50,8 @@
     "commands.world.teleported": "Teleported to world <color:#f78fb3>%world%</color>.",
     "commands.skull.usage": "Usage: /skull <color:#f78fb3><player/texture>",
     "commands.skull.name": "<gray>Head of <color:#f78fb3>%name%</color>.",
-    "commands.skull.given": "You have received the head of <color:#f78fb3>%name%</color>."
+    "commands.skull.given": "You have received the head of <color:#f78fb3>%name%</color>.",
+    "chatpanel.vote.yes": "Yes",
+    "chatpanel.vote.no": "No",
+    "chatpanel.vote.message": "This is a test vote."
 }

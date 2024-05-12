@@ -1,6 +1,7 @@
 package net.blockventuremc.modules.general.commands.crew
 
 import net.blockventuremc.annotations.VentureCommand
+import net.blockventuremc.cache.ChatMessageCache
 import net.blockventuremc.extensions.sendMessageBlock
 import net.kyori.adventure.text.Component
 import org.bukkit.command.Command
@@ -24,6 +25,7 @@ class ClearChatCommand : CommandExecutor {
         for (player in sender.server.onlinePlayers) {
             sendChatClearMessage(player)
         }
+        ChatMessageCache.clearMessages()
         return true
     }
 
@@ -40,6 +42,7 @@ class ClearChatCommand : CommandExecutor {
         for (i in 0..1000) {
             player.sendMessage(Component.empty())
         }
+        ChatMessageCache.initPlayer(player.uniqueId)
         player.sendMessageBlock(
             "<gray>    .-.       ",
             "<gray>   (o o) boo!  ",

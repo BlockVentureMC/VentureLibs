@@ -1,6 +1,7 @@
 package net.blockventuremc.extensions
 
 import dev.fruxz.stacked.text
+import net.blockventuremc.cache.ChatMessageCache
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.consts.BLOCK_PREFIX
 import net.blockventuremc.consts.PREFIX
@@ -14,6 +15,7 @@ import net.blockventuremc.modules.general.model.Rank
 import net.blockventuremc.modules.general.model.Ranks
 import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.modules.i18n.model.Translation
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.OfflinePlayer
@@ -22,23 +24,42 @@ import org.bukkit.entity.Player
 import java.util.*
 
 
-fun CommandSender.sendMessagePrefixed(message: String) = sendMessage(text(PREFIX + message))
+fun CommandSender.sendMessagePrefixed(message: String) = sendMessage(text(PREFIX + message).addToHistory(this.uniqueId))
 
 fun CommandSender.sendMessageBlock(vararg lines: String) {
-    sendEmtpyLine()
-    sendMessage(text(BLOCK_PREFIX))
-    sendEmtpyLine()
-    lines.forEach { sendMessage(text(it)) }
-    sendEmtpyLine()
+    sendEmtpyLine(true)
+    sendMessage(text(BLOCK_PREFIX).addToHistory(this.uniqueId))
+    sendEmtpyLine(true)
+    lines.forEach { sendMessage(text(it).addToHistory(this.uniqueId)) }
+    sendEmtpyLine(true)
 }
 
-fun CommandSender.sendEmtpyLine() = sendMessage(text(" "))
+fun CommandSender.sendEmtpyLine(addToHistory: Boolean = false) = sendMessage(text(" ").also { if(addToHistory) it.addToHistory(this.uniqueId) })
 
-fun CommandSender.sendText(message: String) = sendMessage(text(TEXT_GRAY + message))
+fun CommandSender.sendText(message: String) = sendMessage(text(TEXT_GRAY + message).addToHistory(this.uniqueId))
 fun CommandSender.sendTextPrefixedIf(message: String, condition: Boolean) =
-    if (condition) sendMessage(text(PREFIX + message)) else Unit
+    if (condition) sendMessage(text(PREFIX + message).addToHistory(this.uniqueId)) else Unit
 
-fun CommandSender.sendTextPrefixed(message: String) = sendMessage(text(PREFIX + message))
+fun CommandSender.sendTextPrefixed(message: String) = sendMessage(text(PREFIX + message).addToHistory(this.uniqueId))
+
+fun CommandSender.getInBox(vararg lines: String, color: String = "blue"): List<Component> {
+    val components = mutableListOf<Component>()
+    components.add(text("<color:$color><st>" + "-".repeat(51) + "</st></color>"))
+    lines.forEach { components.add(text("<color:$color><b>|</b></color> $it")) }
+    components.add(text("<color:$color><st>" + "-".repeat(51) + "</st></color>"))
+    return components
+}
+
+
+fun Component.addToHistory(uuid: UUID): Component {
+    ChatMessageCache.addMessage(uuid, this)
+    return this
+}
+
+fun Component.addToHistory(): Component {
+    ChatMessageCache.addMessageForAll(this)
+    return this
+}
 
 fun Player.sendDeniedSound() = playSound(location, "minecraft:block.note_block.bass", 1f, 1f)
 fun CommandSender.sendDeniedSound(): Boolean {
@@ -143,6 +164,9 @@ fun CommandSender.isRankOrHigher(ranks: Ranks): Boolean {
         true
     }
 }
+
+val CommandSender.uniqueId: UUID
+    get() = if (this is Player) this.uniqueId else UUID.fromString("00000000-0000-0000-0000-000000000000")
 
 val Player.bitsPerMinute: Long
     get() = rank.bitsPerMinute

@@ -6,6 +6,8 @@ import net.blockventuremc.audioserver.common.data.RabbitConfiguration
 import net.blockventuremc.audioserver.minecraft.AudioServer
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.database.DatabaseManager
+import net.blockventuremc.modules.chatpanels.ChatPanelManager
+import net.blockventuremc.modules.chatpanels.VoteChatPanel
 import net.blockventuremc.modules.discord.DiscordBot
 import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.modules.placeholders.PlayerPlaceholderManager
@@ -14,6 +16,7 @@ import net.blockventuremc.utils.RegisterManager.registerMC
 import net.blockventuremc.utils.mcasyncBlocking
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
+import kotlin.time.Duration.Companion.minutes
 
 class VentureLibs : JavaPlugin() {
     companion object {
@@ -80,9 +83,13 @@ class VentureLibs : JavaPlugin() {
         WarpManager
 
         logger.info("Plugin has been enabled.")
+
+        ChatPanelManager.startUpdateTask()
     }
 
     override fun onDisable() {
+        ChatPanelManager.stopUpdateTask()
+
         PlayerCache.cleanup()
 
         for (player in Bukkit.getOnlinePlayers()) {
