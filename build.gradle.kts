@@ -9,7 +9,6 @@ val exposedVersion: String by project
 val gsonVersion: String by project
 val hikariVersion: String by project
 val mariadbVersion: String by project
-val reflectionsVersion: String by project
 val dotenvVersion: String by project
 val fruxzAscendVersion: String by project
 val fruxzStackedVersion: String by project
@@ -22,7 +21,7 @@ val audioServerVersion: String by project
 val fastNBTVersion: String by project
 
 plugins {
-    kotlin("jvm") version "2.0.0-RC2"
+    kotlin("jvm") version "2.0.0-RC3"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     kotlin("plugin.serialization") version "1.9.24"
     id("org.jetbrains.dokka") version "1.9.20"
@@ -63,7 +62,6 @@ repositories {
 }
 
 val deps = listOf(
-    "net.oneandone.reflections8:reflections8:$reflectionsVersion",
     "dev.fruxz:ascend:$fruxzAscendVersion",
     "dev.fruxz:stacked:$fruxzStackedVersion",
     "io.github.cdimascio:dotenv-kotlin:$dotenvVersion",
@@ -86,10 +84,20 @@ val deps = listOf(
     "dev.lone:FastNbt-jar:$fastNBTVersion",
 )
 
+val includedDependencies = mutableListOf<String>()
+
+fun Dependency?.deliver() = this?.apply {
+    val computedVersion = version ?: kotlin.coreLibrariesVersion
+    includedDependencies += "${group}:${name}:${computedVersion}"
+}
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:$minecraftVersion")
     compileOnly("net.blockventuremc.audioserver:common:$audioServerVersion")
+
+    // reflections
+    implementation(kotlin("stdlib")).deliver()
+    implementation(kotlin("reflect")).deliver()
 
     // External dependencies
     compileOnly("com.mojang:authlib:$authlibVersion")
@@ -98,9 +106,9 @@ dependencies {
     compileOnly("net.luckperms", "api", "5.4")
 
     deps.forEach {
-        implementation(it)
-        shadow(it)
+        implementation(it).deliver()
     }
+
 }
 
 open class RunSentryTask : DefaultTask() {
@@ -134,9 +142,11 @@ tasks {
     }
 
     withType<ProcessResources> {
-        filesMatching("paper-plugin.yml") {
-            expand(project.properties)
-        }
+        expand(
+            "version" to project.version,
+            "name" to project.name,
+            "vendeps" to includedDependencies.joinToString("\n"),
+        )
     }
 
     withType<ShadowJar> {
@@ -161,6 +171,12 @@ tasks {
                 remoteLineSuffix.set("#L")
             }
         }
+    }
+}
+
+configure<SourceSetContainer> { // allowing java files appearing next to kotlin files
+    named("main") {
+        java.srcDir("src/main/kotlin")
     }
 }
 

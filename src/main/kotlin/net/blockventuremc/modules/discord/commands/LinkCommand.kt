@@ -8,9 +8,9 @@ import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.message.EmbedBuilder
 import net.blockventuremc.database.functions.getLinkOfDiscord
 import net.blockventuremc.database.model.Link
+import net.blockventuremc.extensions.translate
 import net.blockventuremc.modules.discord.manager.LinkManager
 import net.blockventuremc.modules.discord.model.AbstractCommand
-import net.blockventuremc.utils.translate
 import org.bukkit.Bukkit
 
 class LinkCommand : AbstractCommand() {
