@@ -4,8 +4,12 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.ItemDisplay
+import org.bukkit.entity.ItemDisplay.ItemDisplayTransform
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.BlockVector
+import org.bukkit.util.Transformation
+import org.joml.Quaternionf
+import org.joml.Vector3f
 import java.util.*
 
 data class TrackNode(
@@ -96,17 +100,22 @@ data class TrackNode(
         // Display the front vector
         val frontVectorEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
         frontVectorEnt.itemStack = ItemStack(Material.STICK)
-        frontVectorEnt.velocity = frontVector
+        frontVectorEnt.itemDisplayTransform = ItemDisplayTransform.NONE
+        frontVectorEnt.transformation = Transformation(frontVector.toVector3f(), Quaternionf(), Vector3f(1.0f, 1.0f, 1.0f), Quaternionf())
 
         // Display the left vector
         val leftVectorEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
         leftVectorEnt.itemStack = ItemStack(Material.BLAZE_ROD)
-        leftVectorEnt.velocity = leftVector
+        leftVectorEnt.itemDisplayTransform = ItemDisplayTransform.NONE
+        leftVectorEnt.transformation = Transformation(leftVector.toVector3f(), Quaternionf(), Vector3f(1.0f, 1.0f, 1.0f), Quaternionf())
+
+
 
         // Display the up vector
         val upVectorEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
         upVectorEnt.itemStack = ItemStack(Material.LIGHTNING_ROD)
-        upVectorEnt.velocity = upVector
+        upVectorEnt.itemDisplayTransform = ItemDisplayTransform.NONE
+        upVectorEnt.transformation = Transformation(upVector.toVector3f(), Quaternionf(), Vector3f(1.0f, 1.0f, 1.0f), Quaternionf())
 
         return Triple(frontVectorEnt.uniqueId, leftVectorEnt.uniqueId, upVectorEnt.uniqueId)
     }
