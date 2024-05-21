@@ -22,7 +22,7 @@ val fastNBTVersion: String by project
 val sentryVersion: String by project
 
 plugins {
-    kotlin("jvm") version "2.0.0-RC3"
+    kotlin("jvm") version "2.0.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     kotlin("plugin.serialization") version "1.9.24"
     id("org.jetbrains.dokka") version "1.9.20"
@@ -80,12 +80,7 @@ val deps = listOf(
 
     "com.zaxxer:HikariCP:$hikariVersion",
     "org.mariadb.jdbc:mariadb-java-client:$mariadbVersion",
-
-    "dev.kord:kord-core:0.13.1",
-    "dev.kord:kord-common-jvm:0.13.1",
-    "dev.kord:kord-rest-jvm:0.13.1",
-    "dev.kord.x:emoji:0.5.0",
-
+    
     "net.blockventuremc.audioserver:minecraft:$audioServerVersion",
 
     "dev.lone:FastNbt-jar:$fastNBTVersion",
