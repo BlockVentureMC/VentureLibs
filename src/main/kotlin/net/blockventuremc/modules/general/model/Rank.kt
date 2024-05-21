@@ -1,7 +1,8 @@
 package net.blockventuremc.modules.general.model
 
-import dev.kord.common.entity.Snowflake
 import net.blockventuremc.VentureLibs
+import net.blockventuremc.utils.Environment
+import net.dv8tion.jda.api.entities.UserSnowflake
 
 data class Rank(val name: String, val displayName: String, val color: String, val bitsPerMinute: Long = 1, val weight: Int = 0, val parent: Rank? = null, val discordRoleID: String? = null) {
 
@@ -10,12 +11,12 @@ data class Rank(val name: String, val displayName: String, val color: String, va
     }
 
 
-    suspend fun updateRole(userID: Snowflake) {
+    fun updateRole(userID: String) {
         if (this.discordRoleID == null) return
-        val role = VentureLibs.instance.dotenv[this.discordRoleID] ?: return
-        val guild = VentureLibs.bot.kord.getGuild(Snowflake(VentureLibs.instance.dotenv["GUILD_ID"]?.toLong() ?: 0))
-        val member = guild.getMember(userID)
+        val roleId = Environment.getEnv(this.discordRoleID) ?: return
+        val guild = VentureLibs.instance.jda.getGuildById(Environment.getEnv("GUILD_ID") ?: "906872550078967839")
+        val role = guild?.getRoleById(roleId) ?: return
 
-        member.addRole(Snowflake(role))
+        guild.addRoleToMember(UserSnowflake.fromId(userID), role).queue()
     }
 }

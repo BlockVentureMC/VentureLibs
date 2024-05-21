@@ -1,6 +1,5 @@
 package net.blockventuremc.modules.discord.manager
 
-import dev.kord.common.entity.Snowflake
 import net.blockventuremc.database.model.Link
 import java.util.*
 
@@ -26,7 +25,7 @@ object LinkManager {
         return _cache.values.find { it.uuid == uuid }
     }
 
-    fun triesToGetLink(discordID: Snowflake): Link? {
-        return _cache.values.find { it.discordID == discordID.toString() }
+    fun triesToGetLink(discordID: String): Link? {
+        return _cache.values.find { it.discordID == discordID }
     }
 }
