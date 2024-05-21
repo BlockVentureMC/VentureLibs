@@ -1,7 +1,6 @@
 package net.blockventuremc.modules.rides.track
 
-import net.blockventuremc.extensions.directionToQuaternion
-import net.blockventuremc.extensions.minus
+import net.blockventuremc.extensions.createQuaternionFromVectors
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.EntityType
@@ -95,52 +94,23 @@ data class TrackNode(
             loc.chunk.isForceLoaded = true
         }
 
-        // Zero rotation quaternion
-        val zeroRotation = Quaternionf(0f, 0f, 0f, 1f)
+        val originVec = Vector3f(0f, 0f, 0f)
+        // Calculate the quaternion for the rotation
+        val front = frontVector.toVector3f().normalize()
+        val up = upVector.toVector3f().normalize()
+        val left = leftVector.toVector3f().normalize()
 
-        // Display the node in the world as itemDisplayEntites
-        // We use the location of the node as base position
-        // The vectors are displayed as lines from the base position with the items: stick, blaze rod, and lightning rod
+        // Create quaternion from vectors
+        val quaternion = createQuaternionFromVectors(front, left, up)
 
-        // Display the front vector
-        val frontVectorEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
-        frontVectorEnt.itemStack = ItemStack(Material.END_ROD)
-        frontVectorEnt.itemDisplayTransform = ItemDisplayTransform.NONE
-
-        val frontDirection = directionToQuaternion(origin.toVector().toVector3f(), frontVector.toVector3f())
-        val frontLength = (frontVector.toVector3f() - origin.toVector().toVector3f()).div(50f)
-        frontVectorEnt.transformation = Transformation(Vector3f(), frontDirection, Vector3f(frontLength.lengthSquared(), 1f, 1f), zeroRotation)
-
-
-        /*
-        // Display the left vector
-        val leftVectorEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
-        leftVectorEnt.itemStack = ItemStack(Material.BLAZE_ROD)
-        leftVectorEnt.itemDisplayTransform = ItemDisplayTransform.NONE
-
-        val leftDirection = leftVector.toVector3f() - origin.toVector().toVector3f()
-        leftVectorEnt.transformation = Transformation(leftVector.toVector3f(), Quaternionf(
-            leftDirection.x, leftDirection.y, leftDirection.z, 0f
-        ), Vector3f(leftVector.toVector3f().length(), 1f, 1f), zeroRotation)
+        // Display the item with the calculated orientation
+        val itemDisplayEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
+        itemDisplayEnt.itemStack = ItemStack(Material.SPRUCE_TRAPDOOR)  // Replace with appropriate item
+        itemDisplayEnt.itemDisplayTransform = ItemDisplayTransform.NONE
+        itemDisplayEnt.transformation = Transformation(originVec, quaternion, Vector3f(1f, 1f, 1f), Quaternionf())
 
 
-        // Display the up vector
-        val upVectorEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
-        upVectorEnt.itemStack = ItemStack(Material.LIGHTNING_ROD)
-        upVectorEnt.itemDisplayTransform = ItemDisplayTransform.NONE
-
-        val upDirection = upVector.toVector3f() - origin.toVector().toVector3f()
-        upVectorEnt.transformation = Transformation(upVector.toVector3f(), Quaternionf(
-            upDirection.x, upDirection.y, upDirection.z, 0f
-        ), Vector3f(upVector.toVector3f().length(), 1f, 1f), zeroRotation)
-
-         */
-
-
-        return frontVectorEnt.uniqueId
-
-
-        //return Triple(frontVectorEnt.uniqueId, leftVectorEnt.uniqueId, upVectorEnt.uniqueId)
+        return itemDisplayEnt.uniqueId
     }
 
 
