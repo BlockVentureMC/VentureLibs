@@ -4,10 +4,7 @@ import dev.fruxz.stacked.plus
 import dev.fruxz.stacked.text
 import net.blockventuremc.cache.BoosterCache
 import net.blockventuremc.database.model.BitBoosters
-import net.blockventuremc.extensions.fillEmptyAndOpenInventory
-import net.blockventuremc.extensions.formatToDay
-import net.blockventuremc.extensions.toBlockUser
-import net.blockventuremc.extensions.translate
+import net.blockventuremc.extensions.*
 import net.blockventuremc.utils.itembuilder.toItemBuilder
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -37,14 +34,14 @@ object BoosterGUI {
             )
 
             val gray = "<gradient:#bdc3c7:#2c3e50>"
+            val owner = booster.owner.toOfflinePlayer()
 
             lore(
                 gray + (player.translate("booster.until", mapOf("time" to booster.endTime.formatToDay(lang)))?.message
                     ?: (booster.endTime.formatToDay(lang))),
                 gray + (player.translate("booster.modifier", mapOf("modifier" to booster.modifier.toString()))?.message
                     ?: (booster.modifier.toString())),
-                gray + (if (booster.user) player.translate("booster.user_only", mapOf("user" to booster.owner.toString()))?.message ?: ("Only for ${booster.owner}")
-                else player.translate("booster.global")?.message ?: ("Global Booster"))
+                gray + (if (booster.user) player.translate("booster.user_only", mapOf("user" to owner.name))?.message ?: ("Only for ${owner.name}") else player.translate("booster.global")?.message ?: ("Global Booster"))
             )
         }.build()
     }

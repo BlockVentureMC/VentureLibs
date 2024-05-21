@@ -32,20 +32,7 @@ class CreateBoosterCommand: CommandExecutor, TabExecutor {
             return true
         }
 
-        var target = sender.server.getPlayer(args[0])
-        if (target == null) {
-            try {
-                target = sender.server.getPlayer(args[0].toUUID())
-            } catch (e: IllegalArgumentException) {
-                sender.sendMessagePrefixed("Player not found.")
-                return true
-            }
-        }
-
-        if (target == null) {
-            sender.sendMessagePrefixed("Player not found.")
-            return true
-        }
+        val target = sender.server.getOfflinePlayer(args[0])
 
         val mod: Long = args.getOrNull(1)?.toLongOrNull() ?: 1
 
