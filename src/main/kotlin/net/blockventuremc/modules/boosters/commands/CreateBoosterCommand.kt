@@ -1,5 +1,6 @@
 package net.blockventuremc.modules.boosters.commands
 
+import dev.fruxz.ascend.extension.container.toUUID
 import dev.fruxz.ascend.tool.time.calendar.Calendar
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.database.model.BitBoosters
@@ -25,17 +26,22 @@ import kotlin.time.Duration.Companion.hours
 )
 class CreateBoosterCommand: CommandExecutor, TabExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-        val player = sender as? Player ?: run {
-            sender.sendMessagePrefixed("This command is only available to players.")
-            return true
-        }
         // duration, multiplier are optional
         if (args.isEmpty()) {
             sender.sendMessagePrefixed("Usage: /createbooster <player> [modifier] [duration] [userOnly]")
             return true
         }
 
-        val target = player.server.getPlayerExact(args[0])
+        var target = sender.server.getPlayer(args[0])
+        if (target == null) {
+            try {
+                target = sender.server.getPlayer(args[0].toUUID())
+            } catch (e: IllegalArgumentException) {
+                sender.sendMessagePrefixed("Player not found.")
+                return true
+            }
+        }
+
         if (target == null) {
             sender.sendMessagePrefixed("Player not found.")
             return true
@@ -56,7 +62,7 @@ class CreateBoosterCommand: CommandExecutor, TabExecutor {
         val userOnly = args.getOrNull(3)?.toBoolean() ?: false
 
         val booster = BitBoosters(
-            player.uniqueId,
+            owner = target.uniqueId,
             endTime = Calendar.now() + duration,
             modifier = mod,
             user = userOnly,
