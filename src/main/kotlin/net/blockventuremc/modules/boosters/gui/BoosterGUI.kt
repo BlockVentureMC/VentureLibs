@@ -33,7 +33,7 @@ object BoosterGUI {
                 player.translate("booster.category.${booster.category.toString().lowercase()}")?.message ?: ("Unknown Booster"),
             )
 
-            val gray = "<gradient:#bdc3c7:#2c3e50>"
+            val gray = "<color:#dfe6e9>"
             val owner = booster.owner.toOfflinePlayer()
 
             lore(
