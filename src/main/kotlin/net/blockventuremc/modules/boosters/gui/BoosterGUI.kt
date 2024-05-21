@@ -1,6 +1,5 @@
 package net.blockventuremc.modules.boosters.gui
 
-import dev.fruxz.stacked.plus
 import dev.fruxz.stacked.text
 import net.blockventuremc.cache.BoosterCache
 import net.blockventuremc.database.model.BitBoosters
