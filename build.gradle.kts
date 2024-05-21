@@ -19,6 +19,7 @@ val placeholderApiVersion: String by project
 val customBlockDataVersion: String by project
 val audioServerVersion: String by project
 val fastNBTVersion: String by project
+val sentryVersion: String by project
 
 plugins {
     kotlin("jvm") version "2.0.0-RC3"
@@ -45,6 +46,10 @@ sentry {
     org = "flawcra"
     projectName = "blockventure-plugin"
     authToken = System.getenv("SENTRY_AUTH_TOKEN")
+
+    autoInstallation {
+        enabled = true
+    }
 }
 
 group = "net.blockventuremc"
@@ -82,6 +87,9 @@ val deps = listOf(
     "net.blockventuremc.audioserver:minecraft:$audioServerVersion",
 
     "dev.lone:FastNbt-jar:$fastNBTVersion",
+    "io.sentry:sentry:$sentryVersion",
+    "io.sentry:sentry-kotlin-extensions:$sentryVersion",
+    "io.sentry:sentry-logback:$sentryVersion",
 )
 
 val includedDependencies = mutableListOf<String>()
