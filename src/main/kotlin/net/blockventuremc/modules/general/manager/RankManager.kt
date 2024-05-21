@@ -1,17 +1,14 @@
 package net.blockventuremc.modules.general.manager
 
-import dev.kord.common.entity.Snowflake
 import net.blockventuremc.database.functions.getLinkOfDiscord
 import net.blockventuremc.database.functions.getLinkOfUser
-import net.blockventuremc.database.model.BlockUser
 import net.blockventuremc.extensions.getLogger
 import net.blockventuremc.modules.general.model.Rank
 import net.blockventuremc.utils.mcasyncBlocking
 import net.luckperms.api.LuckPermsProvider
 import net.luckperms.api.node.NodeType
 import org.bukkit.Bukkit
-import org.bukkit.entity.Player
-import java.util.UUID
+import java.util.*
 
 
 object RankManager {
@@ -94,7 +91,7 @@ object RankManager {
         mcasyncBlocking {
             val link = getLinkOfUser(uuid) ?: return@mcasyncBlocking
 
-            rank.updateRole(Snowflake(link.discordID))
+            rank.updateRole(link.discordID)
         }
     }
 
@@ -103,10 +100,10 @@ object RankManager {
      *
      * @param discordID the Discord ID of the user
      */
-    suspend fun updateDiscordRank(discordID: String) {
+    fun updateDiscordRank(discordID: String) {
         val link = getLinkOfDiscord(discordID) ?: return
         val rank = getRankOfUser(link.uuid)
 
-        rank.updateRole(Snowflake(discordID))
+        rank.updateRole(discordID)
     }
 }

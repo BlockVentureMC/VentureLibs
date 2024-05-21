@@ -20,6 +20,7 @@ val customBlockDataVersion: String by project
 val audioServerVersion: String by project
 val fastNBTVersion: String by project
 val sentryVersion: String by project
+val jdaVersion: String by project
 
 plugins {
     kotlin("jvm") version "2.0.0"
@@ -87,6 +88,8 @@ val deps = listOf(
     "io.sentry:sentry:$sentryVersion",
     "io.sentry:sentry-kotlin-extensions:$sentryVersion",
     "io.sentry:sentry-logback:$sentryVersion",
+
+    "net.dv8tion:JDA:$jdaVersion",
 )
 
 val includedDependencies = mutableListOf<String>()
