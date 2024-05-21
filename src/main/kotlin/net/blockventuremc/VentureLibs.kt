@@ -2,6 +2,7 @@ package net.blockventuremc
 
 import dev.kord.core.Kord
 import io.github.cdimascio.dotenv.dotenv
+import net.blockventuremc.cache.BoosterCache
 import net.blockventuremc.audioserver.common.data.RabbitConfiguration
 import net.blockventuremc.audioserver.minecraft.AudioServer
 import net.blockventuremc.cache.PlayerCache
@@ -64,6 +65,8 @@ class VentureLibs : JavaPlugin() {
 
         logger.info("Registering modules...")
         registerMC()
+
+        BoosterCache.load()
 
         logger.info("Starting Discord bot...")
 

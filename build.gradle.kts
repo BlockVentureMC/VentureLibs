@@ -82,6 +82,8 @@ val deps = listOf(
     "org.mariadb.jdbc:mariadb-java-client:$mariadbVersion",
 
     "dev.kord:kord-core:0.13.1",
+    "dev.kord:kord-common-jvm:0.13.1",
+    "dev.kord:kord-rest-jvm:0.13.1",
     "dev.kord.x:emoji:0.5.0",
 
     "net.blockventuremc.audioserver:minecraft:$audioServerVersion",

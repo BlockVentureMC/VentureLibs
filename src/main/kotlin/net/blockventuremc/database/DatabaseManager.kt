@@ -4,10 +4,7 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import dev.fruxz.ascend.tool.time.calendar.Calendar
 import net.blockventuremc.VentureLibs
-import net.blockventuremc.database.functions.BlockUserTable
-import net.blockventuremc.database.functions.TableAchievements
-import net.blockventuremc.database.functions.TableLink
-import net.blockventuremc.database.functions.TitleTable
+import net.blockventuremc.database.functions.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Transaction
@@ -33,7 +30,8 @@ internal object DatabaseManager {
             BlockUserTable,
             TableAchievements,
             TitleTable,
-            TableLink
+            TableLink,
+            BoosterTable
         )
     }
 }
