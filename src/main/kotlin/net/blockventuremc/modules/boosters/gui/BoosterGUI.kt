@@ -1,5 +1,6 @@
 package net.blockventuremc.modules.boosters.gui
 
+import dev.fruxz.stacked.plus
 import dev.fruxz.stacked.text
 import net.blockventuremc.cache.BoosterCache
 import net.blockventuremc.database.model.BitBoosters
@@ -35,13 +36,15 @@ object BoosterGUI {
                 player.translate("booster.category.${booster.category.toString().lowercase()}")?.message ?: ("Unknown Booster"),
             )
 
+            val gray = "<gradient:#bdc3c7:#2c3e50>"
+
             lore(
-                player.translate("booster.until", mapOf("time" to booster.endTime.formatToDay(lang)))?.message
-                    ?: (booster.endTime.formatToDay(lang)),
-                player.translate("booster.modifier", mapOf("modifier" to booster.modifier.toString()))?.message
-                    ?: (booster.modifier.toString()),
-                if (booster.user) player.translate("booster.user_only", mapOf("user" to booster.owner.toString()))?.message ?: ("Only for ${booster.owner}")
-                else player.translate("booster.global")?.message ?: ("Global Booster")
+                gray + (player.translate("booster.until", mapOf("time" to booster.endTime.formatToDay(lang)))?.message
+                    ?: (booster.endTime.formatToDay(lang))),
+                gray + (player.translate("booster.modifier", mapOf("modifier" to booster.modifier.toString()))?.message
+                    ?: (booster.modifier.toString())),
+                gray + (if (booster.user) player.translate("booster.user_only", mapOf("user" to booster.owner.toString()))?.message ?: ("Only for ${booster.owner}")
+                else player.translate("booster.global")?.message ?: ("Global Booster"))
             )
         }.build()
     }

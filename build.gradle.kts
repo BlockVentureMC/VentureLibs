@@ -83,6 +83,7 @@ val deps = listOf(
 
     "dev.kord:kord-core:0.13.1",
     "dev.kord.x:emoji:0.5.0",
+    "dev.kord:kord-rest:0.13.1",
 
     "net.blockventuremc.audioserver:minecraft:$audioServerVersion",
 

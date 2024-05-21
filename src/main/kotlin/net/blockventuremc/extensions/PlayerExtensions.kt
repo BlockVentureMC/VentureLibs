@@ -8,6 +8,7 @@ import net.blockventuremc.consts.TEXT_GRAY
 import net.blockventuremc.database.functions.createDatabaseUser
 import net.blockventuremc.database.functions.getDatabaseUserOrNull
 import net.blockventuremc.database.model.BlockUser
+import net.blockventuremc.modules.boosters.BoosterManager
 import net.blockventuremc.modules.general.manager.RankManager
 import net.blockventuremc.modules.general.model.Languages
 import net.blockventuremc.modules.general.model.Rank
@@ -145,4 +146,4 @@ fun CommandSender.isRankOrHigher(ranks: Ranks): Boolean {
 }
 
 val Player.bitsPerMinute: Long
-    get() = rank.bitsPerMinute
+    get() = rank.bitsPerMinute + BoosterManager.getModifiers(uniqueId.toString())
