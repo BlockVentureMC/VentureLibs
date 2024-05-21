@@ -53,7 +53,7 @@ object BoosterGUI {
                 gray + (if (booster.user) player.translate("booster.user_only", mapOf("user" to owner.name))?.message ?: ("Only for ${owner.name}") else player.translate("booster.global")?.message ?: ("Global Booster")),
 
                 if (player.hasPermission("booster.delete")) {
-                    gray + player.translate("booster.deleted")?.message
+                    gray + player.translate("booster.remove")?.message
                 } else {
                    gray + ""
                 }
