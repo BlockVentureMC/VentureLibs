@@ -13,6 +13,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
+import java.util.*
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 
@@ -32,7 +33,17 @@ class CreateBoosterCommand: CommandExecutor, TabExecutor {
             return true
         }
 
-        val target = sender.server.getOfflinePlayer(args[0])
+        // check if uuid
+
+        val name = args[0]
+
+        val target = if (name.length > 24) {
+            val uuid = name.toUUID()
+
+            sender.server.getOfflinePlayer(uuid)
+        } else {
+            sender.server.getOfflinePlayer(name)
+        }
 
         val mod: Long = args.getOrNull(1)?.toLongOrNull() ?: 1
 
