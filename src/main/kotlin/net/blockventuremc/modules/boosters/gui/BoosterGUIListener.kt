@@ -28,7 +28,8 @@ class BoosterGUIListener: Listener {
             BoosterCache.getByEndTime(booster.toLong())?.let {
                 BoosterCache.invalidateBooster(it)
 
-                inventory.identify("booster_gui")
+                inv.setItem(slot, ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE))
+                inv.identify("booster_gui")
 
                 whoClicked.translate("booster.deleted")?.message?.let { it1 -> whoClicked.sendMessagePrefixed(it1) }
             }
