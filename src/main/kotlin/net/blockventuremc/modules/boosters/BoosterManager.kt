@@ -24,6 +24,10 @@ object BoosterManager {
                     name = "Modifier"
                     value = boosters.modifier.toString()
                 }
+                field {
+                    name = "Category"
+                    value = boosters.category.name
+                }
             }
         }
     }

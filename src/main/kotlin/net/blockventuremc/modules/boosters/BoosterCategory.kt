@@ -1,8 +1,9 @@
 package net.blockventuremc.modules.boosters
 
-enum class BoosterCategory {
-    EVENT,
-    SHOP_REFILL,
-    USER_ACTIVATED,
-    CREW_ACTIVATED
+enum class BoosterCategory(name: String) {
+    EVENT("Event"),
+    SHOP_REFILL("Shop Refill"),
+
+    USER_ACTIVATED("User Activated"),
+    CREW_ACTIVATED("Crew Activate"),
 }
