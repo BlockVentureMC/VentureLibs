@@ -70,7 +70,7 @@ class TrackRide(private val id: Int, private val origin: Location) {
         // Save the nodes to a file
         val file = File(VentureLibs.instance.dataFolder, "rides/track/$id.json").also { it.parentFile.mkdirs(); it.createNewFile() }
         val jsonArray = JSONArray()
-        itemDisplays.forEach { jsonArray.add(it) }
+        itemDisplays.forEach { jsonArray.add(it.toString()) }
         file.writeText(jsonArray.toJSONString())
     }
 

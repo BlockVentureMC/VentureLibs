@@ -104,20 +104,20 @@ data class TrackNode(
         val frontVectorEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
         frontVectorEnt.itemStack = ItemStack(Material.STICK)
         frontVectorEnt.itemDisplayTransform = ItemDisplayTransform.NONE
-        frontVectorEnt.transformation = Transformation(frontVector.toVector3f(), zeroRotation, Vector3f(frontVector.toVector3f().length(), 0f, 0f), zeroRotation)
+        frontVectorEnt.transformation = Transformation(frontVector.toVector3f(), zeroRotation, Vector3f(frontVector.toVector3f().length(), 1f, 1f), zeroRotation)
 
         // Display the left vector
         val leftVectorEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
         leftVectorEnt.itemStack = ItemStack(Material.BLAZE_ROD)
         leftVectorEnt.itemDisplayTransform = ItemDisplayTransform.NONE
-        leftVectorEnt.transformation = Transformation(leftVector.toVector3f(), zeroRotation, Vector3f(leftVector.toVector3f().length(), 0f, 0f), zeroRotation)
+        leftVectorEnt.transformation = Transformation(leftVector.toVector3f(), zeroRotation, Vector3f(leftVector.toVector3f().length(), 1f, 1f), zeroRotation)
 
 
         // Display the up vector
         val upVectorEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
         upVectorEnt.itemStack = ItemStack(Material.LIGHTNING_ROD)
         upVectorEnt.itemDisplayTransform = ItemDisplayTransform.NONE
-        upVectorEnt.transformation = Transformation(upVector.toVector3f(), zeroRotation,  Vector3f(upVector.toVector3f().length(), 0f, 0f), zeroRotation)
+        upVectorEnt.transformation = Transformation(upVector.toVector3f(), zeroRotation, Vector3f(upVector.toVector3f().length(), 1f, 1f), zeroRotation)
 
         return Triple(frontVectorEnt.uniqueId, leftVectorEnt.uniqueId, upVectorEnt.uniqueId)
     }
