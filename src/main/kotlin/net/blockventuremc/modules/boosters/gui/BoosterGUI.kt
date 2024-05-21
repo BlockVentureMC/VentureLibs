@@ -45,19 +45,20 @@ object BoosterGUI {
 
 
 
-
             lore(
                 gray + (player.translate("booster.until", mapOf("time" to booster.endTime.formatToDay(lang)))?.message
                     ?: (booster.endTime.formatToDay(lang))),
                 gray + (player.translate("booster.modifier", mapOf("modifier" to booster.modifier.toString()))?.message
                     ?: (booster.modifier.toString())),
-                gray + (if (booster.user) player.translate("booster.user_only", mapOf("user" to owner.name))?.message ?: ("Only for ${owner.name}") else player.translate("booster.global")?.message ?: ("Global Booster"))
+                gray + (if (booster.user) player.translate("booster.user_only", mapOf("user" to owner.name))?.message ?: ("Only for ${owner.name}") else player.translate("booster.global")?.message ?: ("Global Booster")),
+
+                if (player.hasPermission("booster.delete")) {
+                    gray + player.translate("booster.delete")?.message
+                } else {
+                   gray + ""
+                }
             )
 
-            loreIf(
-                (gray + player.translate("booster.delete")?.message),
-                condition = player.hasPermission("booster.delete")
-            )
         }.build()
     }
 }
