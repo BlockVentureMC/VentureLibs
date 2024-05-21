@@ -1,5 +1,9 @@
 package net.blockventuremc.modules.boosters
 
+import com.google.common.reflect.ClassPath
+import io.sentry.Sentry
+import net.blockventuremc.VentureLibs
+import net.blockventuremc.audioserver.common.extensions.getLogger
 import net.blockventuremc.cache.BoosterCache
 import net.blockventuremc.database.functions.makeBooster
 import net.blockventuremc.database.model.BitBoosters
@@ -17,6 +21,15 @@ object BoosterManager {
         // use unixtimestamp for endTime
 
         mcasyncBlocking {
+            val classLoader = VentureLibs.instance.javaClass.classLoader
+            try {
+                classLoader.loadClass("dev.kord.rest.builder.message.EmbedBuilder").kotlin
+            } catch (e: ClassNotFoundException) {
+                Sentry.captureException(e)
+                e.printStackTrace()
+                getLogger().error("Failed to load class: ${e.message}")
+                return@mcasyncBlocking
+            }
             ChannelManager.sendEconomy {
                 title = "Booster Purchased"
                 description = "A new booster has been purchased by ${p.name}"

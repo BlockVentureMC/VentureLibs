@@ -6,6 +6,7 @@ import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.rest.builder.interaction.ChatInputCreateBuilder
 import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.message.EmbedBuilder
+import net.blockventuremc.audioserver.common.extensions.getLogger
 import net.blockventuremc.database.functions.getLinkOfDiscord
 import net.blockventuremc.database.model.Link
 import net.blockventuremc.extensions.translate
@@ -24,13 +25,21 @@ class LinkCommand : AbstractCommand() {
         }
     }
 
-    override suspend fun execute(bot: Kord, interaction: GuildChatInputCommandInteraction) {
-        val player = Bukkit.getOnlinePlayers().find { it.name == interaction.command.options["username"]?.value }
+    override suspend fun execute(bot: Kord, interaction: GuildChatInputCommandInteraction) = with(interaction) {
+        val playerName = interaction.command.options["username"]?.value as? String ?: run {
+            interaction.respondEphemeral {
+                content = "Please provide a username"
+            }
+            return@with
+        }
 
+        getLogger().info("Linking $playerName")
+        val player = Bukkit.getPlayer(playerName)
         if (player == null) {
             interaction.respondEphemeral {
-                content = "The player ${interaction.command.options["username"]?.value} is not online"
+                content = "The player $playerName is not online"
             }
+            getLogger().info("Player $playerName is not online. Online players: ${Bukkit.getOnlinePlayers().joinToString(", ") { "`${it.name}`" }}")
             return
         }
 
