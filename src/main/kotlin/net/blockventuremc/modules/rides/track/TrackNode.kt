@@ -108,8 +108,8 @@ data class TrackNode(
         frontVectorEnt.itemDisplayTransform = ItemDisplayTransform.NONE
 
         val frontDirection = directionToQuaternion(origin.toVector().toVector3f(), frontVector.toVector3f())
-        val trans = frontVector.toVector3f()
-        frontVectorEnt.transformation = Transformation(trans, frontDirection, Vector3f(frontVector.toVector3f().length(), 1f, 1f), zeroRotation)
+        val frontLength = (frontVector.toVector3f() - origin.toVector().toVector3f()).div(50f)
+        frontVectorEnt.transformation = Transformation(Vector3f(), frontDirection, Vector3f(frontLength.lengthSquared(), 1f, 1f), zeroRotation)
 
 
         /*
