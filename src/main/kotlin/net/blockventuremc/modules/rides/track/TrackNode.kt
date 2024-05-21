@@ -93,6 +93,9 @@ data class TrackNode(
             loc.chunk.isForceLoaded = true
         }
 
+        // Zero rotation quaternion
+        val zeroRotation = Quaternionf(0f, 0f, 0f, 1f)
+
         // Display the node in the world as itemDisplayEntites
         // We use the location of the node as base position
         // The vectors are displayed as lines from the base position with the items: stick, blaze rod, and lightning rod
@@ -101,21 +104,20 @@ data class TrackNode(
         val frontVectorEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
         frontVectorEnt.itemStack = ItemStack(Material.STICK)
         frontVectorEnt.itemDisplayTransform = ItemDisplayTransform.NONE
-        frontVectorEnt.transformation = Transformation(frontVector.toVector3f(), Quaternionf(), Vector3f(1.0f, 1.0f, 1.0f), Quaternionf())
+        frontVectorEnt.transformation = Transformation(frontVector.toVector3f(), zeroRotation, Vector3f(frontVector.toVector3f().length(), 0f, 0f), zeroRotation)
 
         // Display the left vector
         val leftVectorEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
         leftVectorEnt.itemStack = ItemStack(Material.BLAZE_ROD)
         leftVectorEnt.itemDisplayTransform = ItemDisplayTransform.NONE
-        leftVectorEnt.transformation = Transformation(leftVector.toVector3f(), Quaternionf(), Vector3f(1.0f, 1.0f, 1.0f), Quaternionf())
-
+        leftVectorEnt.transformation = Transformation(leftVector.toVector3f(), zeroRotation, Vector3f(leftVector.toVector3f().length(), 0f, 0f), zeroRotation)
 
 
         // Display the up vector
         val upVectorEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
         upVectorEnt.itemStack = ItemStack(Material.LIGHTNING_ROD)
         upVectorEnt.itemDisplayTransform = ItemDisplayTransform.NONE
-        upVectorEnt.transformation = Transformation(upVector.toVector3f(), Quaternionf(), Vector3f(1.0f, 1.0f, 1.0f), Quaternionf())
+        upVectorEnt.transformation = Transformation(upVector.toVector3f(), zeroRotation,  Vector3f(upVector.toVector3f().length(), 0f, 0f), zeroRotation)
 
         return Triple(frontVectorEnt.uniqueId, leftVectorEnt.uniqueId, upVectorEnt.uniqueId)
     }
