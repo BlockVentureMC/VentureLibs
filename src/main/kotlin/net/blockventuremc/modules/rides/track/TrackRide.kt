@@ -42,9 +42,10 @@ class TrackRide(private val id: Int, private val origin: Location) {
         for (node in nodes) {
             // Display the track
             val displays = node.displayInWord(origin)
-            itemDisplays.add(displays.first)
-            itemDisplays.add(displays.second)
-            itemDisplays.add(displays.third)
+            //itemDisplays.add(displays.first)
+            //itemDisplays.add(displays.second)
+            //itemDisplays.add(displays.third)
+            itemDisplays.add(displays)
         }
         saveNodeEntitiesToFile()
     }

@@ -1,5 +1,7 @@
 package net.blockventuremc.modules.rides.track
 
+import net.blockventuremc.extensions.directionToQuaternion
+import net.blockventuremc.extensions.minus
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.EntityType
@@ -85,7 +87,7 @@ data class TrackNode(
      *
      * @return A triple containing the unique IDs of the front vector entity, left vector entity, and up vector entity.
      */
-    fun displayInWord(origin: Location): Triple<UUID, UUID, UUID> {
+    fun displayInWord(origin: Location): UUID {
         val loc = Location(origin.world, origin.x + posX, origin.y + posY, origin.z + posZ)
 
         if (!loc.chunk.isLoaded) {
@@ -102,24 +104,43 @@ data class TrackNode(
 
         // Display the front vector
         val frontVectorEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
-        frontVectorEnt.itemStack = ItemStack(Material.STICK)
+        frontVectorEnt.itemStack = ItemStack(Material.END_ROD)
         frontVectorEnt.itemDisplayTransform = ItemDisplayTransform.NONE
-        frontVectorEnt.transformation = Transformation(frontVector.toVector3f(), zeroRotation, Vector3f(frontVector.toVector3f().length(), 1f, 1f), zeroRotation)
 
+        val frontDirection = directionToQuaternion(origin.toVector().toVector3f(), frontVector.toVector3f())
+        val trans = frontVector.toVector3f()
+        frontVectorEnt.transformation = Transformation(trans, frontDirection, Vector3f(frontVector.toVector3f().length(), 1f, 1f), zeroRotation)
+
+
+        /*
         // Display the left vector
         val leftVectorEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
         leftVectorEnt.itemStack = ItemStack(Material.BLAZE_ROD)
         leftVectorEnt.itemDisplayTransform = ItemDisplayTransform.NONE
-        leftVectorEnt.transformation = Transformation(leftVector.toVector3f(), zeroRotation, Vector3f(leftVector.toVector3f().length(), 1f, 1f), zeroRotation)
+
+        val leftDirection = leftVector.toVector3f() - origin.toVector().toVector3f()
+        leftVectorEnt.transformation = Transformation(leftVector.toVector3f(), Quaternionf(
+            leftDirection.x, leftDirection.y, leftDirection.z, 0f
+        ), Vector3f(leftVector.toVector3f().length(), 1f, 1f), zeroRotation)
 
 
         // Display the up vector
         val upVectorEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
         upVectorEnt.itemStack = ItemStack(Material.LIGHTNING_ROD)
         upVectorEnt.itemDisplayTransform = ItemDisplayTransform.NONE
-        upVectorEnt.transformation = Transformation(upVector.toVector3f(), zeroRotation, Vector3f(upVector.toVector3f().length(), 1f, 1f), zeroRotation)
 
-        return Triple(frontVectorEnt.uniqueId, leftVectorEnt.uniqueId, upVectorEnt.uniqueId)
+        val upDirection = upVector.toVector3f() - origin.toVector().toVector3f()
+        upVectorEnt.transformation = Transformation(upVector.toVector3f(), Quaternionf(
+            upDirection.x, upDirection.y, upDirection.z, 0f
+        ), Vector3f(upVector.toVector3f().length(), 1f, 1f), zeroRotation)
+
+         */
+
+
+        return frontVectorEnt.uniqueId
+
+
+        //return Triple(frontVectorEnt.uniqueId, leftVectorEnt.uniqueId, upVectorEnt.uniqueId)
     }
 
 
