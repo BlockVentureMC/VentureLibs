@@ -1,6 +1,9 @@
 package net.blockventuremc.modules.rides.track
 
 import net.blockventuremc.VentureLibs
+import net.blockventuremc.extensions.getLogger
+import net.blockventuremc.modules.rides.track.segments.NormalSegment
+import net.blockventuremc.modules.rides.track.segments.TrackSegment
 import org.bukkit.Location
 import org.json.simple.JSONArray
 import org.json.simple.parser.JSONParser
@@ -11,6 +14,7 @@ class TrackRide(private val id: Int, private val origin: Location) {
 
     private val nodes = mutableListOf<TrackNode>()
     private val itemDisplays = mutableListOf<UUID>()
+    var trackSegments = listOf<TrackSegment>()
 
     init {
         loadNodeEntitiesFromFile()
@@ -23,6 +27,9 @@ class TrackRide(private val id: Int, private val origin: Location) {
      */
     fun addNodes(nodes: List<TrackNode>) {
         this.nodes.addAll(nodes)
+
+        // Recalculate the segments
+        recalculateSegments()
     }
 
     /**
@@ -32,7 +39,72 @@ class TrackRide(private val id: Int, private val origin: Location) {
      */
     fun addNode(node: TrackNode) {
         nodes.add(node)
+
+        // Recalculate the segments
+        recalculateSegments()
     }
+
+    /**
+     * Recalculates the segments of a track ride.
+     *
+     * This method filters out all NormalSegments from the trackSegments list, collects the ranges of the remaining
+     * non-normal segments, and creates NormalSegments for any gaps between those ranges. It also handles the wrap-around
+     * segment if necessary. Finally, it adds the non-normal segments back to the newSegments list and sorts them by node index.
+     * The trackSegments list is then updated with the new segments.
+     */
+    private fun recalculateSegments() {
+        // Filter out all NormalSegments
+        val nonNormalSegments = trackSegments.filter { it.function !is NormalSegment }
+
+        // Collect the ranges of non-normal segments
+        val ranges = nonNormalSegments.flatMap { segment ->
+            val startIndex = nodes.indexOf(segment.nodes.first())
+            val endIndex = nodes.indexOf(segment.nodes.last())
+            listOf(startIndex to endIndex)
+        }.sortedBy { it.first }
+
+        val newSegments = mutableListOf<TrackSegment>()
+        var lastEndIndex = 0
+
+        for (range in ranges) {
+            val (startIndex, endIndex) = range
+            if (lastEndIndex < startIndex - 1) {
+                // Create a NormalSegment for the gap
+                val normalSegmentNodes = nodes.subList(lastEndIndex, startIndex)
+                newSegments.add(TrackSegment(newSegments.size + 1, normalSegmentNodes, NormalSegment()))
+            }
+            lastEndIndex = endIndex + 1
+        }
+
+        // Handle the segment from the last end index to the end of the nodes list
+        if (lastEndIndex < nodes.size) {
+            val normalSegmentNodes = nodes.subList(lastEndIndex, nodes.size)
+            newSegments.add(TrackSegment(newSegments.size + 1, normalSegmentNodes, NormalSegment()))
+        }
+
+        // Handle wrap-around segment
+        if (ranges.isNotEmpty() && ranges.first().first > 0 && ranges.last().second < nodes.size - 1) {
+            val firstStartIndex = ranges.first().first
+            val lastSegmentEndIndex = ranges.last().second
+            if (lastSegmentEndIndex < nodes.size - 1 || firstStartIndex > 0) {
+                val normalSegmentNodes = nodes.subList(lastSegmentEndIndex, nodes.size) + nodes.subList(0, firstStartIndex)
+                newSegments.add(TrackSegment(newSegments.size + 1, normalSegmentNodes, NormalSegment()))
+            }
+        }
+
+        // Add the non-normal segments back
+        newSegments.addAll(nonNormalSegments)
+
+        // Sort the segments by their node index
+        trackSegments = newSegments.sortedBy { nodes.indexOf(it.nodes.first()) }
+
+        getLogger().info("Recalculated segments for track $id.")
+        for (segment in trackSegments) {
+            segment.calculateSpeed(0.0, 1.0, 1.0, 1.0)
+            getLogger().info("Segment ${segment.id} (${segment.function::class.simpleName}): ${segment.nodes.first().id} - ${segment.nodes.last().id} with a length of ${segment.length} meters. Average speed: ${segment.averageSpeed} m/s.")
+        }
+    }
+
 
     /**
      * Displays each node in the track as itemDisplayEntities in the given world.

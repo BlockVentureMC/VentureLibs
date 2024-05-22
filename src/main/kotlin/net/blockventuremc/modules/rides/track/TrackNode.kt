@@ -35,6 +35,8 @@ data class TrackNode(
     val upX: Float = 0.0f,
     val upY: Float = 0.0f,
     val upZ: Float = 0.0f,
+
+    var calculatedSpeed: Double = 0.0
 ) {
 
     /**

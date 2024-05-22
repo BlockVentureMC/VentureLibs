@@ -28,9 +28,10 @@ class Nl2Importer(private val file: File, private val trackId: Int, private val 
         // Load the track nodes from the file
         val trackNodes = mutableListOf<TrackNode>()
 
-        file.forEachLine {
+        file.forEachLine { line ->
             try {
-                trackNodes.add(covertToTrackNode(it))
+                if (line.contains("No.")) return@forEachLine
+                trackNodes.add(covertToTrackNode(line))
             } catch (e: IllegalArgumentException) {
                 // Skip the line if it is invalid
                 e.printStackTrace()

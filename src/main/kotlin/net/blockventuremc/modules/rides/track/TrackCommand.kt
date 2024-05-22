@@ -83,6 +83,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
         }
         TrackManager.tracks[trackId] = Nl2Importer(file, trackId, sender.location).import()
         sender.sendMessage("Track $trackId imported.")
+        performShowTrack(sender, trackId)
     }
 
     private fun performListTracks(sender: Player) {
