@@ -22,6 +22,12 @@ import org.bukkit.permissions.PermissionDefault
 class RankCommand : CommandExecutor, TabCompleter {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 
+        if (args.size == 1 && args[0].equals("reload", true)) {
+            RankManager.reloadRanks()
+            sender.sendMessagePrefixed("Ranks reloaded.")
+            return true
+        }
+
         if (args.size < 2) {
             sender.sendMessagePrefixed("/rank <player> <rank>")
             sender.sendMessageBlock(
