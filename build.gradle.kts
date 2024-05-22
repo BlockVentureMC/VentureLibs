@@ -19,11 +19,13 @@ val placeholderApiVersion: String by project
 val customBlockDataVersion: String by project
 val audioServerVersion: String by project
 val fastNBTVersion: String by project
+val sentryVersion: String by project
+val jdaVersion: String by project
 
 plugins {
-    kotlin("jvm") version "2.0.0-RC3"
+    kotlin("jvm") version "2.0.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    kotlin("plugin.serialization") version "1.9.24"
+    kotlin("plugin.serialization") version "2.0.0"
     id("org.jetbrains.dokka") version "1.9.20"
     id("org.sonarqube") version "5.0.0.4638"
     id("io.sentry.jvm.gradle") version "4.6.0"
@@ -45,6 +47,10 @@ sentry {
     org = "flawcra"
     projectName = "blockventure-plugin"
     authToken = System.getenv("SENTRY_AUTH_TOKEN")
+
+    autoInstallation {
+        enabled = true
+    }
 }
 
 group = "net.blockventuremc"
@@ -75,13 +81,15 @@ val deps = listOf(
 
     "com.zaxxer:HikariCP:$hikariVersion",
     "org.mariadb.jdbc:mariadb-java-client:$mariadbVersion",
-
-    "dev.kord:kord-core:0.13.1",
-    "dev.kord.x:emoji:0.5.0",
-
+    
     "net.blockventuremc.audioserver:minecraft:$audioServerVersion",
 
     "dev.lone:FastNbt-jar:$fastNBTVersion",
+    "io.sentry:sentry:$sentryVersion",
+    "io.sentry:sentry-kotlin-extensions:$sentryVersion",
+    "io.sentry:sentry-logback:$sentryVersion",
+
+    "net.dv8tion:JDA:$jdaVersion",
 )
 
 val includedDependencies = mutableListOf<String>()

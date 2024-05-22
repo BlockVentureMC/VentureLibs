@@ -1,27 +1,30 @@
 package net.blockventuremc
 
-import dev.kord.core.Kord
-import io.github.cdimascio.dotenv.dotenv
 import net.blockventuremc.audioserver.common.data.RabbitConfiguration
 import net.blockventuremc.audioserver.minecraft.AudioServer
+import net.blockventuremc.cache.BoosterCache
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.database.DatabaseManager
-import net.blockventuremc.modules.discord.DiscordBot
 import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.modules.placeholders.PlayerPlaceholderManager
 import net.blockventuremc.modules.warps.WarpManager
+import net.blockventuremc.utils.Environment
+import net.blockventuremc.utils.RegisterManager.registerAll
+import net.blockventuremc.utils.RegisterManager.registerCommands
 import net.blockventuremc.utils.RegisterManager.registerMC
-import net.blockventuremc.utils.mcasyncBlocking
+import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.JDABuilder
+import net.dv8tion.jda.api.OnlineStatus
+import net.dv8tion.jda.api.entities.Activity
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
 class VentureLibs : JavaPlugin() {
     companion object {
         lateinit var instance: VentureLibs
-        lateinit var bot: DiscordBot
     }
 
-    val dotenv = dotenv()
+    lateinit var jda: JDA
 
     init {
         instance = this
@@ -49,11 +52,11 @@ class VentureLibs : JavaPlugin() {
         logger.info("Connecting to audioserver...")
         AudioServer.connect(
             RabbitConfiguration(
-                dotenv["RABBITMQ_HOST"] ?: "localhost",
-                dotenv["RABBITMQ_PORT"]?.toInt() ?: 5672,
-                dotenv["RABBITMQ_VHOST"] ?: "/",
-                dotenv["RABBITMQ_USER"] ?: "guest",
-                dotenv["RABBITMQ_PASSWORD"] ?: "guest"
+                Environment.getEnv("RABBITMQ_HOST") ?: "localhost",
+                Environment.getEnv("RABBITMQ_PORT")?.toInt() ?: 5672,
+                Environment.getEnv("RABBITMQ_VHOST") ?: "/",
+                Environment.getEnv("RABBITMQ_USER") ?: "guest",
+                Environment.getEnv("RABBITMQ_PASSWORD") ?: "guest"
             )
         )
 
@@ -65,19 +68,22 @@ class VentureLibs : JavaPlugin() {
         logger.info("Registering modules...")
         registerMC()
 
-        logger.info("Starting Discord bot...")
-
-        if (dotenv["BOT_TOKEN"] != null) mcasyncBlocking {
-            val kord = Kord(dotenv["BOT_TOKEN"]!!)
-
-            bot = DiscordBot(kord)
-            bot.start()
-        } else {
-            logger.warning("BOT_TOKEN is not set in .env file, Discord bot will not be started")
-        }
+        BoosterCache.load()
 
         logger.info("Preloading warps...")
         WarpManager
+
+        logger.info("Starting bot")
+        jda = JDABuilder.createDefault(Environment.getEnv("BOT_TOKEN") ?: error("No token provided"))
+            .registerAll()
+            .build()
+            .awaitReady()
+            .also {
+                it.presence.setPresence(
+                    OnlineStatus.IDLE, Activity.customStatus("☕ Starting up...")
+                )
+            }
+            .registerCommands()
 
         logger.info("Plugin has been enabled.")
     }
@@ -90,10 +96,7 @@ class VentureLibs : JavaPlugin() {
             PlayerCache.saveToDB(pixelPlayer.copy(username = player.name))
         }
 
-        mcasyncBlocking {
-            bot.kord.shutdown()
-        }
-
+        jda.shutdown()
         AudioServer.disconnect()
 
         logger.info("Plugin has been disabled")

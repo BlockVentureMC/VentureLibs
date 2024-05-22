@@ -8,6 +8,9 @@ enum class Languages(val locale: Locale) {
     FR(Locale.FRENCH),
     NL(Locale("nl"));
 
+    val code: String
+        get() = getLanguageCode()
+
     fun getLanguageCode(): String {
         return when (this) {
             DE -> "de-DE"

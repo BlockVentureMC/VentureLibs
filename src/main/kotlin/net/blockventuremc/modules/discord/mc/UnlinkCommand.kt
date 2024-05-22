@@ -1,6 +1,5 @@
 package net.blockventuremc.modules.discord.mc
 
-import dev.kord.common.entity.Snowflake
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.database.functions.getLinkOfUser
@@ -45,10 +44,9 @@ class UnlinkCommand : CommandExecutor {
         unlinkUser(player.uniqueId)
 
         mcroutine {
-            val name = VentureLibs.bot.kord.getUser(Snowflake(linked.discordID))?.username ?: "Unknown"
+            val name = VentureLibs.instance.jda.getUserById(linked.discordID)?.name ?: "Unknown"
 
             sender.sendMessagePrefixed("You have successfully unlinked your account from $name's Discord account.")
-
         }
 
         return true

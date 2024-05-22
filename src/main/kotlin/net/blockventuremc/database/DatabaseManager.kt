@@ -4,10 +4,8 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import dev.fruxz.ascend.tool.time.calendar.Calendar
 import net.blockventuremc.VentureLibs
-import net.blockventuremc.database.functions.BlockUserTable
-import net.blockventuremc.database.functions.TableAchievements
-import net.blockventuremc.database.functions.TableLink
-import net.blockventuremc.database.functions.TitleTable
+import net.blockventuremc.database.functions.*
+import net.blockventuremc.utils.Environment
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Transaction
@@ -20,10 +18,10 @@ import java.util.*
 internal object DatabaseManager {
 
     val dbConfig = HikariConfig().apply {
-        jdbcUrl = VentureLibs.instance.dotenv["DATABASE_URL"]
-        driverClassName = VentureLibs.instance.dotenv["DATABASE_DRIVER"]
-        username = VentureLibs.instance.dotenv["DATABASE_USER"]
-        password = VentureLibs.instance.dotenv["DATABASE_PASSWORD"]
+        jdbcUrl = Environment.getEnv("DATABASE_URL")
+        driverClassName = Environment.getEnv("DATABASE_DRIVER")
+        username = Environment.getEnv("DATABASE_USER")
+        password = Environment.getEnv("DATABASE_PASSWORD")
         maximumPoolSize = 100
     }
     val database = Database.connect(HikariDataSource(dbConfig))
@@ -33,7 +31,8 @@ internal object DatabaseManager {
             BlockUserTable,
             TableAchievements,
             TitleTable,
-            TableLink
+            TableLink,
+            BoosterTable
         )
     }
 }

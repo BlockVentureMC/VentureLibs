@@ -7,6 +7,7 @@ import net.blockventuremc.modules.general.events.custom.*
 import net.blockventuremc.modules.placeholders.parsePlaceholders
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
+import org.bukkit.Bukkit
 import org.bukkit.SoundCategory
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -18,19 +19,19 @@ class ChatEvent : Listener {
     private val chatFormat =
         "%luckperms_prefix%%luckperms_primary_group_name% <color:#3d3d3d>»</color> <color:#c8d6e5>%playername%</color> <color:#f6e58d>"
 
-
     @EventHandler
     fun onChat(event: AsyncChatEvent): Unit = with(event) {
-
         val messagePlain = message().asPlainString
 
+        // Highlight player names in the chat message
+        val highlightedMessage = highlightPlayerNames(messagePlain)
+
         var format =
-            text(parsePlaceholders(chatFormat, player)).append(text(parsePlaceholders(messagePlain, player)))
+            text(parsePlaceholders(chatFormat, player)).append(text(parsePlaceholders(highlightedMessage, player)))
 
         val area = player.location.getArea()?.let { area -> if (area.name.startsWith("chatroom_")) area else null }
         if (area != null) {
             format = (text("<color:#7593ff>[${area.chatRoomName}]</color> ")).append(format)
-
         }
 
         val audienceFiltered = event.viewers().filter {
@@ -45,6 +46,15 @@ class ChatEvent : Listener {
         event.renderer { _, _, _, _ ->
             return@renderer format
         }
+    }
+
+    private fun highlightPlayerNames(message: String): String {
+        val playerNames = Bukkit.getOnlinePlayers().map { it.name }
+        var highlightedMessage = message
+        playerNames.forEach { playerName ->
+            highlightedMessage = highlightedMessage.replace(playerName, "<color:#f6e58d>$playerName</color>")
+        }
+        return highlightedMessage
     }
 
     @EventHandler

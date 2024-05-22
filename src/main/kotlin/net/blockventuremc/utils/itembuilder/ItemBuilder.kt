@@ -293,7 +293,7 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
 
         val target = URL("https://api.mineskin.org/get/uuid/$mineSkinUUID")
         val connection = target.openConnection()
-        connection.setRequestProperty("User-Agent", "RainbowIslands/1.0")
+        connection.setRequestProperty("User-Agent", "BlockVentureMC/1.0")
         val inputStream = connection.getInputStream()
         val scanner = Scanner(inputStream)
         val response = StringBuilder()
