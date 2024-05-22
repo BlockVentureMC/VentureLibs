@@ -9,6 +9,9 @@ import net.blockventuremc.modules.rides.track.utils.calculateAdjustedSpeed
  *
  */
 class NormalSegment : SegmentFunction {
+
+    override val trackDisplay: SegmentTypes = SegmentTypes.NORMAL
+
     override fun calculateSpeed(node: TrackNode, currentSpeed: Double, previousNode: TrackNode?, weatherFactor: Double, maintenanceFactor: Double, trainWeight: Double): Double {
         if (previousNode == null) {
             return currentSpeed

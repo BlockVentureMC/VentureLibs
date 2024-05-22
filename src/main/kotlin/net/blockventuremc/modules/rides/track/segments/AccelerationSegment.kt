@@ -10,7 +10,10 @@ import net.blockventuremc.modules.rides.track.TrackNode
  *
  * @param acceleration The acceleration value for the segment.
  */
-class AccelerationSegment(private val acceleration: Double) : SegmentFunction {
+class AccelerationSegment(private val acceleration: Double = 2.0) : SegmentFunction {
+
+    override val trackDisplay: SegmentTypes = SegmentTypes.LAUNCH
+
     override fun calculateSpeed(node: TrackNode, currentSpeed: Double, previousNode: TrackNode?, weatherFactor: Double, maintenanceFactor: Double, trainWeight: Double): Double {
         val newSpeed = currentSpeed + acceleration * weatherFactor * maintenanceFactor
         val frictionLoss = 0.01 * trainWeight

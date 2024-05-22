@@ -9,7 +9,10 @@ import net.blockventuremc.modules.rides.track.utils.calculateAdjustedSpeed
  *
  * @param liftSpeed The desired speed for the segment.
  */
-class LiftSegment(private val liftSpeed: Double) : SegmentFunction {
+class LiftSegment(private val liftSpeed: Double = 7.0) : SegmentFunction {
+
+    override val trackDisplay: SegmentTypes = SegmentTypes.LIFT
+
     override fun calculateSpeed(node: TrackNode, currentSpeed: Double, previousNode: TrackNode?, weatherFactor: Double, maintenanceFactor: Double, trainWeight: Double): Double {
         if (previousNode == null) {
             return currentSpeed
