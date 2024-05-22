@@ -17,7 +17,7 @@ object RankManager {
     private val luckPerms = LuckPermsProvider.get()
 
     init {
-        loadRanks()
+        reloadRanks()
     }
 
     /**
@@ -27,7 +27,7 @@ object RankManager {
      * Once loaded, the `ranks` list is sorted by weight in ascending order.
      * This method also logs the loaded ranks and their count.
      */
-    private fun loadRanks() {
+    fun reloadRanks() {
         ranks = emptyList()
         luckPerms.groupManager.loadedGroups.forEach { rank ->
             val displayName = rank.displayName ?: rank.name
