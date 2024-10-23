@@ -1,8 +1,8 @@
 package net.blockventuremc.modules.rides.track
 
 import net.blockventuremc.extensions.createQuaternionFromVectors
+import net.blockventuremc.modules.rides.track.segments.SegmentTypes
 import org.bukkit.Location
-import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.ItemDisplay
 import org.bukkit.entity.ItemDisplay.ItemDisplayTransform
@@ -35,6 +35,8 @@ data class TrackNode(
     val upX: Float = 0.0f,
     val upY: Float = 0.0f,
     val upZ: Float = 0.0f,
+
+    var calculatedSpeed: Double = 0.0
 ) {
 
     /**
@@ -105,7 +107,7 @@ data class TrackNode(
 
         // Display the item with the calculated orientation
         val itemDisplayEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
-        itemDisplayEnt.itemStack = ItemStack(Material.SPRUCE_TRAPDOOR)  // Replace with appropriate item
+        itemDisplayEnt.itemStack = ItemStack(SegmentTypes.NORMAL.material)
         itemDisplayEnt.itemDisplayTransform = ItemDisplayTransform.NONE
         itemDisplayEnt.transformation = Transformation(originVec, quaternion, Vector3f(1f, 1f, 1f), Quaternionf())
 

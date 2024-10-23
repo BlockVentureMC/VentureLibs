@@ -199,8 +199,6 @@ kotlin {
         freeCompilerArgs.addAll(
             listOf(
                 "-opt-in=kotlin.RequiresOptIn",
-                "-Xopt-in=dev.kord.common.annotation.KordPreview",
-                "-Xopt-in=dev.kord.common.annotation.KordExperimental",
                 "-Xopt-in=kotlin.time.ExperimentalTime",
                 "-Xopt-in=kotlin.contracts.ExperimentalContracts"
             )
