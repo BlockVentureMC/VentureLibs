@@ -134,7 +134,6 @@ class CustomEntity(name: String, val world: World, position: Vector, rotation: V
         val matrix = Matrix4f().translate(localPosition.toVector3f())
         updateTransformRecurse(matrix)
         spawnAttachmentsRecurse()
-        //
     }
 
     override fun spawn() {
