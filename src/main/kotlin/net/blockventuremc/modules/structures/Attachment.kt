@@ -1,5 +1,6 @@
 package net.blockventuremc.modules.structures
 
+import io.papermc.paper.entity.TeleportFlag
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
@@ -7,6 +8,7 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.Interaction
 import org.bukkit.entity.Item
 import org.bukkit.entity.ItemDisplay
+import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.BlockVector
 import org.bukkit.util.Vector
@@ -16,7 +18,7 @@ import org.joml.Quaternionf
 open class Attachment(
     val name: String,
     val localPosition: Vector,
-    val localRotation: Vector
+    var localRotation: Vector
 ) {
 
     lateinit var root: CustomEntity
@@ -57,27 +59,32 @@ open class Attachment(
     }
 
     fun updateTransformRecurse(transform: Matrix4f) {
-        worldTransform = transform.clone() as Matrix4f
-
-        //hier animation stuff position and rotation kann sich hier ändern
-
+        worldTransform.set(transform)
         worldTransform.mul(localTransform)
 
         for(child in children.values) {
-            child.updateTransformRecurse(worldTransform)
+            child.updateTransformRecurse(worldTransform.clone() as Matrix4f)
         }
     }
 
+    fun tickAttachmentsRecurse() {
+        updateTransform()
+        for(child in children.values) {
+            child.tickAttachmentsRecurse()
+        }
+    }
 
     val localTransform: Matrix4f
         get() {
             var matrix = Matrix4f().translate(localPosition.toVector3f())
-            //yaw pitch roll
-            val quaternion = Quaternionf().rotationXYZ(localRotation.x.toFloat(), localRotation.y.toFloat(), localRotation.z.toFloat())
-            matrix.rotate(quaternion)
+            val yaw = Math.toRadians(localRotation.y).toFloat()
+            val pitch = Math.toRadians(localRotation.x).toFloat()
+            val roll = Math.toRadians(localRotation.z).toFloat()
+            matrix.rotateY(-yaw)
+            matrix.rotateX(pitch)
+            matrix.rotateZ(roll)
             return matrix
         }
-
 
     val bukkitLocation: Location
         get() {
@@ -105,17 +112,31 @@ class ItemAttachment(name: String, val item: ItemStack, localPosition: Vector, l
         itemDisplay = location.world.spawnEntity(location, EntityType.ITEM_DISPLAY) as ItemDisplay
         itemDisplay?.apply {
             shadowStrength = 0.0f
-            teleportDuration = 2
-            interpolationDuration = 2
+            teleportDuration = 3
+            interpolationDuration = 3
             itemDisplayTransform = ItemDisplay.ItemDisplayTransform.HEAD
             setItemStack(item)
-            isCustomNameVisible = true
+            isCustomNameVisible = false
+            var transform = transformation
+            transform.scale.mul(0.617f)
+            transformation = transform
         }
         itemDisplay?.customName = "root=$root, name=$name"
     }
 
     override fun updateTransform() {
-        itemDisplay?.teleport(bukkitLocation)
+        itemDisplay?.let { display ->
+            display.teleport(bukkitLocation, TeleportFlag.EntityState.RETAIN_PASSENGERS)
+
+            var transform = display.transformation
+            var quaternion = Quaternionf()
+            quaternion = worldTransform.getNormalizedRotation(quaternion)
+            transform.leftRotation.set(quaternion)
+            if(transform != display.transformation) {
+                display.interpolationDelay = 0
+                display.transformation = transform
+            }
+        }
     }
 
     override fun despawn() {
@@ -134,13 +155,16 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachm
         itemDisplay = location.world.spawnEntity(location, EntityType.ITEM_DISPLAY) as ItemDisplay
         itemDisplay?.apply {
             shadowStrength = 0.0f
-            teleportDuration = 2
-            interpolationDuration = 2
+            teleportDuration = 3
+            interpolationDuration = 3
             itemDisplayTransform = ItemDisplay.ItemDisplayTransform.HEAD
             setItemStack(ItemStack(Material.ACACIA_WOOD))
             isCustomNameVisible = false
+            customName = "seat"
+            var transform = transformation
+            transform.scale.mul(0.1f)
+            transformation = transform
         }
-        itemDisplay?.customName = "root=$root, name=$name"
 
         interaction = location.world.spawnEntity(location, EntityType.INTERACTION) as Interaction
         interaction?.apply {
@@ -148,22 +172,25 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachm
             interactionWidth = 0.45f
             isCustomNameVisible = false
             itemDisplay?.addPassenger(this)
-            customName = "seat"
         }
     }
 
     override fun updateTransform() {
-        itemDisplay?.teleport(bukkitLocation)
+        itemDisplay?.teleport(bukkitLocation, TeleportFlag.EntityState.RETAIN_PASSENGERS)
     }
 
     override fun despawn() {
+        interaction?.remove()
         itemDisplay?.remove()
     }
 }
 
+class EmptyAttachment(name: String, localPosition: Vector, localRotation: Vector) : Attachment(name, localPosition, localRotation) {}
 
-class CustomEntity(name: String, val world: World, val position: Vector, rotation: Vector) : Attachment(name,
+class CustomEntity(name: String, val world: World, var position: Vector, rotation: Vector) : Attachment(name,
     Vector(), rotation) {
+
+    var animation: Animation? = null
 
     init {
         parent = this
@@ -174,7 +201,13 @@ class CustomEntity(name: String, val world: World, val position: Vector, rotatio
         val matrix = Matrix4f().translate(position.toVector3f())
         updateTransformRecurse(matrix)
         spawnAttachmentsRecurse()
-        //
+    }
+
+    fun update() {
+        val matrix = Matrix4f().translate(position.toVector3f())
+        animation?.animate()
+        updateTransformRecurse(matrix)
+        tickAttachmentsRecurse()
     }
 
     override fun spawn() {
