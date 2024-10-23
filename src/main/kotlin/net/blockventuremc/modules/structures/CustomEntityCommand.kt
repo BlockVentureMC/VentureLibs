@@ -34,6 +34,7 @@ class CustomEntityCommand : CommandExecutor {
         customEntity.addChild(ItemAttachment("test", ItemStack(Material.COMMAND_BLOCK), Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 0.0)))
 
         customEntity.initialize()
+        //
         player.sendMessage("§eCustom Entity Spawned!")
         return true
     }
