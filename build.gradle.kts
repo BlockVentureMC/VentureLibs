@@ -110,7 +110,7 @@ dependencies {
     // External dependencies
     compileOnly("com.mojang:authlib:$authlibVersion")
     compileOnly("me.clip:placeholderapi:$placeholderApiVersion")
-    compileOnly("me.neznamy", "tab-api", "4.0.2")
+    compileOnly("me.neznamy", "tab-api", "5.0.0")
     compileOnly("net.luckperms", "api", "5.4")
 
     deps.forEach {
