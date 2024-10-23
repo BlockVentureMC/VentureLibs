@@ -29,7 +29,7 @@ class CustomEntityCommand : CommandExecutor {
         if (sender !is Player) return false
 
         val player = sender
-
+//
         val customEntity = CustomEntity("test", player.world,player.location.toVector(), Vector())
         customEntity.addChild(ItemAttachment("test", ItemStack(Material.COMMAND_BLOCK), Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 0.0)))
 
