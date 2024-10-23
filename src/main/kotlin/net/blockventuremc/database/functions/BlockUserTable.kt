@@ -22,8 +22,8 @@ object BlockUserTable : Table("users") {
 
     val ventureBits = long("ventureBits").default(0) // Currency
 
-    val userFirstJoined = timestamp("firstJoined").defaultExpression(CurrentTimestamp())
-    val userLastJoined = timestamp("lastTimeOnline").defaultExpression(CurrentTimestamp())
+    val userFirstJoined = timestamp("firstJoined")
+    val userLastJoined = timestamp("lastTimeOnline")
     val onlineTime = long("onlineTime").default(0)
 
     val selectedTitle = varchar("selected_title", 255).nullable()

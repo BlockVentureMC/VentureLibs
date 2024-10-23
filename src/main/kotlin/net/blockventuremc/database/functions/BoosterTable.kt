@@ -17,8 +17,8 @@ object BoosterTable : IntIdTable("boosters") {
 
     val modifier = long("modifier").default(1)
 
-    val startTime = timestamp("startTime").defaultExpression(CurrentTimestamp())
-    val endTime = timestamp("endTime").defaultExpression(CurrentTimestamp())
+    val startTime = timestamp("startTime")
+    val endTime = timestamp("endTime")
     val userOnly = bool("userOnly").default(false)
     val category = enumerationByName("category", 20, BoosterCategory::class).default(BoosterCategory.USER_ACTIVATED)
 }

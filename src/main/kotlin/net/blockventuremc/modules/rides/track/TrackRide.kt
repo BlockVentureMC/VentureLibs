@@ -64,7 +64,7 @@ class TrackRide(private val id: Int, private val origin: Location) {
                 val entity = origin.world.getEntity(oldEntityUUID) as ItemDisplay
                 val oldSegment = trackSegments.find { trackSegment -> trackSegment.nodes.any { it.id == highlightedNode } }
                 if (oldSegment != null) {
-                    entity.itemStack = ItemStack(oldSegment.function.trackDisplay.material)
+                    entity.setItemStack( ItemStack(oldSegment.function.trackDisplay.material))
                 }
             }
         }
@@ -72,7 +72,7 @@ class TrackRide(private val id: Int, private val origin: Location) {
         val newEntityUUID = itemDisplays[nodeId]
         if (newEntityUUID != null) {
             val entity = origin.world.getEntity(newEntityUUID) as ItemDisplay
-            entity.itemStack = ItemStack(SegmentTypes.HIGHLIGHTED.material)
+            entity.setItemStack( ItemStack(SegmentTypes.HIGHLIGHTED.material))
             highlightedNode = nodeId
         }
     }
@@ -165,7 +165,7 @@ class TrackRide(private val id: Int, private val origin: Location) {
                 val entityUUID = itemDisplays[node.id]
                 if (entityUUID != null) {
                     val entity = origin.world.getEntity(entityUUID) as ItemDisplay
-                    entity.itemStack = ItemStack(segment.function.trackDisplay.material)
+                    entity.setItemStack( ItemStack(segment.function.trackDisplay.material))
                 }
             }
         }

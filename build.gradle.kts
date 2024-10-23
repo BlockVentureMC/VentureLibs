@@ -28,7 +28,7 @@ plugins {
     kotlin("plugin.serialization") version "2.0.0"
     id("org.jetbrains.dokka") version "1.9.20"
     id("org.sonarqube") version "5.0.0.4638"
-    id("io.sentry.jvm.gradle") version "4.6.0"
+    //id("io.sentry.jvm.gradle") version "4.6.0"
 }
 
 sonar {
@@ -37,7 +37,7 @@ sonar {
         property("sonar.projectName", "BlockVenturePlugin")
     }
 }
-
+/*
 sentry {
     // Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
     // This enables source context, allowing you to see your source
@@ -52,6 +52,7 @@ sentry {
         enabled = true
     }
 }
+ */
 
 group = "net.blockventuremc"
 version = "1.0"
@@ -110,7 +111,7 @@ dependencies {
     // External dependencies
     compileOnly("com.mojang:authlib:$authlibVersion")
     compileOnly("me.clip:placeholderapi:$placeholderApiVersion")
-    compileOnly("me.neznamy", "tab-api", "5.0.0")
+    compileOnly("com.github.NEZNAMY", "tab-api", "5.0.0")
     compileOnly("net.luckperms", "api", "5.4")
 
     deps.forEach {

@@ -50,10 +50,6 @@ class PlayerPlaceholderManager {
             (player.player as Player).rank.displayName
         }
 
-        placeholders += placeholderManager.registerPlayerPlaceholder("%rankord%", 5000) { player ->
-            (player.player as Player).rank.weight
-        }
-
         placeholders += placeholderManager.registerPlayerPlaceholder("%color%", 5000) { player ->
             (player.player as Player).rank.color
         }
@@ -67,16 +63,20 @@ class PlayerPlaceholderManager {
             }
         }
 
+        placeholders += placeholderManager.registerPlayerPlaceholder("%rankord%", 5000) { player ->
+            (player.player as Player).rank.weight.toString()
+        }
+
         placeholders += placeholderManager.registerPlayerPlaceholder("%xp%", 1000) { player ->
-            (player.player as Player).toBlockUser().xp
+            (player.player as Player).toBlockUser().xp.toString()
         }
 
         placeholders += placeholderManager.registerPlayerPlaceholder("%level%", 1000) { player ->
-            (player.player as Player).toBlockUser().level
+            (player.player as Player).toBlockUser().level.toString()
         }
 
         placeholders += placeholderManager.registerPlayerPlaceholder("%nextLevelExp%", 1000) { player ->
-            (player.player as Player).toBlockUser().nextLevelExp()
+            (player.player as Player).toBlockUser().nextLevelExp().toString()
         }
     }
 

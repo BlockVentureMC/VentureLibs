@@ -1,8 +1,10 @@
 package net.blockventuremc.modules.structures
 
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.EntityType
+import org.bukkit.entity.Interaction
 import org.bukkit.entity.Item
 import org.bukkit.entity.ItemDisplay
 import org.bukkit.inventory.ItemStack
@@ -106,7 +108,7 @@ class ItemAttachment(name: String, val item: ItemStack, localPosition: Vector, l
             teleportDuration = 2
             interpolationDuration = 2
             itemDisplayTransform = ItemDisplay.ItemDisplayTransform.HEAD
-           setItemStack(item)
+            setItemStack(item)
             isCustomNameVisible = true
         }
         itemDisplay?.customName = "root=$root, name=$name"
@@ -121,8 +123,46 @@ class ItemAttachment(name: String, val item: ItemStack, localPosition: Vector, l
     }
 }
 
+class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachment(name, localPosition, localRotation) {
 
-class CustomEntity(name: String, val world: World, position: Vector, rotation: Vector) : Attachment(name,
+    var itemDisplay: ItemDisplay? = null
+    var interaction: Interaction? = null
+    var dynamic = false
+
+    override fun spawn() {
+        val location = bukkitLocation
+        itemDisplay = location.world.spawnEntity(location, EntityType.ITEM_DISPLAY) as ItemDisplay
+        itemDisplay?.apply {
+            shadowStrength = 0.0f
+            teleportDuration = 2
+            interpolationDuration = 2
+            itemDisplayTransform = ItemDisplay.ItemDisplayTransform.HEAD
+            setItemStack(ItemStack(Material.ACACIA_WOOD))
+            isCustomNameVisible = false
+        }
+        itemDisplay?.customName = "root=$root, name=$name"
+
+        interaction = location.world.spawnEntity(location, EntityType.INTERACTION) as Interaction
+        interaction?.apply {
+            interactionHeight = 1.0f
+            interactionWidth = 0.45f
+            isCustomNameVisible = false
+            itemDisplay?.addPassenger(this)
+            customName = "seat"
+        }
+    }
+
+    override fun updateTransform() {
+        itemDisplay?.teleport(bukkitLocation)
+    }
+
+    override fun despawn() {
+        itemDisplay?.remove()
+    }
+}
+
+
+class CustomEntity(name: String, val world: World, val position: Vector, rotation: Vector) : Attachment(name,
     Vector(), rotation) {
 
     init {
@@ -131,7 +171,7 @@ class CustomEntity(name: String, val world: World, position: Vector, rotation: V
     }
 
     fun initialize() {
-        val matrix = Matrix4f().translate(localPosition.toVector3f())
+        val matrix = Matrix4f().translate(position.toVector3f())
         updateTransformRecurse(matrix)
         spawnAttachmentsRecurse()
         //
