@@ -8,6 +8,7 @@ import org.bukkit.World
 import org.bukkit.util.Vector
 import org.joml.Matrix4f
 import org.joml.Quaternionf
+import org.joml.Vector3f
 import kotlin.math.atan
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -16,44 +17,89 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 //physikalische konstanten
-const val g = 9.81
-const val airDensity = 1.225
+const val g = 9.81//m/s²
+const val airDensity = 1.225//kg/m³
 
 class Train(name: String, val trackRide: TrackRide, world: World, position: Vector, rotation: Vector): CustomEntity(name, world, position, rotation) {
 
     var currentPosition = 0.0
-
-    var mass = 10//einheit??
     var rotationQuaternion = Quaternionf()
 
-    var dragCoefficient = 0.1 // Luftwiderstandsbeiwert (Cw-Wert)
-
-    val frictionCoefficient = 0.01  // Rollreibungskoeffizient (angenommener Wert) abhängig von wagen und schiene
+    var mass = 1500.0 //masse kilogramm
+    var dragCoefficient = 0.3 // Luftwiderstandsbeiwert (Cw-Wert)
+    val frictionCoefficient = 0.04  // Rollreibungskoeffizient (angenommener Wert) abhängig von wagen und schiene
 
     var velocity = 0.0
 
-    fun simulate(trackNode: TrackNode) {
+    override fun update() {
+        currentPosition += velocity
+
+        if (currentPosition < 0) {
+            currentPosition += trackRide.totalLength
+        } else if (currentPosition >= trackRide.totalLength) {
+            currentPosition %= trackRide.totalLength
+        }
+
+        val trackNode = trackNodeAtDistance(currentPosition)
+
         val front = trackNode.frontVector.toVector3f().normalize()
         val up = trackNode.upVector.toVector3f().normalize()
         val left = trackNode.leftVector.toVector3f().normalize()
+
+        simulate(trackNode, front)
+
+        rotationQuaternion = createQuaternionFromVectors(front, left, up)
+        position = trackRide.origin.toVector().add(trackNode.position)
+
+        super.update()
+    }
+
+    override val localTransform: Matrix4f
+        get() {
+            var matrix = Matrix4f().translate(localPosition.toVector3f())
+            matrix.rotate(rotationQuaternion)
+            return matrix
+        }
+
+    fun simulate(trackNode: TrackNode, front: Vector3f) {
 
         val horizontalMagnitude = sqrt(front.x.pow(2) + front.y.pow(2))
         val slope = atan2(front.z, horizontalMagnitude)//> Radians
 
         //Kräfteberechnung
         val normalForce = mass * g * cos(atan(slope))
+
         val gravityforce = mass * g * sin(atan(slope))
+
         val airResist = 0.5 * airDensity * dragCoefficient * velocity.pow(2)
         val frictionForce = frictionCoefficient * normalForce
 
         val netForce = gravityforce - airResist - frictionForce
 
-        val acceleration = netForce / mass
+        val acceleration = (netForce / mass) / 20.0
         velocity += acceleration
 
     }
 
+    fun trackNodeAtDistance(distance: Double): TrackNode {
+        val totalNodes = trackRide.nodes.size - 1
+        val distanceBetweenNodes = trackRide.nodeDistance
+
+        val nodeIndex = (distance / distanceBetweenNodes).toInt()
+
+        val clampedNodeIndex = nodeIndex % totalNodes
+        val nextNodeIndex = (clampedNodeIndex + 1) % totalNodes
+
+        val currentNode = trackRide.nodes[clampedNodeIndex]
+        val nextNode = trackRide.nodes[nextNodeIndex]
+
+        val localDistance = distance % distanceBetweenNodes
+        val t = localDistance / distanceBetweenNodes
+        return lerpTrackNodes(currentNode, nextNode, t)
+    }
+
     fun lerp(start: Double, target: Double, t: Double) = start + t * (target - start)
+
     fun lerp(start: Float, target: Float, t: Double): Float = start + t.toFloat() * (target - start)
 
     fun lerpTrackNodes(node1: TrackNode, node2: TrackNode, t: Double): TrackNode {
@@ -89,51 +135,5 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
             upZ = upZ
         )
     }
-
-    fun trackNodeAtDistance(distance: Double): TrackNode {
-        val totalNodes = trackRide.nodes.size - 1
-        val distanceBetweenNodes = trackRide.nodeDistance
-
-        val nodeIndex = (distance / distanceBetweenNodes).toInt()
-
-        val clampedNodeIndex = nodeIndex % totalNodes
-        val nextNodeIndex = (clampedNodeIndex + 1) % totalNodes
-
-        val currentNode = trackRide.nodes[clampedNodeIndex]
-        val nextNode = trackRide.nodes[nextNodeIndex]
-
-        val localDistance = distance % distanceBetweenNodes
-        val t = localDistance / distanceBetweenNodes
-        return lerpTrackNodes(currentNode, nextNode, t)
-    }
-
-    override fun update() {
-        currentPosition += velocity
-
-        if (currentPosition < 0) {
-            currentPosition += trackRide.totalLength
-        } else if (currentPosition >= trackRide.totalLength) {
-            currentPosition %= trackRide.totalLength
-        }
-
-        val trackNode = trackNodeAtDistance(currentPosition)
-
-        var targetPosition = trackRide.origin.toVector().add(trackNode.position)
-        position = targetPosition
-
-        val front = trackNode.frontVector.toVector3f().normalize()
-        val up = trackNode.upVector.toVector3f().normalize()
-        val left = trackNode.leftVector.toVector3f().normalize()
-
-        rotationQuaternion = createQuaternionFromVectors(front, left, up)
-        super.update()
-    }
-
-    override val localTransform: Matrix4f
-        get() {
-            var matrix = Matrix4f().translate(localPosition.toVector3f())
-            matrix.rotate(rotationQuaternion)
-            return matrix
-        }
 
 }
