@@ -15,6 +15,7 @@ import java.io.File
 import java.util.*
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.primaryConstructor
+import kotlin.time.measureTime
 
 class TrackRide(private val id: Int, val origin: Location) {
 
@@ -240,12 +241,17 @@ class TrackRide(private val id: Int, val origin: Location) {
         if (!file.exists()) return
         val jsonArrayText = file.readText()
         val jsonArray = JSONParser().parse(jsonArrayText) as JSONArray
-        jsonArray.forEach {
-            val jsonObj = it as JSONObject
-            val id = jsonObj["id"].toString().toInt()
-            val uuid = jsonObj["uuid"].toString()
-            itemDisplays[id] = UUID.fromString(uuid)
+        var element = 0
+        val time = measureTime {
+            jsonArray.forEach {
+                val jsonObj = it as JSONObject
+                val id = jsonObj["id"].toString().toInt()
+                val uuid = jsonObj["uuid"].toString()
+                itemDisplays[id] = UUID.fromString(uuid)
+                element++
+            }
         }
+        getLogger().info("Loaded $element nodes in $time")
     }
 
     /**

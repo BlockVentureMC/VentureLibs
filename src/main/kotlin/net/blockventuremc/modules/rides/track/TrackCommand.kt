@@ -3,6 +3,7 @@ package net.blockventuremc.modules.rides.track
 import dev.fruxz.ascend.extension.container.first
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
+import net.blockventuremc.modules.general.events.custom.toVentureLocation
 import net.blockventuremc.modules.rides.track.segments.SegmentTypes
 import net.blockventuremc.modules.structures.Animation
 import net.blockventuremc.modules.structures.Attachment
@@ -194,7 +195,14 @@ class TrackCommand : CommandExecutor, TabExecutor {
             sender.sendMessage("Track file does not exist. Please upload the track file to ${file.path}.")
             return
         }
+
+        if (TrackManager.tracks.containsKey(trackId)) {
+            sender.sendMessage("Track $trackId already exists.")
+            return
+        }
+
         TrackManager.tracks[trackId] = Nl2Importer(file, trackId, sender.location).import()
+        TrackManager.saveTrack(trackId, sender.location.toVentureLocation())
         sender.sendMessage("Track $trackId imported.")
         performShowTrack(sender, trackId)
     }
