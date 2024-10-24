@@ -7,6 +7,7 @@ import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.database.DatabaseManager
 import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.modules.placeholders.PlayerPlaceholderManager
+import net.blockventuremc.modules.structures.StructureManager
 import net.blockventuremc.modules.warps.WarpManager
 import net.blockventuremc.utils.Environment
 import net.blockventuremc.utils.RegisterManager.registerAll
@@ -85,6 +86,9 @@ class VentureLibs : JavaPlugin() {
             }
             .registerCommands()
 
+        logger.info("Custom Entity update...")
+        StructureManager.update()
+
         logger.info("Plugin has been enabled.")
     }
 
@@ -98,6 +102,8 @@ class VentureLibs : JavaPlugin() {
 
         jda.shutdown()
         AudioServer.disconnect()
+
+        StructureManager.cleanup()
 
         logger.info("Plugin has been disabled")
     }

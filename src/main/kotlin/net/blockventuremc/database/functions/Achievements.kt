@@ -13,10 +13,10 @@ object TableAchievements : Table("achievements") {
     val userUUID = varchar("uuid", 45)
 
     val achievement = enumerationByName("achievement", 24, Achievement::class)
-    val receivedAt = timestamp("receivedAt").defaultExpression(CurrentTimestamp())
+    val receivedAt = timestamp("receivedAt")
 
     val counter = integer("counter").default(1)
-    val lastReceivedAt = timestamp("lastReceivedAt").defaultExpression(CurrentTimestamp())
+    val lastReceivedAt = timestamp("lastReceivedAt")
 
 
     override val primaryKey = PrimaryKey(userUUID, achievement)

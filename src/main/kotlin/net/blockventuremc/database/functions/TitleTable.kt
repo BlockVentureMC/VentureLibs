@@ -16,7 +16,7 @@ import java.util.*
 object TitleTable : Table("player_titles") {
     val id = uuid("id")
     val title = varchar("title", 255)
-    val awardedAt = timestamp("awarded_at").defaultExpression(CurrentTimestamp())
+    val awardedAt = timestamp("awarded_at")
 
     override val primaryKey = PrimaryKey(id, title)
 }

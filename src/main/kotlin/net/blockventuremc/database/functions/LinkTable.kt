@@ -14,7 +14,7 @@ object TableLink : Table("dc_link") {
 
     val discordID = varchar("discordID", 255)
 
-    val linkedAt = timestamp("linkedAt").defaultExpression(CurrentTimestamp())
+    val linkedAt = timestamp("linkedAt")
 
     override val primaryKey = PrimaryKey(userUUID, discordID)
 }

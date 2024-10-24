@@ -190,7 +190,7 @@ class CustomBlockData(
 
     override fun <T, C> getOrDefault(
         key: NamespacedKey,
-        type: PersistentDataType<T, C>,
+        type: PersistentDataType<T & Any, C & Any>,
         defaultValue: C & Any
     ): C & Any {
         return pdc.getOrDefault(key, type, defaultValue)

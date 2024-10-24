@@ -16,12 +16,15 @@ import java.util.*
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.primaryConstructor
 
-class TrackRide(private val id: Int, private val origin: Location) {
+class TrackRide(private val id: Int, val origin: Location) {
 
     val nodes = mutableListOf<TrackNode>()
     private val itemDisplays = mutableMapOf<Int, UUID>()
     private var trackSegments = listOf<TrackSegment>()
     private var highlightedNode = -1
+
+    var nodeDistance = 0.0
+    var totalLength = 0.0
 
     init {
         loadNodeEntitiesFromFile()
@@ -64,7 +67,7 @@ class TrackRide(private val id: Int, private val origin: Location) {
                 val entity = origin.world.getEntity(oldEntityUUID) as ItemDisplay
                 val oldSegment = trackSegments.find { trackSegment -> trackSegment.nodes.any { it.id == highlightedNode } }
                 if (oldSegment != null) {
-                    entity.itemStack = ItemStack(oldSegment.function.trackDisplay.material)
+                    entity.setItemStack( ItemStack(oldSegment.function.trackDisplay.material))
                 }
             }
         }
@@ -72,7 +75,7 @@ class TrackRide(private val id: Int, private val origin: Location) {
         val newEntityUUID = itemDisplays[nodeId]
         if (newEntityUUID != null) {
             val entity = origin.world.getEntity(newEntityUUID) as ItemDisplay
-            entity.itemStack = ItemStack(SegmentTypes.HIGHLIGHTED.material)
+            entity.setItemStack( ItemStack(SegmentTypes.HIGHLIGHTED.material))
             highlightedNode = nodeId
         }
     }
@@ -105,6 +108,11 @@ class TrackRide(private val id: Int, private val origin: Location) {
      * The trackSegments list is then updated with the new segments.
      */
     private fun recalculateSegments() {
+
+        // Calculate the total length of the track
+        nodeDistance = nodes[0].position.distance(nodes[1].position)
+        totalLength = nodeDistance * nodes.size.toDouble()
+
         // Filter out all NormalSegments
         val nonNormalSegments = trackSegments.filter { it.function !is NormalSegment }
 
@@ -165,7 +173,7 @@ class TrackRide(private val id: Int, private val origin: Location) {
                 val entityUUID = itemDisplays[node.id]
                 if (entityUUID != null) {
                     val entity = origin.world.getEntity(entityUUID) as ItemDisplay
-                    entity.itemStack = ItemStack(segment.function.trackDisplay.material)
+                    entity.setItemStack( ItemStack(segment.function.trackDisplay.material))
                 }
             }
         }
@@ -234,9 +242,9 @@ class TrackRide(private val id: Int, private val origin: Location) {
         val jsonArray = JSONParser().parse(jsonArrayText) as JSONArray
         jsonArray.forEach {
             val jsonObj = it as JSONObject
-            val id = jsonObj["id"]
-            val uuid = jsonObj["uuid"]
-            itemDisplays[id as Int] = UUID.fromString(uuid as String)
+            val id = jsonObj["id"].toString().toInt()
+            val uuid = jsonObj["uuid"].toString()
+            itemDisplays[id] = UUID.fromString(uuid)
         }
     }
 
