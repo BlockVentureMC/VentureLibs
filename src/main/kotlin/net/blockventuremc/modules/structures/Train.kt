@@ -63,21 +63,36 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
 
     fun simulate(trackNode: TrackNode, front: Vector3f) {
 
-        val horizontalMagnitude = sqrt(front.x.pow(2) + front.y.pow(2))
-        val slope = atan2(front.z, horizontalMagnitude)//> Radians
+        val slope = front.dot(Vector3f(0.0f, 1.0f, 0.0f)) * Math.PI// Radians
+        val gravityforce = mass * g * slope
+
+        val velocityScale = (1.0 - dragCoefficient).pow(0.05) // 0.05 * 20 = 1
+        velocity *= velocityScale
+        var acceleration = 0.0
+
+
+
+
+        velocity += acceleration
+        velocity *= 0.97
+
+        //val horizontalMagnitude = sqrt(front.x.pow(2) + front.y.pow(2))
+        //val slope = atan2(front.z, horizontalMagnitude)//> Radians
+
+
+        //val slope =
 
         //Kräfteberechnung
-        val normalForce = mass * g * cos(atan(slope))
+        //val normalForce = mass * g * cos(slope)
+        //val gravityforce = mass * g * sin(slope)
 
-        val gravityforce = mass * g * sin(atan(slope))
+        //val airResist = 0.5 * airDensity * dragCoefficient * velocity.pow(2)
+        //val frictionForce = frictionCoefficient * normalForce
 
-        val airResist = 0.5 * airDensity * dragCoefficient * velocity.pow(2)
-        val frictionForce = frictionCoefficient * normalForce
+        //val netForce = gravityforce - airResist
 
-        val netForce = gravityforce - airResist - frictionForce
-
-        val acceleration = (netForce / mass) / 20.0
-        velocity += acceleration
+        //val acceleration = (netForce / mass)
+        //velocity += acceleration / 20.0
 
     }
 
