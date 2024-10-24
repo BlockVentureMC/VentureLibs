@@ -28,7 +28,7 @@ class VentureLibs : JavaPlugin() {
     }
 
     lateinit var jda: JDA
-    lateinit var smoothCoastersAPI: SmoothCoastersAPI
+    //lateinit var smoothCoastersAPI: SmoothCoastersAPI
 
     init {
         instance = this
@@ -52,8 +52,8 @@ class VentureLibs : JavaPlugin() {
         logger.info("Loading translations...")
         TranslationCache.loadAll()
 
+        //smoothCoastersAPI = SmoothCoastersAPI(this)
 
-        smoothCoastersAPI = SmoothCoastersAPI(this)
 
         logger.info("Connecting to audioserver...")
         AudioServer.connect(
@@ -108,7 +108,8 @@ class VentureLibs : JavaPlugin() {
             PlayerCache.saveToDB(pixelPlayer.copy(username = player.name))
         }
 
-        smoothCoastersAPI.unregister()
+            //smoothCoastersAPI.unregister()
+
 
         AudioServer.disconnect()
         StructureManager.cleanup()

@@ -10,6 +10,7 @@ import org.bukkit.entity.ItemDisplay
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
+import org.joml.Vector3f
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -53,42 +54,20 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachm
     override fun updateTransform() {
         itemDisplay?.teleport(bukkitLocation.add(Vector(0.0, -offset, 0.0)), TeleportFlag.EntityState.RETAIN_PASSENGERS)
 
-        //forward Vector (direction where the player should be looking)
-        //itemDisplay?.passegner[1]-> player
-
-        val player = itemDisplay?.passengers?.firstOrNull() as? Player
+        val player = itemDisplay?.passengers?.getOrNull(1) as? Player
         if(player == null) return
 
-        // The forward vector is a vector pointing from the seat to a point 1m in front of you
         val transformation = itemDisplay?.transformation ?: return
 
-        // Extract the rotation quaternion from the transformation
-        val rotationQuaternion = transformation.leftRotation
+        val forwardVector =  transformation.leftRotation.transform(Vector3f(1.0f, 0.0f, 0.0f)).normalize()
 
-        // Convert the quaternion to Euler angles (yaw and pitch)
-        val eulerAngles = rotationQuaternion.toEulerAngles()
+           // VentureLibs.instance.smoothCoastersAPI.setRotation(null, player, forwardVector.x.toFloat(), forwardVector.y.toFloat(), forwardVector.z.toFloat(), forwardVector.lengthSquared().toFloat(), 3)
 
-        // Extract yaw and pitch from Euler angles
-        val yawRad = eulerAngles.x
-        val pitchRad = eulerAngles.y
-
-        // Calculate the forward vector components
-        val x = -cos(pitchRad) * sin(yawRad)
-        val y = -sin(pitchRad)
-        val z = cos(pitchRad) * cos(yawRad)
-
-        val forwardVector = Vector(x, y, z).normalize()
-
-        VentureLibs.instance.smoothCoastersAPI.setRotation(null, player,
-            forwardVector.x.toFloat(), forwardVector.y.toFloat(),
-            forwardVector.z.toFloat(), forwardVector.lengthSquared().toFloat(), 3)
     }
 
     override fun despawn() {
-        val player = itemDisplay?.passengers?.firstOrNull() as? Player
-        if(player != null) {
-            VentureLibs.instance.smoothCoastersAPI.resetRotation(null, player)
-        }
+            //VentureLibs.instance.smoothCoastersAPI.resetRotation(null, player)
+
 
         interaction?.remove()
         itemDisplay?.remove()

@@ -68,12 +68,11 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
 
         val velocityScale = (1.0 - dragCoefficient).pow(0.05) // 0.05 * 20 = 1
         velocity *= velocityScale
-        var acceleration = 0.0
 
+        val netForce = gravityforce
+        var acceleration = (netForce / mass)
 
-
-
-        velocity += acceleration
+        velocity += acceleration / 20.0
         velocity *= 0.97
 
         //val horizontalMagnitude = sqrt(front.x.pow(2) + front.y.pow(2))
