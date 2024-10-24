@@ -8,6 +8,7 @@ import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.database.DatabaseManager
 import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.modules.placeholders.PlayerPlaceholderManager
+import net.blockventuremc.modules.rides.track.TrackManager
 import net.blockventuremc.modules.structures.StructureManager
 import net.blockventuremc.modules.warps.WarpManager
 import net.blockventuremc.utils.Environment
@@ -90,8 +91,11 @@ class VentureLibs : JavaPlugin() {
             }
             .registerCommands()
 
+        TrackManager.loadTracks()
+
         logger.info("Custom Entity update...")
         StructureManager.update()
+
 
         logger.info("Plugin has been enabled.")
     }
