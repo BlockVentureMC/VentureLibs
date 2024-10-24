@@ -14,6 +14,7 @@ import org.bukkit.util.BlockVector
 import org.bukkit.util.Vector
 import org.joml.Matrix4f
 import org.joml.Quaternionf
+import java.util.UUID
 
 open class Attachment(
     val name: String,
@@ -62,19 +63,14 @@ open class Attachment(
         worldTransform.set(transform)
         worldTransform.mul(localTransform)
 
+        updateTransform()
+
         for(child in children.values) {
             child.updateTransformRecurse(worldTransform.clone() as Matrix4f)
         }
     }
 
-    fun tickAttachmentsRecurse() {
-        updateTransform()
-        for(child in children.values) {
-            child.tickAttachmentsRecurse()
-        }
-    }
-
-    val localTransform: Matrix4f
+    open val localTransform: Matrix4f
         get() {
             var matrix = Matrix4f().translate(localPosition.toVector3f())
             val yaw = Math.toRadians(localRotation.y).toFloat()
@@ -101,116 +97,4 @@ open class Attachment(
         get() {
             return Vector(worldTransform.m30(), worldTransform.m31(), worldTransform.m32())
         }
-}
-
-class ItemAttachment(name: String, val item: ItemStack, localPosition: Vector, localRotation: Vector) : Attachment(name, localPosition, localRotation) {
-
-    var itemDisplay: ItemDisplay? = null
-
-    override fun spawn() {
-        val location = bukkitLocation
-        itemDisplay = location.world.spawnEntity(location, EntityType.ITEM_DISPLAY) as ItemDisplay
-        itemDisplay?.apply {
-            shadowStrength = 0.0f
-            teleportDuration = 3
-            interpolationDuration = 3
-            itemDisplayTransform = ItemDisplay.ItemDisplayTransform.HEAD
-            setItemStack(item)
-            isCustomNameVisible = false
-            var transform = transformation
-            transform.scale.mul(0.617f)
-            transformation = transform
-        }
-        itemDisplay?.customName = "root=$root, name=$name"
-    }
-
-    override fun updateTransform() {
-        itemDisplay?.let { display ->
-            display.teleport(bukkitLocation, TeleportFlag.EntityState.RETAIN_PASSENGERS)
-
-            var transform = display.transformation
-            var quaternion = Quaternionf()
-            quaternion = worldTransform.getNormalizedRotation(quaternion)
-            transform.leftRotation.set(quaternion)
-            if(transform != display.transformation) {
-                display.interpolationDelay = 0
-                display.transformation = transform
-            }
-        }
-    }
-
-    override fun despawn() {
-        itemDisplay?.remove()
-    }
-}
-
-class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachment(name, localPosition, localRotation) {
-
-    var itemDisplay: ItemDisplay? = null
-    var interaction: Interaction? = null
-    var dynamic = false
-
-    override fun spawn() {
-        val location = bukkitLocation
-        itemDisplay = location.world.spawnEntity(location, EntityType.ITEM_DISPLAY) as ItemDisplay
-        itemDisplay?.apply {
-            shadowStrength = 0.0f
-            teleportDuration = 3
-            interpolationDuration = 3
-            itemDisplayTransform = ItemDisplay.ItemDisplayTransform.HEAD
-            setItemStack(ItemStack(Material.ACACIA_WOOD))
-            isCustomNameVisible = false
-            customName = "seat"
-            var transform = transformation
-            transform.scale.mul(0.1f)
-            transformation = transform
-        }
-
-        interaction = location.world.spawnEntity(location, EntityType.INTERACTION) as Interaction
-        interaction?.apply {
-            interactionHeight = 1.0f
-            interactionWidth = 0.45f
-            isCustomNameVisible = false
-            itemDisplay?.addPassenger(this)
-        }
-    }
-
-    override fun updateTransform() {
-        itemDisplay?.teleport(bukkitLocation, TeleportFlag.EntityState.RETAIN_PASSENGERS)
-    }
-
-    override fun despawn() {
-        interaction?.remove()
-        itemDisplay?.remove()
-    }
-}
-
-class EmptyAttachment(name: String, localPosition: Vector, localRotation: Vector) : Attachment(name, localPosition, localRotation) {}
-
-class CustomEntity(name: String, val world: World, var position: Vector, rotation: Vector) : Attachment(name,
-    Vector(), rotation) {
-
-    var animation: Animation? = null
-
-    init {
-        parent = this
-        root = this
-    }
-
-    fun initialize() {
-        val matrix = Matrix4f().translate(position.toVector3f())
-        updateTransformRecurse(matrix)
-        spawnAttachmentsRecurse()
-    }
-
-    fun update() {
-        val matrix = Matrix4f().translate(position.toVector3f())
-        animation?.animate()
-        updateTransformRecurse(matrix)
-        tickAttachmentsRecurse()
-    }
-
-    override fun spawn() {
-    }
-
 }

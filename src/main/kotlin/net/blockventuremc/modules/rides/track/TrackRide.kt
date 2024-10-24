@@ -16,7 +16,7 @@ import java.util.*
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.primaryConstructor
 
-class TrackRide(private val id: Int, private val origin: Location) {
+class TrackRide(private val id: Int, val origin: Location) {
 
     val nodes = mutableListOf<TrackNode>()
     private val itemDisplays = mutableMapOf<Int, UUID>()
