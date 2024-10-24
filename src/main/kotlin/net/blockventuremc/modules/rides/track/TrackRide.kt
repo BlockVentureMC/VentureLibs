@@ -23,6 +23,9 @@ class TrackRide(private val id: Int, val origin: Location) {
     private var trackSegments = listOf<TrackSegment>()
     private var highlightedNode = -1
 
+    var nodeDistance = 0.0
+    var totalLength = 0.0
+
     init {
         loadNodeEntitiesFromFile()
     }
@@ -105,6 +108,11 @@ class TrackRide(private val id: Int, val origin: Location) {
      * The trackSegments list is then updated with the new segments.
      */
     private fun recalculateSegments() {
+
+        // Calculate the total length of the track
+        nodeDistance = nodes[0].position.distance(nodes[1].position)
+        totalLength = nodeDistance * nodes.size.toDouble()
+
         // Filter out all NormalSegments
         val nonNormalSegments = trackSegments.filter { it.function !is NormalSegment }
 
@@ -234,9 +242,9 @@ class TrackRide(private val id: Int, val origin: Location) {
         val jsonArray = JSONParser().parse(jsonArrayText) as JSONArray
         jsonArray.forEach {
             val jsonObj = it as JSONObject
-            val id = jsonObj["id"]
-            val uuid = jsonObj["uuid"]
-            itemDisplays[id as Int] = UUID.fromString(uuid as String)
+            val id = jsonObj["id"].toString().toInt()
+            val uuid = jsonObj["uuid"].toString()
+            itemDisplays[id] = UUID.fromString(uuid)
         }
     }
 

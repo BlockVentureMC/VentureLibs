@@ -1,20 +1,8 @@
 package net.blockventuremc.modules.structures
 
-import io.papermc.paper.entity.TeleportFlag
 import org.bukkit.Location
-import org.bukkit.Material
-import org.bukkit.World
-import org.bukkit.entity.EntityType
-import org.bukkit.entity.Interaction
-import org.bukkit.entity.Item
-import org.bukkit.entity.ItemDisplay
-import org.bukkit.event.player.PlayerTeleportEvent
-import org.bukkit.inventory.ItemStack
-import org.bukkit.util.BlockVector
 import org.bukkit.util.Vector
 import org.joml.Matrix4f
-import org.joml.Quaternionf
-import java.util.UUID
 
 open class Attachment(
     val name: String,
@@ -42,8 +30,6 @@ open class Attachment(
     open fun spawn() {}
     open fun despawn() {}
     open fun updateTransform() {}
-
-    //Recurse
 
     fun spawnAttachmentsRecurse() {
         spawn()
@@ -73,12 +59,16 @@ open class Attachment(
     open val localTransform: Matrix4f
         get() {
             var matrix = Matrix4f().translate(localPosition.toVector3f())
+
+            if(localRotation.isZero) return matrix
+
             val yaw = Math.toRadians(localRotation.y).toFloat()
             val pitch = Math.toRadians(localRotation.x).toFloat()
             val roll = Math.toRadians(localRotation.z).toFloat()
             matrix.rotateY(-yaw)
             matrix.rotateX(pitch)
             matrix.rotateZ(roll)
+
             return matrix
         }
 

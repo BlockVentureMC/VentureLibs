@@ -47,6 +47,9 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachm
 
     override fun updateTransform() {
         itemDisplay?.teleport(bukkitLocation.add(Vector(0.0, -offset, 0.0)), TeleportFlag.EntityState.RETAIN_PASSENGERS)
+
+        //forward Vector
+        //itemDisplay?.passegner[1]-> player
     }
 
     override fun despawn() {

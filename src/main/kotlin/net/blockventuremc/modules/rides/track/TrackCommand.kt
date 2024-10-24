@@ -1,5 +1,6 @@
 package net.blockventuremc.modules.rides.track
 
+import dev.fruxz.ascend.extension.container.first
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.modules.rides.track.segments.SegmentTypes
@@ -56,6 +57,17 @@ class TrackCommand : CommandExecutor, TabExecutor {
                 }
                 performImportTrack(sender, trackId)
             }
+            "debug" -> {
+                if (args.size != 2) {
+                    sender.sendMessage("Usage: /track debug <trackId>")
+                    return true
+                }
+                val trackId = args[1].toIntOrNull() ?: run {
+                    sender.sendMessage("Invalid track ID.")
+                    return true
+                }
+                performDebugDistance(sender, trackId)
+            }
             "list" -> {
                 performListTracks(sender)
             }
@@ -86,6 +98,13 @@ class TrackCommand : CommandExecutor, TabExecutor {
             }
             "segment" -> {
                 setSegmentType(args, sender)
+            }
+            "speed" -> {
+                if (args.size != 2) {
+                    sender.sendMessage("Usage: /track speed <velocity>")
+                    return true
+                }
+                performDebugSpeed(sender, args[1].toDouble())
             }
             "spawn" -> {
                 if (args.size != 2) {
@@ -203,6 +222,20 @@ class TrackCommand : CommandExecutor, TabExecutor {
         }
         track.hideTrack()
         sender.sendMessage("Track $trackId hidden.")
+    }
+
+    private fun performDebugSpeed(sender: Player, velocity: Double) {
+        val first = StructureManager.structures.values.first as Train
+        first.velocity = velocity
+        sender.sendMessage("Velocity $velocity")
+    }
+
+    private fun performDebugDistance(sender: Player, trackId: Int) {
+        val track = TrackManager.tracks[trackId] ?: run {
+            sender.sendMessage("Track $trackId does not exist.")
+            return
+        }
+        sender.sendMessage("Distance between nodes 0 and 1 is ${track.nodeDistance} meters. Total Length of ${track.totalLength}")
     }
 
     private fun performSpawnTrainOnTrack(sender: Player, trackId: Int) {
