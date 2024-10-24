@@ -1,5 +1,6 @@
 package net.blockventuremc
 
+import me.m56738.smoothcoasters.api.SmoothCoastersAPI
 import net.blockventuremc.audioserver.common.data.RabbitConfiguration
 import net.blockventuremc.audioserver.minecraft.AudioServer
 import net.blockventuremc.cache.BoosterCache
@@ -26,6 +27,7 @@ class VentureLibs : JavaPlugin() {
     }
 
     lateinit var jda: JDA
+    lateinit var smoothCoastersAPI: SmoothCoastersAPI
 
     init {
         instance = this
@@ -49,6 +51,8 @@ class VentureLibs : JavaPlugin() {
         logger.info("Loading translations...")
         TranslationCache.loadAll()
 
+
+        smoothCoastersAPI = SmoothCoastersAPI(this)
 
         logger.info("Connecting to audioserver...")
         AudioServer.connect(
@@ -100,10 +104,12 @@ class VentureLibs : JavaPlugin() {
             PlayerCache.saveToDB(pixelPlayer.copy(username = player.name))
         }
 
-        jda.shutdown()
-        AudioServer.disconnect()
+        smoothCoastersAPI.unregister()
 
+        AudioServer.disconnect()
         StructureManager.cleanup()
+
+        jda.shutdown()
 
         logger.info("Plugin has been disabled")
     }
