@@ -25,7 +25,7 @@ val jdaVersion: String by project
 plugins {
     kotlin("jvm") version "2.0.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    kotlin("plugin.serialization") version "2.0.0"
+    kotlin("plugin.serialization") version "2.0.21"
     id("org.jetbrains.dokka") version "1.9.20"
     id("org.sonarqube") version "5.0.0.4638"
     //id("io.sentry.jvm.gradle") version "4.6.0"
