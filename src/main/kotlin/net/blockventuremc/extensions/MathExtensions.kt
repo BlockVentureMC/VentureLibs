@@ -48,3 +48,25 @@ fun createQuaternionFromVectors(front: Vector3f, left: Vector3f, up: Vector3f): 
     mat.setColumn(2, front)
     return Quaternionf().setFromNormalized(mat)
 }
+
+fun Quaternionf.toEulerAngles(): EulerAngle {
+    val ysqr = y * y
+
+    // Roll (x-axis rotation)
+    val t0 = +2.0 * (w * x + y * z)
+    val t1 = +1.0 - 2.0 * (x * x + ysqr)
+    val roll = atan2(t0, t1)
+
+    // Pitch (y-axis rotation)
+    var t2 = +2.0 * (w * y - z * x)
+    t2 = if (t2 > 1.0) 1.0 else t2
+    t2 = if (t2 < -1.0) -1.0 else t2
+    val pitch = asin(t2)
+
+    // Yaw (z-axis rotation)
+    val t3 = +2.0 * (w * z + x * y)
+    val t4 = +1.0 - 2.0 * (ysqr + z * z)
+    val yaw = atan2(t3, t4)
+
+    return EulerAngle(pitch, yaw, roll)
+}

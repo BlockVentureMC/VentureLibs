@@ -16,11 +16,11 @@ val serializationVersion: String by project
 val minecraftVersion: String by project
 val authlibVersion: String by project
 val placeholderApiVersion: String by project
-val customBlockDataVersion: String by project
 val audioServerVersion: String by project
 val fastNBTVersion: String by project
 val sentryVersion: String by project
 val jdaVersion: String by project
+val smoothCoastersAPIVersion: String by project
 
 plugins {
     kotlin("jvm") version "2.0.0"
@@ -82,7 +82,6 @@ val deps = listOf(
 
     "com.zaxxer:HikariCP:$hikariVersion",
     "org.mariadb.jdbc:mariadb-java-client:$mariadbVersion",
-    
     "net.blockventuremc.audioserver:minecraft:$audioServerVersion",
 
     "dev.lone:FastNbt-jar:$fastNBTVersion",
@@ -91,6 +90,7 @@ val deps = listOf(
     "io.sentry:sentry-logback:$sentryVersion",
 
     "net.dv8tion:JDA:$jdaVersion",
+    "me.m56738:SmoothCoastersAPI:$smoothCoastersAPIVersion",
 )
 
 val includedDependencies = mutableListOf<String>()
