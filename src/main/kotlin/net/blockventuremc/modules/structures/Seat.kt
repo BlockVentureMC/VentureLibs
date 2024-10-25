@@ -1,6 +1,8 @@
 package net.blockventuremc.modules.structures
 
 import io.papermc.paper.entity.TeleportFlag
+import me.m56738.smoothcoasters.api.DefaultNetworkInterface
+import me.m56738.smoothcoasters.api.NetworkInterface
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.extensions.toEulerAngles
 import org.bukkit.Material
@@ -10,6 +12,7 @@ import org.bukkit.entity.ItemDisplay
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
+import org.joml.Matrix4f
 import org.joml.Quaternionf
 import org.joml.Vector3f
 import kotlin.math.cos
@@ -63,16 +66,23 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachm
 
         itemDisplay?.teleport(bukkitLocation.add(Vector(0.0, -offset, 0.0)).add(upVector.x.toDouble(),upVector.y.toDouble(),upVector.z.toDouble()), TeleportFlag.EntityState.RETAIN_PASSENGERS)
 
-        val player = itemDisplay?.passengers?.getOrNull(1) as? Player
-        if(player == null) return
-
-           // VentureLibs.instance.smoothCoastersAPI.setRotation(null, player, forwardVector.x.toFloat(), forwardVector.y.toFloat(), forwardVector.z.toFloat(), forwardVector.lengthSquared().toFloat(), 3)
-
+        passenger?.let { player ->
+            player.sendActionBar("Dreh dich!")
+            VentureLibs.instance.smoothCoastersAPI.setRotation(VentureLibs.instance.networkInterface, player, rotation.x, rotation.y, rotation.z, rotation.w, 3)
+        }
     }
 
-    override fun despawn() {
-            //VentureLibs.instance.smoothCoastersAPI.resetRotation(null, player)
+    val passenger: Player?
+        get() {
+            if(itemDisplay?.passengers?.size != 2) return null
+            return itemDisplay?.passengers?.get(1) as Player
+        }
 
+    override fun despawn() {
+
+        passenger?.let { player ->
+            VentureLibs.instance.smoothCoastersAPI.resetRotation(VentureLibs.instance.networkInterface, player)
+        }
 
         interaction?.remove()
         itemDisplay?.remove()

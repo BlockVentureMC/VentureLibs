@@ -1,5 +1,6 @@
 package net.blockventuremc.modules.structures.events
 
+import me.m56738.smoothcoasters.api.event.PlayerSmoothCoastersHandshakeEvent
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Interaction
 import org.bukkit.entity.ItemDisplay
@@ -9,6 +10,11 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 class StructureEvents: Listener {
+
+    @EventHandler
+    fun onLeave(event: PlayerSmoothCoastersHandshakeEvent) {
+        event.player.sendMessage("Yippi :3")
+    }
 
     @EventHandler
     fun onLeave(event: PlayerQuitEvent) {
