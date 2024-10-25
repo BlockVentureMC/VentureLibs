@@ -1,6 +1,5 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.dokka.gradle.DokkaTask
-import java.net.URL
+import java.net.URI
 
 /**
  * Defines the versions of the dependencies inside gradle.properties.
@@ -24,10 +23,10 @@ val smoothCoastersAPIVersion: String by project
 
 plugins {
     kotlin("jvm") version "2.0.0"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
     kotlin("plugin.serialization") version "2.0.21"
     id("org.jetbrains.dokka") version "1.9.20"
     id("org.sonarqube") version "5.0.0.4638"
+    id("io.papermc.paperweight.userdev") version "1.7.3"
     //id("io.sentry.jvm.gradle") version "4.6.0"
 }
 
@@ -59,13 +58,6 @@ version = "1.0"
 
 repositories {
     maven("https://nexus.flawcra.cc/repository/maven-mirrors/")
-    maven {
-        url = uri("https://maven.pkg.github.com/BlockVentureMC/AudioServer")
-        credentials {
-            username = System.getenv("PACKAGE_USER") ?: System.getenv("GITHUB_ACTOR")
-            password =  System.getenv("PACKAGE_TOKEN") ?: System.getenv("GITHUB_TOKEN")
-        }
-    }
 }
 
 val deps = listOf(
@@ -101,7 +93,8 @@ fun Dependency?.deliver() = this?.apply {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:$minecraftVersion")
+    paperweight.paperDevBundle("${minecraftVersion}-R0.1-SNAPSHOT")
+
     compileOnly("net.blockventuremc.audioserver:common:$audioServerVersion")
 
     // reflections
@@ -132,6 +125,17 @@ open class RunSentryTask : DefaultTask() {
     }
 }
 
+tasks.register("generateDependenciesFile") {
+    group = "build"
+    description = "Writes dependencies to file"
+
+    val dependenciesFile = File(layout.buildDirectory.asFile.get(), "generated-resources/.dependencies")
+    outputs.file(dependenciesFile)
+    doLast {
+        dependenciesFile.parentFile.mkdirs()
+        dependenciesFile.writeText(includedDependencies.joinToString("\n"))
+    }
+}
 
 tasks {
     findByName("sentryBundleSourcesJava")?.enabled = false
@@ -147,21 +151,21 @@ tasks {
     }
 
     build {
-        dependsOn("shadowJar")
+        dependsOn(reobfJar)
     }
 
     withType<ProcessResources> {
+        dependsOn("generateDependenciesFile")
+
+        from(File(layout.buildDirectory.asFile.get(), "generated-resources")) {
+            include(".dependencies")
+        }
+
         expand(
             "version" to project.version,
             "name" to project.name,
             "vendeps" to includedDependencies.joinToString("\n"),
         )
-    }
-
-    withType<ShadowJar> {
-        mergeServiceFiles()
-        configurations = listOf(project.configurations.shadow.get())
-        archiveFileName.set("VentureLibs.jar")
     }
 
     withType<DokkaTask>().configureEach {
@@ -176,7 +180,7 @@ tasks {
 
             sourceLink {
                 localDirectory.set(projectDir.resolve("src"))
-                remoteUrl.set(URL("https://github.com/BlockVentureMC/VentureLibs/tree/main/src"))
+                remoteUrl.set(URI("https://github.com/BlockVentureMC/VentureLibs/tree/main/src").toURL())
                 remoteLineSuffix.set("#L")
             }
         }
