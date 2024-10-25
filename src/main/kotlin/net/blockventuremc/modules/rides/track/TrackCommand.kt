@@ -105,7 +105,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
                     sender.sendMessage("Usage: /track speed <velocity>")
                     return true
                 }
-                performDebugSpeed(sender, args[1].toDouble())
+                performDebugSpeed(sender, args[1].toFloat())
             }
             "spawn" -> {
                 if (args.size != 2) {
@@ -232,7 +232,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
         sender.sendMessage("Track $trackId hidden.")
     }
 
-    private fun performDebugSpeed(sender: Player, velocity: Double) {
+    private fun performDebugSpeed(sender: Player, velocity: Float) {
         val first = StructureManager.structures.values.first as Train
         first.velocity = velocity
         sender.sendMessage("Velocity $velocity")
@@ -263,18 +263,6 @@ class TrackCommand : CommandExecutor, TabExecutor {
         rotator.addChild(Seat("seat4", Vector(-0.39, 0.6, -0.3), Vector()))
 
         rotator.addChild(ItemAttachment("model", ItemBuilder(Material.DIAMOND_SWORD).customModelData(99).build(), Vector(0.0, 1.0, 0.0), Vector()))
-
-        train.animation = object : Animation() {
-
-            var rotationY = 0.0
-            var velocityY = 2.0
-            var lastRotationY = 0.0
-
-            override fun animate() {
-
-                rotator.localRotation.add(Vector(0.0, 2.0, 0.0))
-            }
-        }
 
         train.initialize()
         StructureManager.structures[train.uuid] = train

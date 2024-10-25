@@ -13,23 +13,42 @@ import kotlin.math.atan
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.pow
+import kotlin.math.sign
 import kotlin.math.sin
 import kotlin.math.sqrt
-
-//physikalische konstanten
-const val g = 9.81//m/s²
-const val airDensity = 1.225//kg/m³
 
 class Train(name: String, val trackRide: TrackRide, world: World, position: Vector, rotation: Vector): CustomEntity(name, world, position, rotation) {
 
     var currentPosition = 0.0
     var rotationQuaternion = Quaternionf()
 
-    var mass = 1500.0 //masse kilogramm
-    var dragCoefficient = 0.3 // Luftwiderstandsbeiwert (Cw-Wert)
-    val frictionCoefficient = 0.04  // Rollreibungskoeffizient (angenommener Wert) abhängig von wagen und schiene
+    var mass = 700.0f //masse kilogramm
+    val rollCoefficient = 0.072f  // Rollreibungskoeffizient (angenommener Wert) abhängig von wagen und schiene
+    val crossArea = 1.1f //Querschnittsfläche 0.5 bis 1,5 in Quadratmeter damit ist die Stirnfläche gemeint
+    var velocity = 0.0f
 
-    var velocity = 0.0
+    fun simulate(trackNode: TrackNode, forward: Vector3f, up: Vector3f) {
+        var force = 0.0f
+
+        val worldUp = Vector3f(0.0f, 1.0f, 0.0f)
+
+        //gravity
+        val fdotUp = -forward.dot(worldUp)
+        var acc = fdotUp * gravity
+        force += acc * mass
+
+        //roll resistance
+        val NForce = up.dot(worldUp) * gravity
+        force += -sign(velocity) * rollCoefficient * (NForce * mass)
+
+        //drag
+        val dragCoefficient = 0.6f
+        var v2 = velocity * velocity
+        force += -sign(velocity) * 0.5f * airDensity * v2 * dragCoefficient * crossArea
+
+        val deltaTime = 0.025f
+        velocity += force * deltaTime / mass
+    }
 
     override fun update() {
         currentPosition += velocity
@@ -46,7 +65,7 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
         val up = trackNode.upVector.toVector3f().normalize()
         val left = trackNode.leftVector.toVector3f().normalize()
 
-        simulate(trackNode, front)
+        simulate(trackNode, front, up )
 
         rotationQuaternion = createQuaternionFromVectors(front, left, up)
         position = trackRide.origin.toVector().add(trackNode.position)
@@ -60,40 +79,6 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
             matrix.rotate(rotationQuaternion)
             return matrix
         }
-
-    fun simulate(trackNode: TrackNode, front: Vector3f) {
-
-        val slope = front.dot(Vector3f(0.0f, 1.0f, 0.0f)) * Math.PI// Radians
-        val gravityforce = mass * g * slope
-
-        val velocityScale = (1.0 - dragCoefficient).pow(0.05) // 0.05 * 20 = 1
-        velocity *= velocityScale
-
-        val netForce = gravityforce
-        var acceleration = (netForce / mass)
-
-        velocity += acceleration / 20.0
-        velocity *= 0.97
-
-        //val horizontalMagnitude = sqrt(front.x.pow(2) + front.y.pow(2))
-        //val slope = atan2(front.z, horizontalMagnitude)//> Radians
-
-
-        //val slope =
-
-        //Kräfteberechnung
-        //val normalForce = mass * g * cos(slope)
-        //val gravityforce = mass * g * sin(slope)
-
-        //val airResist = 0.5 * airDensity * dragCoefficient * velocity.pow(2)
-        //val frictionForce = frictionCoefficient * normalForce
-
-        //val netForce = gravityforce - airResist
-
-        //val acceleration = (netForce / mass)
-        //velocity += acceleration / 20.0
-
-    }
 
     fun trackNodeAtDistance(distance: Double): TrackNode {
         val totalNodes = trackRide.nodes.size - 1

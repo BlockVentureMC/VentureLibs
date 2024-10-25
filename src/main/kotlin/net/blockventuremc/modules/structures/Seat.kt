@@ -10,6 +10,7 @@ import org.bukkit.entity.ItemDisplay
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
+import org.joml.Quaternionf
 import org.joml.Vector3f
 import kotlin.math.cos
 import kotlin.math.sin
@@ -20,7 +21,7 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachm
     var interaction: Interaction? = null
     var dynamic = false
 
-    val offset = 0.53
+    val offset = 0.53//0.53
 
     init {
         localPosition.add(Vector(0.0, offset, 0.0))
@@ -31,8 +32,8 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachm
         itemDisplay = location.world.spawnEntity(location, EntityType.ITEM_DISPLAY) as ItemDisplay
         itemDisplay?.apply {
             shadowStrength = 0.0f
-            teleportDuration = 3
-            interpolationDuration = 3
+            teleportDuration = 2
+            interpolationDuration = 2
             itemDisplayTransform = ItemDisplay.ItemDisplayTransform.HEAD
             setItemStack(ItemStack(Material.ACACIA_WOOD))
             isCustomNameVisible = false
@@ -52,14 +53,18 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachm
     }
 
     override fun updateTransform() {
-        itemDisplay?.teleport(bukkitLocation.add(Vector(0.0, -offset, 0.0)), TeleportFlag.EntityState.RETAIN_PASSENGERS)
+        var rotation = Quaternionf()
+        rotation = worldTransform.getNormalizedRotation(rotation)
+
+        val upVector =  (rotation.clone() as Quaternionf).transform(Vector3f(0.0f, 1.0f, 0.0f)).normalize()
+
+        val loopingOffset = upVector.dot(Vector3f(0.0f, -1.0f, 0.0f)).coerceIn(0.0f,1.0f)
+        upVector.mul(loopingOffset).mul(0.5f)
+
+        itemDisplay?.teleport(bukkitLocation.add(Vector(0.0, -offset, 0.0)).add(upVector.x.toDouble(),upVector.y.toDouble(),upVector.z.toDouble()), TeleportFlag.EntityState.RETAIN_PASSENGERS)
 
         val player = itemDisplay?.passengers?.getOrNull(1) as? Player
         if(player == null) return
-
-        val transformation = itemDisplay?.transformation ?: return
-
-        val forwardVector =  transformation.leftRotation.transform(Vector3f(1.0f, 0.0f, 0.0f)).normalize()
 
            // VentureLibs.instance.smoothCoastersAPI.setRotation(null, player, forwardVector.x.toFloat(), forwardVector.y.toFloat(), forwardVector.z.toFloat(), forwardVector.lengthSquared().toFloat(), 3)
 
