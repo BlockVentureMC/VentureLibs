@@ -8,6 +8,7 @@ import org.bukkit.entity.ItemDisplay
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityDismountEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.vehicle.VehicleExitEvent
@@ -20,13 +21,12 @@ class StructureEvents: Listener {
     }
 
     @EventHandler
-    fun onVehilceLeave(event: VehicleExitEvent) {
-        val passenger = event.exited
+    fun onEntityDismount(event: EntityDismountEvent) {
+        val passenger = event.entity
         if(passenger !is Player) return
         VentureLibs.instance.smoothCoastersAPI.resetRotation(VentureLibs.instance.networkInterface, passenger)
         passenger.sendMessage("leave :3")
     }
-
 
     @EventHandler
     fun onLeave(event: PlayerQuitEvent) {
