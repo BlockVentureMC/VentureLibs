@@ -16,7 +16,7 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
     var currentPosition = 0.0
     var rotationQuaternion = Quaternionf()
 
-    var mass = 700.0f //masse kilogramm
+    var mass = -700.0f //masse kilogramm
     val rollCoefficient = 0.072f  // Rollreibungskoeffizient (angenommener Wert) abhängig von wagen und schiene
     val crossArea = 1.1f //Querschnittsfläche 0.5 bis 1,5 in Quadratmeter damit ist die Stirnfläche gemeint
     var velocity = 0.0f
