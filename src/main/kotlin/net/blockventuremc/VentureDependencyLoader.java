@@ -26,15 +26,6 @@ public class VentureDependencyLoader implements PluginLoader {
                 .forEach(dependency -> maven.addDependency(new Dependency(new DefaultArtifact(dependency), null)));
 
         maven.addRepository(new RemoteRepository.Builder("flawcra", "default", "https://nexus.flawcra.cc/repository/maven-mirrors/").build());
-        maven.addRepository(new RemoteRepository.Builder("private", "default", "https://maven.pkg.github.com/BlockVentureMC/AudioServer")
-                .setAuthentication(
-                        new AuthenticationBuilder()
-                                .addUsername(dotenv.get("PACKAGE_USER"))
-                                .addPassword(dotenv.get("PACKAGE_TOKEN"))
-                                .build()
-                )
-                .build()
-        );
 
         classpathBuilder.addLibrary(maven);
     }
