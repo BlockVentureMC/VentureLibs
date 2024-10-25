@@ -21,7 +21,7 @@ public class VentureDependencyLoader implements PluginLoader {
         MavenLibraryResolver maven = new MavenLibraryResolver();
         JavaDotEnv dotenv = new JavaDotEnv();
 
-        new BufferedReader(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("venture.dependencies"))))
+        new BufferedReader(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(".dependencies"))))
                 .lines()
                 .forEach(dependency -> maven.addDependency(new Dependency(new DefaultArtifact(dependency), null)));
 
