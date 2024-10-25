@@ -9,13 +9,7 @@ import org.bukkit.util.Vector
 import org.joml.Matrix4f
 import org.joml.Quaternionf
 import org.joml.Vector3f
-import kotlin.math.atan
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.pow
 import kotlin.math.sign
-import kotlin.math.sin
-import kotlin.math.sqrt
 
 class Train(name: String, val trackRide: TrackRide, world: World, position: Vector, rotation: Vector): CustomEntity(name, world, position, rotation) {
 
