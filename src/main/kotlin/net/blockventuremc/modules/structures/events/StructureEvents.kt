@@ -1,13 +1,16 @@
 package net.blockventuremc.modules.structures.events
 
 import me.m56738.smoothcoasters.api.event.PlayerSmoothCoastersHandshakeEvent
+import net.blockventuremc.VentureLibs
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Interaction
 import org.bukkit.entity.ItemDisplay
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.vehicle.VehicleExitEvent
 
 class StructureEvents: Listener {
 
@@ -15,6 +18,15 @@ class StructureEvents: Listener {
     fun onLeave(event: PlayerSmoothCoastersHandshakeEvent) {
         event.player.sendMessage("Yippi :3")
     }
+
+    @EventHandler
+    fun onVehilceLeave(event: VehicleExitEvent) {
+        val passenger = event.exited
+        if(passenger !is Player) return
+        VentureLibs.instance.smoothCoastersAPI.resetRotation(VentureLibs.instance.networkInterface, passenger)
+        passenger.sendMessage("leave :3")
+    }
+
 
     @EventHandler
     fun onLeave(event: PlayerQuitEvent) {

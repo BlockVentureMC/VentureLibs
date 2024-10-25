@@ -67,16 +67,9 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachm
         itemDisplay?.teleport(bukkitLocation.add(Vector(0.0, -offset, 0.0)).add(upVector.x.toDouble(),upVector.y.toDouble(),upVector.z.toDouble()), TeleportFlag.EntityState.RETAIN_PASSENGERS)
 
         passenger?.let { player ->
-            player.sendActionBar("Dreh dich!")
             VentureLibs.instance.smoothCoastersAPI.setRotation(VentureLibs.instance.networkInterface, player, rotation.x, rotation.y, rotation.z, rotation.w, 3)
         }
     }
-
-    val passenger: Player?
-        get() {
-            if(itemDisplay?.passengers?.size != 2) return null
-            return itemDisplay?.passengers?.get(1) as Player
-        }
 
     override fun despawn() {
 
@@ -87,4 +80,9 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachm
         interaction?.remove()
         itemDisplay?.remove()
     }
+
+    val passenger: Player?
+        get() {
+            return itemDisplay?.passengers?.get(0) as? Player
+        }
 }
