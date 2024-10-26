@@ -1,6 +1,7 @@
 package net.blockventuremc.modules.rides.track
 
 import dev.fruxz.ascend.extension.container.first
+import dev.fruxz.ascend.extension.container.firstOrNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -136,6 +137,18 @@ class TrackCommand : CommandExecutor, TabExecutor {
                     return true
                 }
                 performSpawnTrainOnTrack(sender, trackId)
+            }
+            "despawn" -> {
+                if (args.size != 2) {
+                    sender.sendMessage("Usage: /track despawn <trackId>")
+                    return true
+                }
+                val trackId = args[1].toIntOrNull() ?: run {
+                    sender.sendMessage("Invalid track ID.")
+                    return true
+                }
+
+                performDespawnTrainOnTrack(sender, trackId)
             }
             else -> {
                 sender.sendMessage("Usage: /track <subcommand>")
@@ -350,12 +363,25 @@ class TrackCommand : CommandExecutor, TabExecutor {
 
     }
 
+    private fun performDespawnTrainOnTrack(sender: Player, trackId: Int) {
+        TrackManager.tracks[trackId] ?: run {
+            sender.sendMessage("Track $trackId does not exist.")
+            return
+        }
+        val trains = StructureManager.structures.filter { it.value is Train }.map {  it.value as Train }.filter { it.trackRide.id == trackId }
+        trains.forEach { train ->
+            train.despawnAttachmentsRecurse()
+            StructureManager.structures.remove(train.uuid)
+        }
+        sender.sendMessage("Trains despawned on Track $trackId.")
+    }
+
 
     override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): List<String> {
         return when (args.size) {
-            1 -> listOf("import", "show", "hide", "list", "select", "segment", "spawn").filter { it.startsWith(args[0]) }
+            1 -> listOf("import", "show", "hide", "list", "select", "segment", "spawn", "despawn", "placeblocks", "speed").filter { it.startsWith(args[0]) }
             2 -> when (args[0]) {
-                "show", "hide", "select", "segment", "spawn", "placeblocks" -> TrackManager.tracks.keys.map { it.toString() }.filter { it.startsWith(args[1]) }
+                "show", "hide", "select", "segment", "spawn", "despawn", "placeblocks" -> TrackManager.tracks.keys.map { it.toString() }.filter { it.startsWith(args[1]) }
                 else -> emptyList()
             }
             5 -> when (args[0]) {

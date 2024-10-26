@@ -69,7 +69,7 @@
     "discord.commands.link.option.username.description": "Der Benutzername des Minecraft-Accounts, den du verknüpfen möchtest",
     "booster.category.event": "Event-Booster",
     "booster.category.user_activated": "Spielerbooster",
-    "discord.commands.link.name": "Link",
-    "discord.commands.link.option.username.name": "Nutzername",
-    "discord.commands.players.name": "Spieler"
+    "discord.commands.link.name": "link",
+    "discord.commands.link.option.username.name": "nutzername",
+    "discord.commands.players.name": "spieler"
 }

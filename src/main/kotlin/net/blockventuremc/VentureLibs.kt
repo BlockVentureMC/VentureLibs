@@ -33,6 +33,8 @@ class VentureLibs : JavaPlugin() {
     lateinit var smoothCoastersAPI: SmoothCoastersAPI
     lateinit var networkInterface:  NetworkInterface
 
+    val shutDownHooks = mutableListOf<() -> Unit>()
+
     init {
         instance = this
     }
@@ -105,13 +107,14 @@ class VentureLibs : JavaPlugin() {
 
     override fun onDisable() {
         PlayerCache.cleanup()
-
         TrackManager.cleanUp()
 
         for (player in Bukkit.getOnlinePlayers()) {
             val pixelPlayer = PlayerCache.getOrNull(player.uniqueId) ?: continue
             PlayerCache.saveToDB(pixelPlayer.copy(username = player.name))
         }
+
+        shutDownHooks.forEach { it() }
 
         smoothCoastersAPI.unregister()
 
