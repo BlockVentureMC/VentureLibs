@@ -16,7 +16,7 @@ import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.primaryConstructor
 import kotlin.time.measureTime
 
-class TrackRide(private val id: Int, val origin: Location) {
+class TrackRide(val id: Int, val origin: Location) {
 
     val nodes = mutableListOf<TrackNode>()
     private val itemDisplays = mutableMapOf<Int, UUID>()

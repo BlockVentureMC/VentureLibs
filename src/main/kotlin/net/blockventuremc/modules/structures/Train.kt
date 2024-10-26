@@ -3,7 +3,6 @@ package net.blockventuremc.modules.structures
 import net.blockventuremc.extensions.createQuaternionFromVectors
 import net.blockventuremc.modules.rides.track.TrackNode
 import net.blockventuremc.modules.rides.track.TrackRide
-import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.util.Vector
 import org.joml.Matrix4f
@@ -29,7 +28,9 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
         repeat(2) {
             totalMass += mass
             //gravity
+
             val fdotUp = -forward.dot(worldUp)
+
             var fg = mass * gravity
             force += fg * fdotUp
 
@@ -139,5 +140,4 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
             upZ = upZ
         )
     }
-
 }
