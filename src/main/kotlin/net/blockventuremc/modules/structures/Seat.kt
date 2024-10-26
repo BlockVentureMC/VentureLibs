@@ -1,6 +1,8 @@
 package net.blockventuremc.modules.structures
 
 import io.papermc.paper.entity.TeleportFlag
+import me.m56738.smoothcoasters.api.DefaultNetworkInterface
+import me.m56738.smoothcoasters.api.NetworkInterface
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.extensions.toEulerAngles
 import org.bukkit.Material
@@ -10,6 +12,9 @@ import org.bukkit.entity.ItemDisplay
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
+import org.joml.Matrix4f
+import org.joml.Quaternionf
+import org.joml.Vector3f
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -19,7 +24,7 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachm
     var interaction: Interaction? = null
     var dynamic = false
 
-    val offset = 0.53
+    val offset = 0.53//0.53
 
     init {
         localPosition.add(Vector(0.0, offset, 0.0))
@@ -30,8 +35,8 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachm
         itemDisplay = location.world.spawnEntity(location, EntityType.ITEM_DISPLAY) as ItemDisplay
         itemDisplay?.apply {
             shadowStrength = 0.0f
-            teleportDuration = 3
-            interpolationDuration = 3
+            teleportDuration = 2
+            interpolationDuration = 2
             itemDisplayTransform = ItemDisplay.ItemDisplayTransform.HEAD
             setItemStack(ItemStack(Material.ACACIA_WOOD))
             isCustomNameVisible = false
@@ -51,46 +56,33 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachm
     }
 
     override fun updateTransform() {
-        itemDisplay?.teleport(bukkitLocation.add(Vector(0.0, -offset, 0.0)), TeleportFlag.EntityState.RETAIN_PASSENGERS)
+        var rotation = Quaternionf()
+        rotation = worldTransform.getNormalizedRotation(rotation)
 
-        //forward Vector (direction where the player should be looking)
-        //itemDisplay?.passegner[1]-> player
+        val upVector =  (rotation.clone() as Quaternionf).transform(Vector3f(0.0f, 1.0f, 0.0f)).normalize()
 
-        val player = itemDisplay?.passengers?.firstOrNull() as? Player
-        if(player == null) return
+        val loopingOffset = upVector.dot(Vector3f(0.0f, -1.0f, 0.0f)).coerceIn(0.0f,1.0f)
+        upVector.mul(loopingOffset).mul(0.5f)
 
-        // The forward vector is a vector pointing from the seat to a point 1m in front of you
-        val transformation = itemDisplay?.transformation ?: return
+        itemDisplay?.teleport(bukkitLocation.add(Vector(0.0, -offset, 0.0)).add(upVector.x.toDouble(),upVector.y.toDouble(),upVector.z.toDouble()), TeleportFlag.EntityState.RETAIN_PASSENGERS)
 
-        // Extract the rotation quaternion from the transformation
-        val rotationQuaternion = transformation.leftRotation
-
-        // Convert the quaternion to Euler angles (yaw and pitch)
-        val eulerAngles = rotationQuaternion.toEulerAngles()
-
-        // Extract yaw and pitch from Euler angles
-        val yawRad = eulerAngles.x
-        val pitchRad = eulerAngles.y
-
-        // Calculate the forward vector components
-        val x = -cos(pitchRad) * sin(yawRad)
-        val y = -sin(pitchRad)
-        val z = cos(pitchRad) * cos(yawRad)
-
-        val forwardVector = Vector(x, y, z).normalize()
-
-        VentureLibs.instance.smoothCoastersAPI.setRotation(null, player,
-            forwardVector.x.toFloat(), forwardVector.y.toFloat(),
-            forwardVector.z.toFloat(), forwardVector.lengthSquared().toFloat(), 3)
+        passenger?.let { player ->
+            VentureLibs.instance.smoothCoastersAPI.setRotation(VentureLibs.instance.networkInterface, player, rotation.x, rotation.y, rotation.z, rotation.w, 3)
+        }
     }
 
     override fun despawn() {
-        val player = itemDisplay?.passengers?.firstOrNull() as? Player
-        if(player != null) {
-            VentureLibs.instance.smoothCoastersAPI.resetRotation(null, player)
+
+        passenger?.let { player ->
+            VentureLibs.instance.smoothCoastersAPI.resetRotation(VentureLibs.instance.networkInterface, player)
         }
 
         interaction?.remove()
         itemDisplay?.remove()
     }
+
+    val passenger: Player?
+        get() {
+            return itemDisplay?.passengers?.get(0) as? Player
+        }
 }

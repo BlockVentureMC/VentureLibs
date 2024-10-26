@@ -1,12 +1,14 @@
 package net.blockventuremc.modules.structures
 
 import net.blockventuremc.VentureLibs
+import org.bukkit.entity.Player
 import java.io.Closeable
 import java.util.UUID
 
 object StructureManager {
 
     val structures = mutableMapOf<UUID, CustomEntity>()
+    val balloons = mutableMapOf<Player, Balloon>()
 
     fun update() {
 
@@ -14,6 +16,10 @@ object StructureManager {
 
             structures.forEach { (uuid, attachment) ->
                 attachment.update()
+            }
+
+            balloons.forEach { (player, balloon) ->
+                balloon.update()
             }
 
         }
@@ -24,6 +30,10 @@ object StructureManager {
         structures.forEach { (uuid, attachment) ->
             attachment.despawnAttachmentsRecurse()
         }
+        balloons.forEach { (player, balloon) ->
+            balloon.remove()
+        }
+        balloons.clear()
         structures.clear()
     }
 }

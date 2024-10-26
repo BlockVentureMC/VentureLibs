@@ -36,4 +36,9 @@ object TrackManager {
             getLogger().info("Loaded track $trackId")
         }
     }
+
+    fun cleanUp() {
+        tracks.values.forEach { it.hideTrack() }
+    }
+
 }

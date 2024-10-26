@@ -1,5 +1,7 @@
 package net.blockventuremc
 
+import me.m56738.smoothcoasters.api.DefaultNetworkInterface
+import me.m56738.smoothcoasters.api.NetworkInterface
 import me.m56738.smoothcoasters.api.SmoothCoastersAPI
 import net.blockventuremc.audioserver.common.data.RabbitConfiguration
 import net.blockventuremc.audioserver.minecraft.AudioServer
@@ -29,6 +31,7 @@ class VentureLibs : JavaPlugin() {
 
     lateinit var jda: JDA
     lateinit var smoothCoastersAPI: SmoothCoastersAPI
+    lateinit var networkInterface:  NetworkInterface
 
     init {
         instance = this
@@ -52,8 +55,8 @@ class VentureLibs : JavaPlugin() {
         logger.info("Loading translations...")
         TranslationCache.loadAll()
 
-
         smoothCoastersAPI = SmoothCoastersAPI(this)
+        networkInterface = DefaultNetworkInterface(this)
 
         logger.info("Connecting to audioserver...")
         AudioServer.connect(
@@ -102,6 +105,8 @@ class VentureLibs : JavaPlugin() {
 
     override fun onDisable() {
         PlayerCache.cleanup()
+
+        TrackManager.cleanUp()
 
         for (player in Bukkit.getOnlinePlayers()) {
             val pixelPlayer = PlayerCache.getOrNull(player.uniqueId) ?: continue
