@@ -1,10 +1,16 @@
 package net.blockventuremc.modules.rides.track
 
 import dev.fruxz.ascend.extension.container.first
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.modules.general.events.custom.toVentureLocation
+import net.blockventuremc.modules.rides.track.segments.LiftSegment
 import net.blockventuremc.modules.rides.track.segments.SegmentTypes
+import net.blockventuremc.modules.rides.track.segments.TrackSegment
 import net.blockventuremc.modules.structures.Animation
 import net.blockventuremc.modules.structures.Attachment
 import net.blockventuremc.modules.structures.CustomEntity
@@ -13,6 +19,8 @@ import net.blockventuremc.modules.structures.Seat
 import net.blockventuremc.modules.structures.StructureManager
 import net.blockventuremc.modules.structures.Train
 import net.blockventuremc.utils.itembuilder.ItemBuilder
+import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -57,6 +65,17 @@ class TrackCommand : CommandExecutor, TabExecutor {
                     return true
                 }
                 performImportTrack(sender, trackId)
+            }
+            "placeblocks" -> {
+                if (args.size != 2) {
+                    sender.sendMessage("Usage: /track placeblocks <trackId>")
+                    return true
+                }
+                val trackId = args[1].toIntOrNull() ?: run {
+                    sender.sendMessage("Invalid track ID.")
+                    return true
+                }
+                performPlaceTrackBlocks(sender, trackId)
             }
             "debug" -> {
                 if (args.size != 2) {
@@ -105,7 +124,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
                     sender.sendMessage("Usage: /track speed <velocity>")
                     return true
                 }
-                performDebugSpeed(sender, args[1].toFloat())
+                performDebugSpeed(sender, args[1].toFloat().coerceIn(-4.0f,4.0f))
             }
             "spawn" -> {
                 if (args.size != 2) {
@@ -128,7 +147,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
 
     private fun setSegmentType(args: Array<out String>, sender: CommandSender) {
         if (args.size < 5) {
-            sender.sendMessage("Usage: /track segment <trackId> <nodeIdStart> <nodeIdEnd> <segmentType>")
+            sender.sendMessage("Usage: /track segment <trackId> <nodeIdStart> <nodeIdEnd> <segmentType> <values..>")
             return
         }
 
@@ -152,9 +171,48 @@ class TrackCommand : CommandExecutor, TabExecutor {
             return
         }
 
-        val segmentType = SegmentTypes.valueOf(args[4].uppercase(Locale.getDefault()))
+        val segmentType = SegmentTypes.entries.find { it.name.equals(args[4], true) } ?: run {
+            sender.sendMessage("Invalid segment type.")
+            return
+        }
 
-        track.setSegmentType(nodeIdStart, nodeIdEnd, segmentType)
+        var trackSegment: TrackSegment? = null
+
+        when (segmentType) {
+            SegmentTypes.LIFT -> {
+                val value = args[5].toFloatOrNull() ?: run {
+                    sender.sendMessage("Invalid value")
+                    return
+                }
+                trackSegment = LiftSegment(nodeIdStart, nodeIdEnd, value)
+                sender.sendMessage("new Lift Segment")
+
+            }
+            SegmentTypes.NORMAL -> {
+                trackSegment = TrackSegment(nodeIdStart, nodeIdEnd)
+                sender.sendMessage("set Normal Segment")
+            }
+            SegmentTypes.LAUNCH -> {
+            }
+            SegmentTypes.BRAKE -> {
+
+            }
+            SegmentTypes.STATION -> {
+
+            }
+            SegmentTypes.ACCELERATION -> {
+
+            }
+            else -> {
+
+            }
+        }
+        if(trackSegment == null) {
+            sender.sendMessage("Logic fehlt hier")
+            return
+        }
+
+        track.setSegmentType(nodeIdStart, nodeIdEnd, trackSegment)
     }
 
     private fun selectTrackNode(args: Array<out String>, sender: CommandSender) {
@@ -232,8 +290,29 @@ class TrackCommand : CommandExecutor, TabExecutor {
         sender.sendMessage("Track $trackId hidden.")
     }
 
+    private fun performPlaceTrackBlocks(sender: Player, trackId: Int) {
+
+        val track = TrackManager.tracks[trackId] ?: run {
+            sender.sendMessage("Track $trackId does not exist.")
+            return
+        }
+        val item = sender.inventory.itemInMainHand
+        sender.sendMessage("Plaziere Blöcke...")
+
+        CoroutineScope(Dispatchers.Default).launch {
+            track.nodes.forEach { node ->
+            Bukkit.getScheduler().runTask(VentureLibs.instance, Runnable {
+                val offset = node.upVector.normalize().multiply(-1.0)
+                val position = track.origin.toVector().add(node.position).add(offset)
+                sender.world.getBlockAt(Location(sender.world, position.x, position.y, position.z)).type = item.type
+            })
+            }
+        }
+        sender.sendMessage("Es wurden Blöcke platziert.")
+    }
+
     private fun performDebugSpeed(sender: Player, velocity: Float) {
-        val first = StructureManager.structures.values.first as Train
+        val first = StructureManager.structures.values.last() as Train
         first.velocity = velocity
         sender.sendMessage("Velocity $velocity")
     }
@@ -276,7 +355,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
         return when (args.size) {
             1 -> listOf("import", "show", "hide", "list", "select", "segment", "spawn").filter { it.startsWith(args[0]) }
             2 -> when (args[0]) {
-                "show", "hide", "select", "segment", "spawn" -> TrackManager.tracks.keys.map { it.toString() }.filter { it.startsWith(args[1]) }
+                "show", "hide", "select", "segment", "spawn", "placeblocks" -> TrackManager.tracks.keys.map { it.toString() }.filter { it.startsWith(args[1]) }
                 else -> emptyList()
             }
             5 -> when (args[0]) {

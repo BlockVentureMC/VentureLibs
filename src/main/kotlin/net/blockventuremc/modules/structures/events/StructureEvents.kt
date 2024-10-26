@@ -16,7 +16,7 @@ import org.bukkit.event.vehicle.VehicleExitEvent
 class StructureEvents: Listener {
 
     @EventHandler
-    fun onLeave(event: PlayerSmoothCoastersHandshakeEvent) {
+    fun onPlayerSmoothCoastersHandshakeEvent(event: PlayerSmoothCoastersHandshakeEvent) {
         event.player.sendMessage("Yippi :3")
     }
 
@@ -25,7 +25,6 @@ class StructureEvents: Listener {
         val passenger = event.entity
         if(passenger !is Player) return
         VentureLibs.instance.smoothCoastersAPI.resetRotation(VentureLibs.instance.networkInterface, passenger)
-        passenger.sendMessage("leave :3")
     }
 
     @EventHandler

@@ -16,32 +16,42 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
     var currentPosition = 0.0
     var rotationQuaternion = Quaternionf()
 
-    var mass = -700.0f //masse kilogramm
+    var mass = 700.0f //masse kilogramm
     val rollCoefficient = 0.072f  // Rollreibungskoeffizient (angenommener Wert) abhängig von wagen und schiene
     val crossArea = 1.1f //Querschnittsfläche 0.5 bis 1,5 in Quadratmeter damit ist die Stirnfläche gemeint
     var velocity = 0.0f
 
     fun simulate(trackNode: TrackNode, forward: Vector3f, up: Vector3f) {
         var force = 0.0f
+        var totalMass = 0.0f
 
         val worldUp = Vector3f(0.0f, 1.0f, 0.0f)
+        repeat(2) {
+            totalMass += mass
+            //gravity
+            val fdotUp = -forward.dot(worldUp)
+            var acc = fdotUp * gravity
+            force += acc * mass
 
-        //gravity
-        val fdotUp = -forward.dot(worldUp)
-        var acc = fdotUp * gravity
-        force += acc * mass
+            //roll resistance
+            val NForce = up.dot(worldUp) * gravity
+            force += -sign(velocity) * rollCoefficient * (NForce * mass)
 
-        //roll resistance
-        val NForce = up.dot(worldUp) * gravity
-        force += -sign(velocity) * rollCoefficient * (NForce * mass)
+            //drag Diese Luftwiderstand steigt mit zunehmender Geschwindigkeit quadratisch an
+            val dragCoefficient = 0.6f
+            var v2 = velocity * velocity
+            force += -sign(velocity) * 0.5f * airDensity * v2 * dragCoefficient * crossArea
 
-        //drag
-        val dragCoefficient = 0.6f
-        var v2 = velocity * velocity
-        force += -sign(velocity) * 0.5f * airDensity * v2 * dragCoefficient * crossArea
+            //TODO Zentripetalkraft  (m*v2)/r r kurvenradius? wie finde ich ihn raus?
+        }
 
         val deltaTime = 0.025f
-        velocity += force * deltaTime / mass
+        velocity += force * deltaTime / totalMass
+
+        val segment = trackRide.findSegment(trackNode.id)
+        segment.let { segment ->
+            segment?.applyForces(this)
+        }
     }
 
     override fun update() {

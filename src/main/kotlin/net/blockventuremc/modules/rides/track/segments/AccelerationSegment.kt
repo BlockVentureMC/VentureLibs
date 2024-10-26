@@ -1,6 +1,7 @@
 package net.blockventuremc.modules.rides.track.segments
 
 import net.blockventuremc.modules.rides.track.TrackNode
+import net.blockventuremc.modules.structures.Train
 
 /**
  * Represents a segment of acceleration on a track.
@@ -10,13 +11,14 @@ import net.blockventuremc.modules.rides.track.TrackNode
  *
  * @param acceleration The acceleration value for the segment.
  */
-class AccelerationSegment(private val acceleration: Double = 2.0) : SegmentFunction {
+class AccelerationSegment(startId: Int,endId: Int, val acceleration: Float) : TrackSegment(startId, endId) {
 
-    override val trackDisplay: SegmentTypes = SegmentTypes.LAUNCH
-
-    override fun calculateSpeed(node: TrackNode, currentSpeed: Double, previousNode: TrackNode?, weatherFactor: Double, maintenanceFactor: Double, trainWeight: Double): Double {
-        val newSpeed = currentSpeed + acceleration * weatherFactor * maintenanceFactor
-        val frictionLoss = 0.01 * trainWeight
-        return (newSpeed - frictionLoss).coerceAtLeast(0.0)
+    override fun applyForces(train: Train) {
+        train.velocity += acceleration
     }
+
+
+    override val type: SegmentTypes
+        get() = SegmentTypes.ACCELERATION
+
 }

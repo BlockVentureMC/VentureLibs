@@ -106,6 +106,8 @@ class VentureLibs : JavaPlugin() {
     override fun onDisable() {
         PlayerCache.cleanup()
 
+        TrackManager.cleanUp()
+
         for (player in Bukkit.getOnlinePlayers()) {
             val pixelPlayer = PlayerCache.getOrNull(player.uniqueId) ?: continue
             PlayerCache.saveToDB(pixelPlayer.copy(username = player.name))

@@ -2,6 +2,8 @@ package net.blockventuremc.modules.rides.track.segments
 
 import net.blockventuremc.modules.rides.track.TrackNode
 import net.blockventuremc.modules.rides.track.utils.calculateAdjustedSpeed
+import net.blockventuremc.modules.structures.Train
+import kotlin.math.abs
 
 /**
  * Represents a LiftSegment, which is a class that implements the SegmentFunction interface.
@@ -9,17 +11,16 @@ import net.blockventuremc.modules.rides.track.utils.calculateAdjustedSpeed
  *
  * @param liftSpeed The desired speed for the segment.
  */
-class LiftSegment(private val liftSpeed: Double = 7.0) : SegmentFunction {
+class LiftSegment(startId: Int,endId: Int, val liftSpeed: Float) : TrackSegment(startId, endId) {
 
-    override val trackDisplay: SegmentTypes = SegmentTypes.LIFT
-
-    override fun calculateSpeed(node: TrackNode, currentSpeed: Double, previousNode: TrackNode?, weatherFactor: Double, maintenanceFactor: Double, trainWeight: Double): Double {
-        if (previousNode == null) {
-            return currentSpeed
-        }
-
-        val adjustedSpeed =  calculateAdjustedSpeed(node, previousNode, trainWeight, currentSpeed, weatherFactor, maintenanceFactor)
-        return adjustedSpeed.coerceAtMost(liftSpeed)
+    override fun applyForces(train: Train) {
+        if(abs(train.velocity) > liftSpeed) return
+        train.velocity = liftSpeed
     }
+
+    override val type: SegmentTypes
+        get() = SegmentTypes.LIFT
+
 }
+
 

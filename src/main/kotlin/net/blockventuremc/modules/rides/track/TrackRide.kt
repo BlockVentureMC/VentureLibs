@@ -2,7 +2,6 @@ package net.blockventuremc.modules.rides.track
 
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.extensions.getLogger
-import net.blockventuremc.modules.rides.track.segments.NormalSegment
 import net.blockventuremc.modules.rides.track.segments.SegmentTypes
 import net.blockventuremc.modules.rides.track.segments.TrackSegment
 import org.bukkit.Location
@@ -21,14 +20,16 @@ class TrackRide(private val id: Int, val origin: Location) {
 
     val nodes = mutableListOf<TrackNode>()
     private val itemDisplays = mutableMapOf<Int, UUID>()
-    private var trackSegments = listOf<TrackSegment>()
+
+    private val trackSegments = mutableMapOf<Pair<Int, Int>, TrackSegment>()
+
     private var highlightedNode = -1
 
     var nodeDistance = 0.0
     var totalLength = 0.0
 
     init {
-        loadNodeEntitiesFromFile()
+        displayTrack()
     }
 
     /**
@@ -44,34 +45,12 @@ class TrackRide(private val id: Int, val origin: Location) {
     }
 
     /**
-     * Adds a TrackNode to the nodes list.
-     *
-     * @param node The TrackNode to be added.
-     */
-    fun addNode(node: TrackNode) {
-        nodes.add(node)
-
-        // Recalculate the segments
-        recalculateSegments()
-    }
-
-    /**
      * Highlights a node by changing its display entity to the highlighted material
      * and updating the highlightedNode field.
      *
      * @param nodeId The ID of the node to highlight.
      */
     fun highlightNode(nodeId: Int) {
-        if (highlightedNode != -1) {
-            val oldEntityUUID = itemDisplays[highlightedNode]
-            if (oldEntityUUID != null) {
-                val entity = origin.world.getEntity(oldEntityUUID) as ItemDisplay
-                val oldSegment = trackSegments.find { trackSegment -> trackSegment.nodes.any { it.id == highlightedNode } }
-                if (oldSegment != null) {
-                    entity.setItemStack( ItemStack(oldSegment.function.trackDisplay.material))
-                }
-            }
-        }
 
         val newEntityUUID = itemDisplays[nodeId]
         if (newEntityUUID != null) {
@@ -81,7 +60,7 @@ class TrackRide(private val id: Int, val origin: Location) {
         }
     }
 
-    fun setSegmentType(nodeIdStart: Int, nodeIdEnd: Int, segmentType: SegmentTypes) {
+    fun setSegmentType(nodeIdStart: Int,nodeIdEnd: Int, segment: TrackSegment) {
         val startNode = nodes.find { it.id == nodeIdStart } ?: run {
             getLogger().warn("Node $nodeIdStart not found.")
             return
@@ -90,120 +69,62 @@ class TrackRide(private val id: Int, val origin: Location) {
             getLogger().warn("Node $nodeIdEnd not found.")
             return
         }
-
-       val nodes = nodes.subList(nodes.indexOf(startNode), nodes.indexOf(endNode) + 1)
-        val segment = TrackSegment(trackSegments.size + 1, nodes, segmentType.segmentType.createInstance())
-        trackSegments += segment
-
-
+        if(segment.type == SegmentTypes.NORMAL) {
+            trackSegments[Pair(nodeIdStart, nodeIdEnd)]?.let { segment ->
+                trackSegments.remove(Pair(nodeIdStart, nodeIdEnd))
+            }
+        } else {
+            trackSegments[Pair(nodeIdStart, nodeIdEnd)] = segment
+        }
 
         recalculateSegments()
     }
 
-    /**
-     * Recalculates the segments of a track ride.
-     *
-     * This method filters out all NormalSegments from the trackSegments list, collects the ranges of the remaining
-     * non-normal segments, and creates NormalSegments for any gaps between those ranges. It also handles the wrap-around
-     * segment if necessary. Finally, it adds the non-normal segments back to the newSegments list and sorts them by node index.
-     * The trackSegments list is then updated with the new segments.
-     */
     private fun recalculateSegments() {
 
         // Calculate the total length of the track
         nodeDistance = nodes[0].position.distance(nodes[1].position)
         totalLength = nodeDistance * nodes.size.toDouble()
 
-        // Filter out all NormalSegments
-        val nonNormalSegments = trackSegments.filter { it.function !is NormalSegment }
-
-        // Collect the ranges of non-normal segments
-        val ranges = nonNormalSegments.flatMap { segment ->
-            val startIndex = nodes.indexOf(segment.nodes.first())
-            val endIndex = nodes.indexOf(segment.nodes.last())
-            listOf(startIndex to endIndex)
-        }.sortedBy { it.first }
-
-        val newSegments = mutableListOf<TrackSegment>()
-        var lastEndIndex = 0
-
-        for (range in ranges) {
-            val (startIndex, endIndex) = range
-            if (lastEndIndex < startIndex - 1) {
-                // Create a NormalSegment for the gap
-                val normalSegmentNodes = nodes.subList(lastEndIndex, startIndex)
-                newSegments.add(TrackSegment(newSegments.size + 1, normalSegmentNodes, NormalSegment()))
-            }
-            lastEndIndex = endIndex + 1
-        }
-
-        // Handle the segment from the last end index to the end of the nodes list
-        if (lastEndIndex < nodes.size) {
-            val normalSegmentNodes = nodes.subList(lastEndIndex, nodes.size)
-            newSegments.add(TrackSegment(newSegments.size + 1, normalSegmentNodes, NormalSegment()))
-        }
-
-        // Handle wrap-around segment
-        if (ranges.isNotEmpty() && ranges.first().first > 0 && ranges.last().second < nodes.size - 1) {
-            val firstStartIndex = ranges.first().first
-            val lastSegmentEndIndex = ranges.last().second
-            if (lastSegmentEndIndex < nodes.size - 1 || firstStartIndex > 0) {
-                val normalSegmentNodes = nodes.subList(lastSegmentEndIndex, nodes.size) + nodes.subList(0, firstStartIndex)
-                newSegments.add(TrackSegment(newSegments.size + 1, normalSegmentNodes, NormalSegment()))
-            }
-        }
-
-        // Add the non-normal segments back
-        newSegments.addAll(nonNormalSegments)
-
-        // Sort the segments by their node index
-        trackSegments = newSegments.sortedBy { nodes.indexOf(it.nodes.first()) }
-
-        getLogger().info("Recalculated segments for track $id.")
-        for (segment in trackSegments) {
-            segment.calculateSpeed(0.0, 1.0, 1.0, 1.0)
-            getLogger().info("Segment ${segment.id} (${segment.function::class.simpleName}): ${segment.nodes.first().id} - ${segment.nodes.last().id} with a length of ${segment.length} meters. Average speed: ${segment.averageSpeed} m/s.")
-        }
-
         repaintSegments()
     }
 
     private fun repaintSegments() {
-        for (segment in trackSegments) {
-            for (node in segment.nodes) {
-                val entityUUID = itemDisplays[node.id]
+        for (itemDisplay in itemDisplays) {
+            val entity = origin.world.getEntity(itemDisplay.value) as? ItemDisplay
+            entity?.isCustomNameVisible = false
+            entity?.setItemStack(ItemStack(SegmentTypes.NORMAL.material))
+        }
+
+        trackSegments.forEach { (pair, segment) ->
+
+            val startNode = pair.first
+            val endNode = pair.second
+
+            for(id in startNode..endNode) {
+                val entityUUID = itemDisplays[id]
                 if (entityUUID != null) {
                     val entity = origin.world.getEntity(entityUUID) as ItemDisplay
-                    entity.setItemStack( ItemStack(segment.function.trackDisplay.material))
+                    entity.setItemStack( ItemStack(segment.type.material))
+                    if(id == startNode || id == endNode) {
+                        entity.isCustomNameVisible = true
+                        entity.customName = "${segment.type.name} id=$id"
+                    }
                 }
             }
         }
         highlightedNode = -1
     }
 
-
-    /**
-     * Displays each node in the track as itemDisplayEntities in the given world.
-     *
-     */
     fun displayTrack() {
+        if(!itemDisplays.isEmpty()) return
         for (node in nodes) {
-
-            if (itemDisplays.containsKey(node.id)) {
-                // The node is already displayed
-                continue
-            }
-
-            // Display the track
             val display = node.displayInWord(origin)
             itemDisplays[node.id] = display
         }
-        saveNodeEntitiesToFile()
+        repaintSegments()
     }
 
-    /**
-     * Hides the track from the world.
-     */
     fun hideTrack() {
         for (itemDisplay in itemDisplays) {
             val entity = origin.world.getEntity(itemDisplay.value)
@@ -212,13 +133,20 @@ class TrackRide(private val id: Int, val origin: Location) {
             }
             entity?.remove()
         }
-        removeNodeEntitiesFromFile()
+        itemDisplays.clear()
     }
 
-    /**
-     * Saves the node entities to a file.
-     * The nodes are saved as a JSON array in a file located at the "rides*/
-    private fun saveNodeEntitiesToFile() {
+    fun findSegment(nodeId: Int): TrackSegment? {
+        trackSegments.forEach { (pair, segment) ->
+            val (min,max) = pair
+            if(nodeId in min..max) {
+                return segment
+            }
+        }
+        return null
+    }
+
+    private fun saveSegmentsToFile() {
         // Save the nodes to a file
         val file = File(VentureLibs.instance.dataFolder, "rides/track/$id.json").also { it.parentFile.mkdirs(); it.createNewFile() }
         val jsonArray = JSONArray()
@@ -231,38 +159,17 @@ class TrackRide(private val id: Int, val origin: Location) {
         file.writeText(jsonArray.toJSONString())
     }
 
-    /**
-     * Loads the node entities from a file.
-     * The nodes are loaded from a JSON array in a file located at the "rides" directory.
-     */
-    private fun loadNodeEntitiesFromFile() {
+    private fun loadSegmentsFromFile() {
         // Load the nodes from a file
         val file = File(VentureLibs.instance.dataFolder, "rides/track/$id.json")
         if (!file.exists()) return
         val jsonArrayText = file.readText()
         val jsonArray = JSONParser().parse(jsonArrayText) as JSONArray
         var element = 0
-        val time = measureTime {
-            jsonArray.forEach {
-                val jsonObj = it as JSONObject
-                val id = jsonObj["id"].toString().toInt()
-                val uuid = jsonObj["uuid"].toString()
-                itemDisplays[id] = UUID.fromString(uuid)
-                element++
-            }
-        }
-        getLogger().info("Loaded $element nodes in $time")
+        getLogger().info("Loaded $element nodes in ")
     }
 
-    /**
-     * Removes the node entities from a file.
-     *
-     * This method is responsible for deleting the file that contains the node entities for the track ride.
-     * It checks if the file exists and then deletes it.
-     * If the file does not exist, it does nothing.
-     * This method is used internally and should not be called directly.
-     */
-    private fun removeNodeEntitiesFromFile(): Unit {
+    private fun deleteSeqmentsFile(): Unit {
         // Remove the nodes from a file
         val file = File(VentureLibs.instance.dataFolder, "rides/track/$id.json")
         if (!file.exists()) return
