@@ -9,7 +9,7 @@ class BreakSegment(startId: Int, endId: Int, val minspeed: Float) : TrackSegment
 
     val breakType: BreakType = BreakType.BLOCKBREAK
 
-    override fun applyForces(train: Train) {
+    override fun applyForces(train: Train, deltaTime: Float) {
 
         when(breakType) {
             BreakType.BLOCKBREAK -> {

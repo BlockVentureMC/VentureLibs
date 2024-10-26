@@ -17,7 +17,7 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
     var rotationQuaternion = Quaternionf()
 
     var mass = 700.0f //masse kilogramm
-    val rollCoefficient = 0.072f  // Rollreibungskoeffizient (angenommener Wert) abhängig von wagen und schiene
+    val rollCoefficient = 0.002f  // Rollreibungskoeffizient (angenommener Wert) abhängig von wagen und schiene
     val crossArea = 1.1f //Querschnittsfläche 0.5 bis 1,5 in Quadratmeter damit ist die Stirnfläche gemeint
     var velocity = 0.0f
 
@@ -42,7 +42,8 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
             var v2 = velocity * velocity
             force += -sign(velocity) * 0.5f * airDensity * v2 * dragCoefficient * crossArea
 
-            //TODO Zentripetalkraft  (m*v2)/r r kurvenradius? wie finde ich ihn raus?
+            //Winkelgeschwindigkeit
+            //TODO Zentripetalkraft  m*(v2/r) kurvenradius? wie finde ich ihn raus?
         }
 
         val deltaTime = 0.025f
@@ -50,7 +51,7 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
 
         val segment = trackRide.findSegment(trackNode.id)
         segment.let { segment ->
-            segment?.applyForces(this)
+            segment?.applyForces(this, deltaTime)
         }
     }
 

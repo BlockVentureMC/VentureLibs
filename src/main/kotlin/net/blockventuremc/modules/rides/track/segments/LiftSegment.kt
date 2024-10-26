@@ -13,7 +13,7 @@ import kotlin.math.abs
  */
 class LiftSegment(startId: Int,endId: Int, val liftSpeed: Float) : TrackSegment(startId, endId) {
 
-    override fun applyForces(train: Train) {
+    override fun applyForces(train: Train, deltaTime: Float) {
         if(abs(train.velocity) > liftSpeed) return
         train.velocity = liftSpeed
     }

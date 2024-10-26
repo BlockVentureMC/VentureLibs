@@ -2,6 +2,8 @@ package net.blockventuremc.modules.structures.events
 
 import me.m56738.smoothcoasters.api.event.PlayerSmoothCoastersHandshakeEvent
 import net.blockventuremc.VentureLibs
+import net.blockventuremc.modules.structures.StructureManager
+import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Interaction
 import org.bukkit.entity.ItemDisplay
@@ -29,7 +31,12 @@ class StructureEvents: Listener {
 
     @EventHandler
     fun onLeave(event: PlayerQuitEvent) {
-        event.player.leaveVehicle()
+        val player = event.player
+        player.leaveVehicle()
+        StructureManager.balloons[player]?.let { balloon ->
+            balloon.remove()
+            StructureManager.balloons.remove(player)
+        }
     }
 
     @EventHandler

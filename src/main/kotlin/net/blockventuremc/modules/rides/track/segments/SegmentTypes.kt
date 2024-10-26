@@ -11,7 +11,6 @@ enum class SegmentTypes(val material: Material, val segmentType: KClass<out Trac
     BRAKE(Material.BIRCH_TRAPDOOR, TrackSegment::class),
     STATION(Material.DARK_OAK_TRAPDOOR, TrackSegment::class),
     ACCELERATION(Material.CRIMSON_TRAPDOOR, AccelerationSegment::class),
-
     HIGHLIGHTED(Material.CRIMSON_TRAPDOOR, TrackSegment::class),
 
 }
