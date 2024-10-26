@@ -1,8 +1,9 @@
 package net.blockventuremc.modules.general.events.custom
 
+import net.blockventuremc.database.model.BlockUser
 import org.bukkit.event.HandlerList
 
-class AFKChangeEvent(var afk: Boolean, val cause: Cause) : BooleanStatusChangedEvent(afk) {
+class AFKChangeEvent(val blockUser: BlockUser, var afk: Boolean, val cause: Cause) : BooleanStatusChangedEvent(afk) {
 
     companion object {
         private val handlerList = HandlerList()
