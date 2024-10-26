@@ -48,7 +48,7 @@ data class BlockUser(
         if (afk) return
         val lastActivityDuration = lastActivity.durationToNow()
         if (lastActivityDuration >= AFK_DURATION) {
-            val afkStatusChangedEvent = AFKChangeEvent(true, AFKChangeEvent.Cause.NO_ACTIVITY)
+            val afkStatusChangedEvent = AFKChangeEvent(this, true, AFKChangeEvent.Cause.NO_ACTIVITY)
             if (afkStatusChangedEvent.isCancelled) return
             afk = true
             getItsLogger().info("Player $username ($uuid) is now AFK")
@@ -57,7 +57,7 @@ data class BlockUser(
 
     fun addActivity(cause: AFKChangeEvent.Cause) {
         if (afk) {
-            val afkStatusChangedEvent = AFKChangeEvent(false, cause)
+            val afkStatusChangedEvent = AFKChangeEvent(this, false, cause)
             if (afkStatusChangedEvent.isCancelled) return
             afk = false
             val afkDuration = lastActivity.durationToNow()
