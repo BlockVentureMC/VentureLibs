@@ -29,7 +29,9 @@ fun CommandSender.sendMessageBlock(vararg lines: String) {
     sendEmtpyLine()
     sendMessage(text(BLOCK_PREFIX))
     sendEmtpyLine()
-    lines.forEach { sendMessage(text(it)) }
+    lines.forEach {
+        if (it.isNotEmpty()) sendMessage(text(it))
+    }
     sendEmtpyLine()
 }
 

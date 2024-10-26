@@ -4,6 +4,8 @@ import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.translate
+import net.blockventuremc.modules.titles.events.TitleChangedEvent
+import org.bukkit.Bukkit
 import org.bukkit.Sound
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -51,6 +53,9 @@ class TitleCommand : CommandExecutor, TabExecutor {
 
         blockPlayer.selectedTitle = title
         PlayerCache.updateCached(blockPlayer)
+
+        val titleChangedEvent = TitleChangedEvent(sender, title)
+        Bukkit.getPluginManager().callEvent(titleChangedEvent)
 
         sender.sendMessagePrefixed(
             blockPlayer.translate(
