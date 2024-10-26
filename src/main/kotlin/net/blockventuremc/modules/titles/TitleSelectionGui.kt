@@ -6,6 +6,7 @@ import dev.fruxz.stacked.text
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.translate
+import net.blockventuremc.modules.titles.events.TitleChangedEvent
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -103,6 +104,10 @@ class TitleSelectionGui : Listener {
         if (blockPlayer.titles.containsKey(title)) {
             blockPlayer.selectedTitle = title
             PlayerCache.updateCached(blockPlayer)
+
+            val titleChangedEvent = TitleChangedEvent(player, title)
+            Bukkit.getPluginManager().callEvent(titleChangedEvent)
+
             player.playSound(whoClicked, Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 0.4f, 1.3f)
             player.sendMessagePrefixed(
                 blockPlayer.translate(
