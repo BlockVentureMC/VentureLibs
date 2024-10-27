@@ -32,7 +32,6 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
         val gravityForce = Vector(0.0f,-gravity,0.0f).multiply(mass)
         totalForce.add(gravityForce)
 
-        //Normalforce
         val normalForce = mass * gravity * up.y
 
         //Rollresistance
