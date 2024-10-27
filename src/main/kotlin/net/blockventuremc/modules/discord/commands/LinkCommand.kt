@@ -2,7 +2,6 @@ package net.blockventuremc.modules.discord.commands
 
 import net.blockventuremc.database.functions.getLinkOfDiscord
 import net.blockventuremc.database.model.Link
-import net.blockventuremc.extensions.code
 import net.blockventuremc.extensions.getLogger
 import net.blockventuremc.modules.discord.annotations.SlashCommand
 import net.blockventuremc.modules.discord.interfaces.HasOptions
@@ -37,7 +36,8 @@ class LinkCommand : ListenerAdapter(), HasOptions {
 
         val playerName = getOption("username")?.asString ?: run {
             reply(
-                TranslationCache.get(language.code, "commands.link.username_not_provided")?.message ?: "Please provide a username"
+                TranslationCache.get(language.code, "commands.link.username_not_provided")?.message
+                    ?: "Please provide a username"
             ).setEphemeral(true).queue()
             return@with
         }
@@ -83,7 +83,8 @@ class LinkCommand : ListenerAdapter(), HasOptions {
                 language.code,
                 "commands.link.linked_field_description",
                 mapOf("discordUser" to user.name)
-            )?.message ?: "Someone is trying to link their Discord account (${user.name}) to your Minecraft account. Please run `/link` in the game chat to confirm."
+            )?.message
+                ?: "Someone is trying to link their Discord account (${user.name}) to your Minecraft account. Please run `/link` in the game chat to confirm."
         )
 
         getLogger().info("Successfully started the linking process to ${player.name}")

@@ -1,10 +1,8 @@
-package net.blockventuremc.modules.structures
+package net.blockventuremc.modules.structures.impl
 
 import io.papermc.paper.entity.TeleportFlag
-import me.m56738.smoothcoasters.api.DefaultNetworkInterface
-import me.m56738.smoothcoasters.api.NetworkInterface
 import net.blockventuremc.VentureLibs
-import net.blockventuremc.extensions.toEulerAngles
+import net.blockventuremc.modules.structures.Attachment
 import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Interaction
@@ -12,13 +10,11 @@ import org.bukkit.entity.ItemDisplay
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
-import org.joml.Matrix4f
 import org.joml.Quaternionf
 import org.joml.Vector3f
-import kotlin.math.cos
-import kotlin.math.sin
 
-class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachment(name, localPosition, localRotation) {
+class Seat(name: String, localPosition: Vector, localRotation: Vector) :
+    Attachment(name, localPosition, localRotation) {
 
     var itemDisplay: ItemDisplay? = null
     var interaction: Interaction? = null
@@ -59,15 +55,27 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachm
         var rotation = Quaternionf()
         rotation = worldTransform.getNormalizedRotation(rotation)
 
-        val upVector =  (rotation.clone() as Quaternionf).transform(Vector3f(0.0f, 1.0f, 0.0f)).normalize()
+        val upVector = (rotation.clone() as Quaternionf).transform(Vector3f(0.0f, 1.0f, 0.0f)).normalize()
 
-        val loopingOffset = upVector.dot(Vector3f(0.0f, -1.0f, 0.0f)).coerceIn(0.0f,1.0f)
+        val loopingOffset = upVector.dot(Vector3f(0.0f, -1.0f, 0.0f)).coerceIn(0.0f, 1.0f)
         upVector.mul(loopingOffset).mul(0.5f)
 
-        itemDisplay?.teleport(bukkitLocation.add(Vector(0.0, -offset, 0.0)).add(upVector.x.toDouble(),upVector.y.toDouble(),upVector.z.toDouble()), TeleportFlag.EntityState.RETAIN_PASSENGERS)
+        itemDisplay?.teleport(
+            bukkitLocation.add(Vector(0.0, -offset, 0.0))
+                .add(upVector.x.toDouble(), upVector.y.toDouble(), upVector.z.toDouble()),
+            TeleportFlag.EntityState.RETAIN_PASSENGERS
+        )
 
         passenger?.let { player ->
-            VentureLibs.instance.smoothCoastersAPI.setRotation(VentureLibs.instance.networkInterface, player, rotation.x, rotation.y, rotation.z, rotation.w, 3)
+            VentureLibs.instance.smoothCoastersAPI.setRotation(
+                VentureLibs.instance.networkInterface,
+                player,
+                rotation.x,
+                rotation.y,
+                rotation.z,
+                rotation.w,
+                3
+            )
         }
     }
 

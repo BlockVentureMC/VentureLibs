@@ -1,13 +1,17 @@
 package net.blockventuremc.modules.general.manager
 
+import dev.fruxz.stacked.text
 import net.blockventuremc.database.functions.getLinkOfDiscord
 import net.blockventuremc.database.functions.getLinkOfUser
 import net.blockventuremc.extensions.getLogger
 import net.blockventuremc.modules.general.model.Rank
 import net.blockventuremc.utils.mcasyncBlocking
+import net.kyori.adventure.text.format.NamedTextColor
 import net.luckperms.api.LuckPermsProvider
 import net.luckperms.api.node.NodeType
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
+import org.bukkit.scoreboard.Scoreboard
 import java.util.*
 
 
@@ -18,6 +22,10 @@ object RankManager {
 
     init {
         reloadRanks()
+
+
+
+        Bukkit.getOnlinePlayers().forEach { updateScoreBoardForPlayer(it) }
     }
 
     /**
@@ -46,10 +54,13 @@ object RankManager {
                 ?.substringAfterLast(".")
 
             ranks += Rank(rank.name, displayName, color, bitsPerMinute, weight, parent, discordRoleId)
+
             getLogger().info("Loaded rank ${rank.name}")
         }
 
         ranks = ranks.sortedBy { it.weight }
+        Bukkit.getOnlinePlayers().forEach { updateScoreBoardForPlayer(it) }
+
         getLogger().info("Loaded ${ranks.size} ranks")
     }
 
@@ -105,5 +116,30 @@ object RankManager {
         val rank = getRankOfUser(link.uuid)
 
         rank.updateRole(discordID)
+    }
+
+
+    fun initScoreBoard(scoreboard: Scoreboard) {
+        ranks.forEach { rank ->
+            val team = scoreboard.getTeam(rank.weight.toString()) ?: scoreboard.registerNewTeam(rank.weight.toString())
+            team.prefix(text("<color:${rank.color}>${rank.displayName}</color> <#3d3d3d>● <#c8d6e5>"))
+            team.color(NamedTextColor.WHITE)
+        }
+    }
+
+    fun updateScoreBoardForPlayer(player: Player) {
+        val scoreboard = player.scoreboard
+
+        initScoreBoard(scoreboard)
+
+        Bukkit.getOnlinePlayers().forEach { setPlayerInScoreboard(it, scoreboard) }
+
+    }
+
+    private fun setPlayerInScoreboard(player: Player, scoreBoard: Scoreboard) {
+        val userRank = getRankOfUser(player.uniqueId)
+        val team =
+            scoreBoard.getTeam(userRank.weight.toString()) ?: scoreBoard.registerNewTeam(userRank.weight.toString())
+        team.addEntry(player.name)
     }
 }

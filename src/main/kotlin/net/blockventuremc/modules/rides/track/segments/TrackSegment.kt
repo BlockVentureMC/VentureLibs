@@ -1,8 +1,7 @@
 package net.blockventuremc.modules.rides.track.segments
 
 import kotlinx.serialization.Serializable
-import net.blockventuremc.modules.structures.Train
-import org.joml.Matrix4f
+import net.blockventuremc.modules.structures.impl.Train
 
 @Serializable
 open class TrackSegment(

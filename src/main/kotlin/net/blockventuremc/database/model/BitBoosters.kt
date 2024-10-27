@@ -2,7 +2,7 @@ package net.blockventuremc.database.model
 
 import dev.fruxz.ascend.tool.time.calendar.Calendar
 import net.blockventuremc.modules.boosters.BoosterCategory
-import java.util.UUID
+import java.util.*
 import kotlin.time.Duration.Companion.hours
 
 data class BitBoosters(

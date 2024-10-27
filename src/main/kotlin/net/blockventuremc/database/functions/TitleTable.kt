@@ -8,7 +8,6 @@ import net.blockventuremc.database.toCalendar
 import net.blockventuremc.modules.titles.Title
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.batchReplace
-import org.jetbrains.exposed.sql.javatime.CurrentTimestamp
 import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.selectAll
 import java.util.*

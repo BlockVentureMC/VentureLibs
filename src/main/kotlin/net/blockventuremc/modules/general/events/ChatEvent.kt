@@ -4,7 +4,7 @@ import dev.fruxz.stacked.extension.asPlainString
 import dev.fruxz.stacked.text
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.blockventuremc.modules.general.events.custom.*
-import net.blockventuremc.modules.placeholders.parsePlaceholders
+import net.blockventuremc.utils.parsePlaceholders
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
 import org.bukkit.Bukkit
@@ -78,8 +78,17 @@ class ChatEvent : Listener {
             Title.Times.times(Duration.ofMillis(200), Duration.ofSeconds(1), Duration.ofMillis(200))
         )
         player.sendTitlePart(TitlePart.TITLE, text(area.chatRoomType))
-        player.sendTitlePart(TitlePart.SUBTITLE, text("<color:#8395a7>${if(enter) "Entering" else "Leaving"}: <#c8d6e5>${area.chatRoomName}"))
-        player.playSound(player.location, "globalsounds:world.chatroom_${if(enter) "enter" else "leave"}", SoundCategory.AMBIENT, 0.6f, 1f)
+        player.sendTitlePart(
+            TitlePart.SUBTITLE,
+            text("<color:#8395a7>${if (enter) "Entering" else "Leaving"}: <#c8d6e5>${area.chatRoomName}")
+        )
+        player.playSound(
+            player.location,
+            "globalsounds:world.chatroom_${if (enter) "enter" else "leave"}",
+            SoundCategory.AMBIENT,
+            0.6f,
+            1f
+        )
     }
 
 }

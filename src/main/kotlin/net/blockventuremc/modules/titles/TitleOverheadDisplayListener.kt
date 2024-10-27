@@ -35,7 +35,8 @@ class TitleOverheadDisplayListener : Listener {
     private fun createTextDisplay(player: Player) {
         val textDisplay = player.world.spawnEntity(player.eyeLocation, EntityType.TEXT_DISPLAY) as TextDisplay
         textDisplays[player] = textDisplay
-        textDisplay.text(text(player.toBlockUser().selectedTitle?.display(player) ?: "<color:#4b6584>No title"))
+        textDisplay.text(text(player.toBlockUser().selectedTitle?.display?.let { it(player) }
+            ?: "<color:#4b6584>No title"))
         textDisplay.alignment = TextDisplay.TextAlignment.CENTER
         textDisplay.isSeeThrough = true
         textDisplay.isDefaultBackground = true
@@ -101,6 +102,6 @@ class TitleOverheadDisplayListener : Listener {
     @EventHandler
     fun onTitleChanged(event: TitleChangedEvent) {
         val player = event.player
-        textDisplays[player]?.text(text(event.newTitle?.display(player) ?: "<color:#4b6584>No title"))
+        textDisplays[player]?.text(text(event.newTitle?.display?.let { it(player) } ?: "<color:#4b6584>No title"))
     }
 }

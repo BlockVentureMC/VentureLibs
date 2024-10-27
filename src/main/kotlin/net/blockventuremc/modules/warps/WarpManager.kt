@@ -4,8 +4,6 @@ import dev.fruxz.stacked.extension.asPlainString
 import io.sentry.Sentry
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.extensions.getLogger
-import net.blockventuremc.extensions.sendMessagePrefixed
-import net.blockventuremc.extensions.translate
 import net.blockventuremc.modules.general.events.custom.*
 import net.blockventuremc.modules.general.model.Ranks
 import net.blockventuremc.utils.FileConfig

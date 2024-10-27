@@ -1,16 +1,15 @@
 package net.blockventuremc.modules.titles
 
-import net.blockventuremc.utils.itembuilder.toItemBuilder
 import dev.fruxz.stacked.extension.asPlainString
 import dev.fruxz.stacked.text
-import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.translate
+import net.blockventuremc.modules.general.cache.PlayerCache
 import net.blockventuremc.modules.titles.events.TitleChangedEvent
+import net.blockventuremc.utils.itembuilder.toItemBuilder
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Sound
-import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

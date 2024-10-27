@@ -3,8 +3,9 @@ package net.blockventuremc.modules.general.events
 import dev.fruxz.ascend.tool.time.calendar.Calendar
 import dev.fruxz.stacked.text
 import net.blockventuremc.VentureLibs
-import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.database.model.BlockUser
+import net.blockventuremc.modules.general.cache.PlayerCache
+import net.blockventuremc.modules.general.manager.RankManager
 import net.blockventuremc.modules.titles.Title
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -29,6 +30,9 @@ class PlayerLoadSaveListener : Listener {
             PlayerCache.updateCached(
                 blockUser
             )
+
+            Bukkit.getOnlinePlayers().forEach { RankManager.updateScoreBoardForPlayer(it) }
+
             player.sendActionBar(text("<green>" + "Loaded userdata..."))
 
             awardTimedTitles(player, blockUser)
@@ -73,6 +77,8 @@ class PlayerLoadSaveListener : Listener {
             )
         )
         PlayerCache.remove(player.uniqueId)
+
+        Bukkit.getOnlinePlayers().forEach { RankManager.updateScoreBoardForPlayer(it) }
 
         event.quitMessage(text("<color:#95a5a6>[ <color:#e74c3c>\uD83D\uDC48</color> ] <color:#c8d6e5>${player.name}"))
     }

@@ -1,9 +1,6 @@
 package net.blockventuremc.modules.rides.track.segments
 
-import net.blockventuremc.modules.rides.track.TrackNode
-import net.blockventuremc.modules.rides.track.utils.calculateAdjustedSpeed
-import net.blockventuremc.modules.structures.Train
-import kotlin.math.abs
+import net.blockventuremc.modules.structures.impl.Train
 
 class BreakSegment(startId: Int, endId: Int, val minspeed: Float) : TrackSegment(startId, endId) {
 
@@ -11,12 +8,13 @@ class BreakSegment(startId: Int, endId: Int, val minspeed: Float) : TrackSegment
 
     override fun applyForces(train: Train, deltaTime: Float) {
 
-        when(breakType) {
+        when (breakType) {
             BreakType.BLOCKBREAK -> {
-              //  train.velocity = 0.0
+                //  train.velocity = 0.0
             }
+
             BreakType.TRIMBREAK -> {
-             //   train.velocity = liftSpeed
+                //   train.velocity = liftSpeed
             }
         }
         //if(abs(train.velocity) > liftSpeed) return

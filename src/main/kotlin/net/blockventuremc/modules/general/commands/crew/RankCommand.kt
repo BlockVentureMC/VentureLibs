@@ -1,8 +1,10 @@
 package net.blockventuremc.modules.general.commands.crew
 
 import net.blockventuremc.annotations.VentureCommand
-import net.blockventuremc.cache.PlayerCache
-import net.blockventuremc.extensions.*
+import net.blockventuremc.extensions.sendMessageBlock
+import net.blockventuremc.extensions.sendMessagePrefixed
+import net.blockventuremc.extensions.sendSuccessSound
+import net.blockventuremc.extensions.translate
 import net.blockventuremc.modules.general.manager.RankManager
 import net.blockventuremc.modules.general.model.Ranks
 import org.bukkit.command.Command
@@ -50,21 +52,34 @@ class RankCommand : CommandExecutor, TabCompleter {
 
         RankManager.updateRank(realRank, targetPlayer.uniqueId)
         if (targetPlayer.isOnline) {
-            targetPlayer.player?.sendMessagePrefixed(targetPlayer.player?.translate("commands.rank_changed", mapOf("rank" to realRank.displayName, "color" to realRank.color))?.message ?: "Your rank was updated to <color:${realRank.color}>$rank</color>.")
+            targetPlayer.player?.sendMessagePrefixed(
+                targetPlayer.player?.translate(
+                    "commands.rank_changed",
+                    mapOf("rank" to realRank.displayName, "color" to realRank.color)
+                )?.message ?: "Your rank was updated to <color:${realRank.color}>$rank</color>."
+            )
         }
 
         if (sender is Player) {
             sender.sendSuccessSound()
 
             if (sender.uniqueId != targetPlayer.uniqueId) {
-                sender.sendMessagePrefixed(sender.translate("commands.rank_changed_other",
-                    mapOf("other" to targetPlayer.name, "rank" to realRank.displayName, "color" to realRank.color))?.message ?: "${targetPlayer.name}'s rank was set to  <color:${realRank.color}>$rank</color>.")
+                sender.sendMessagePrefixed(
+                    sender.translate(
+                        "commands.rank_changed_other",
+                        mapOf("other" to targetPlayer.name, "rank" to realRank.displayName, "color" to realRank.color)
+                    )?.message ?: "${targetPlayer.name}'s rank was set to  <color:${realRank.color}>$rank</color>."
+                )
             }
             return true
         }
 
-        sender.sendMessagePrefixed(sender.translate("commands.rank_changed_other",
-            mapOf("other" to targetPlayer.name, "rank" to realRank.displayName, "color" to realRank.color))?.message ?: "${targetPlayer.name}'s rank was set to  <color:${realRank.color}>$rank</color>.")
+        sender.sendMessagePrefixed(
+            sender.translate(
+                "commands.rank_changed_other",
+                mapOf("other" to targetPlayer.name, "rank" to realRank.displayName, "color" to realRank.color)
+            )?.message ?: "${targetPlayer.name}'s rank was set to  <color:${realRank.color}>$rank</color>."
+        )
         return true
     }
 

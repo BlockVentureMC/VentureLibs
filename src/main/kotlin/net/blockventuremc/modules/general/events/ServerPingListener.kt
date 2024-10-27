@@ -15,8 +15,12 @@ class ServerPingListener : Listener {
      */
     @EventHandler
     fun onServerPing(event: ServerListPingEvent): Unit = with(event) {
-        motd(text("<color:#a4b0be>                 <gradient:#00a8ff:#1e90ff>BlockVenture</gradient>\n" +
-                "      <gradient:#a4b0be:#6c768f>ᴡʜᴇʀᴇ ᴇᴠᴇʀʏ ʙʟᴏᴄᴋ ᴛᴇʟʟꜱ ᴀ ꜱᴛᴏʀʏ</gradient>"))
+        motd(
+            text(
+                "<color:#a4b0be>                 <gradient:#00a8ff:#1e90ff>BlockVenture</gradient>\n" +
+                        "      <gradient:#a4b0be:#6c768f>ᴡʜᴇʀᴇ ᴇᴠᴇʀʏ ʙʟᴏᴄᴋ ᴛᴇʟʟꜱ ᴀ ꜱᴛᴏʀʏ</gradient>"
+            )
+        )
     }
 
     // Future todos:

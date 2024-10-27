@@ -5,7 +5,6 @@ import net.blockventuremc.database.smartTransaction
 import net.blockventuremc.database.toCalendar
 import net.blockventuremc.modules.achievements.model.Achievement
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.javatime.CurrentTimestamp
 import org.jetbrains.exposed.sql.javatime.timestamp
 import java.util.*
 

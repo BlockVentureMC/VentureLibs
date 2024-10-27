@@ -1,7 +1,6 @@
-package net.blockventuremc.modules.animations.faucets
+package net.blockventuremc.modules.`fun`.faucets
 
 import net.blockventuremc.VentureLibs
-import net.blockventuremc.extensions.getLogger
 import org.bukkit.*
 import org.bukkit.block.Block
 import org.bukkit.block.data.Levelled

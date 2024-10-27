@@ -1,4 +1,4 @@
-package net.blockventuremc.modules.placeholders
+package net.blockventuremc.utils
 
 import dev.fruxz.stacked.extension.asPlainString
 import dev.fruxz.stacked.text

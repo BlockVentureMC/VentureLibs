@@ -3,7 +3,10 @@ package net.blockventuremc.modules.general.events
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.blockventuremc.audioserver.minecraft.AudioServer
 import net.blockventuremc.extensions.toBlockUser
-import net.blockventuremc.modules.general.events.custom.*
+import net.blockventuremc.modules.general.events.custom.AFKChangeEvent
+import net.blockventuremc.modules.general.events.custom.getArea
+import net.blockventuremc.modules.general.events.custom.onEnter
+import net.blockventuremc.modules.general.events.custom.onLeave
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler

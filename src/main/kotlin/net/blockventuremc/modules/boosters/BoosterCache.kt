@@ -1,4 +1,4 @@
-package net.blockventuremc.cache
+package net.blockventuremc.modules.boosters
 
 import dev.fruxz.ascend.tool.time.calendar.Calendar
 import net.blockventuremc.database.functions.BoosterTable
@@ -50,7 +50,7 @@ object BoosterCache {
 
         smartTransaction {
             BoosterTable.update({ BoosterTable.startTime eq booster.startTime.javaInstant and (BoosterTable.endTime eq booster.endTime.javaInstant) }) {
-                it[BoosterTable.endTime] = (Calendar.now() - 1.hours).javaInstant
+                it[endTime] = (Calendar.now() - 1.hours).javaInstant
             }
         }
     }

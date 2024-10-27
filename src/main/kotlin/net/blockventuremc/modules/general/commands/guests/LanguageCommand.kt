@@ -1,10 +1,10 @@
 package net.blockventuremc.modules.general.commands.guests
 
 import net.blockventuremc.annotations.VentureCommand
-import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.sendSuccessSound
 import net.blockventuremc.extensions.translate
+import net.blockventuremc.modules.general.cache.PlayerCache
 import net.blockventuremc.modules.general.model.Languages
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor

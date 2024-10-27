@@ -1,9 +1,9 @@
 package net.blockventuremc.modules.general.commands.crew
 
-import net.blockventuremc.utils.itembuilder.toItemBuilder
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.translate
+import net.blockventuremc.utils.itembuilder.toItemBuilder
 import org.bukkit.Material
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -46,7 +46,10 @@ class SkullCommand : CommandExecutor {
         } else {
             val drops = sender.inventory.addItem(
                 Material.PLAYER_HEAD.toItemBuilder {
-                    display(sender.translate("commands.skull.name", mapOf("name" to skullName))?.message ?: "<gray>Head of $skullName")
+                    display(
+                        sender.translate("commands.skull.name", mapOf("name" to skullName))?.message
+                            ?: "<gray>Head of $skullName"
+                    )
                     owner(skullName)
                 }.build()
             )
@@ -54,7 +57,10 @@ class SkullCommand : CommandExecutor {
                 sender.world.dropItem(sender.location, itemStack)
             }
         }
-        sender.sendMessagePrefixed(sender.translate("commands.skull.given", mapOf("name" to skullName))?.message ?: "You have been given a skull of $skullName.")
+        sender.sendMessagePrefixed(
+            sender.translate("commands.skull.given", mapOf("name" to skullName))?.message
+                ?: "You have been given a skull of $skullName."
+        )
         return true
     }
 }

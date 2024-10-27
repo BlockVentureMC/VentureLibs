@@ -3,9 +3,10 @@ package net.blockventuremc.modules.structures
 import org.bukkit.World
 import org.bukkit.util.Vector
 import org.joml.Matrix4f
-import java.util.UUID
+import java.util.*
 
-open class CustomEntity(name: String, val world: World, var position: Vector, rotation: Vector) : Attachment(name, Vector(), rotation) {
+open class CustomEntity(name: String, val world: World, var position: Vector, rotation: Vector) :
+    Attachment(name, Vector(), rotation) {
 
     val uuid = UUID.randomUUID()
     var animation: Animation? = null

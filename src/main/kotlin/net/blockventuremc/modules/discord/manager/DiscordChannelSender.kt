@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.MessageEmbed
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction
 import net.dv8tion.jda.api.utils.messages.MessageCreateData
-import java.lang.Exception
 
 /**
  * Throws an exception message to a Discord channel.

@@ -1,8 +1,8 @@
 package net.blockventuremc.modules.titles
 
+import net.blockventuremc.extensions.translate
 import net.blockventuremc.utils.itembuilder.ItemBuilder
 import net.blockventuremc.utils.itembuilder.toItemBuilder
-import net.blockventuremc.extensions.translate
 import org.bukkit.Material
 import org.bukkit.entity.Player
 

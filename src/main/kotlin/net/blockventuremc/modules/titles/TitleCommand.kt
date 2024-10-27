@@ -1,9 +1,9 @@
 package net.blockventuremc.modules.titles
 
 import net.blockventuremc.annotations.VentureCommand
-import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.translate
+import net.blockventuremc.modules.general.cache.PlayerCache
 import net.blockventuremc.modules.titles.events.TitleChangedEvent
 import org.bukkit.Bukkit
 import org.bukkit.Sound

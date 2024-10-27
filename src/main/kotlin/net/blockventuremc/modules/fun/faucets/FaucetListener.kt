@@ -1,7 +1,6 @@
-package net.blockventuremc.modules.animations.faucets
+package net.blockventuremc.modules.`fun`.faucets
 
 import net.blockventuremc.extensions.canBuild
-import net.blockventuremc.extensions.toBlockUser
 import org.bukkit.Material
 import org.bukkit.block.data.type.TripwireHook
 import org.bukkit.event.EventHandler
@@ -21,7 +20,7 @@ class FaucetListener : Listener {
         if (block.blockData !is TripwireHook) return@with
         val cauldronBlock = block.location.add(0.0, -1.0, 0.0).block
 
-        if(cauldronBlock.type != Material.CAULDRON && cauldronBlock.type != Material.WATER_CAULDRON) return@with
+        if (cauldronBlock.type != Material.CAULDRON && cauldronBlock.type != Material.WATER_CAULDRON) return@with
 
         FaucetAnimation(block.location, cauldronBlock)
     }

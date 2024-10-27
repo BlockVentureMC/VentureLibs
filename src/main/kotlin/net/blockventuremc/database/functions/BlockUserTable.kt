@@ -5,10 +5,8 @@ import net.blockventuremc.database.model.BlockUser
 import net.blockventuremc.database.smartTransaction
 import net.blockventuremc.database.toCalendar
 import net.blockventuremc.modules.general.model.Languages
-import net.blockventuremc.modules.general.model.Ranks
 import net.blockventuremc.modules.titles.Title
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.javatime.CurrentTimestamp
 import org.jetbrains.exposed.sql.javatime.timestamp
 import java.util.*
 import kotlin.time.Duration.Companion.seconds

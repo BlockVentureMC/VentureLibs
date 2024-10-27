@@ -1,13 +1,12 @@
 package net.blockventuremc.database.functions
 
 import net.blockventuremc.database.model.BitBoosters
+import net.blockventuremc.database.smartTransaction
 import net.blockventuremc.database.toCalendar
 import net.blockventuremc.modules.boosters.BoosterCategory
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ResultRow
-import net.blockventuremc.database.smartTransaction
 import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.javatime.CurrentTimestamp
 import org.jetbrains.exposed.sql.javatime.timestamp
 import java.util.*
 

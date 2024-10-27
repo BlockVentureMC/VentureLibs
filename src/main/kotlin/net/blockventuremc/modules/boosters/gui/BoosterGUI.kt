@@ -1,15 +1,13 @@
 package net.blockventuremc.modules.boosters.gui
 
 import dev.fruxz.stacked.text
-import net.blockventuremc.cache.BoosterCache
-import net.blockventuremc.consts.BOOSTER_IDENTIFIER
 import net.blockventuremc.consts.NAMESPACE_ITEM_IDENTIFIER
 import net.blockventuremc.database.model.BitBoosters
 import net.blockventuremc.extensions.*
+import net.blockventuremc.modules.boosters.BoosterCache
 import net.blockventuremc.utils.itembuilder.toItemBuilder
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -32,7 +30,8 @@ object BoosterGUI {
         val lang = player.toBlockUser().language.locale
         return Material.GOLD_NUGGET.toItemBuilder {
             display(
-                player.translate("booster.category.${booster.category.toString().lowercase()}")?.message ?: ("Unknown Booster"),
+                player.translate("booster.category.${booster.category.toString().lowercase()}")?.message
+                    ?: ("Unknown Booster"),
             )
 
             addPersistentData(
@@ -50,12 +49,14 @@ object BoosterGUI {
                     ?: (booster.endTime.formatToDay(lang))),
                 gray + (player.translate("booster.modifier", mapOf("modifier" to booster.modifier.toString()))?.message
                     ?: (booster.modifier.toString())),
-                gray + (if (booster.user) player.translate("booster.user_only", mapOf("user" to owner.name))?.message ?: ("Only for ${owner.name}") else player.translate("booster.global")?.message ?: ("Global Booster")),
+                gray + (if (booster.user) player.translate("booster.user_only", mapOf("user" to owner.name))?.message
+                    ?: ("Only for ${owner.name}") else player.translate("booster.global")?.message
+                    ?: ("Global Booster")),
 
                 if (player.hasPermission("booster.delete")) {
                     gray + player.translate("booster.remove")?.message
                 } else {
-                   gray + ""
+                    gray + ""
                 }
             )
 
