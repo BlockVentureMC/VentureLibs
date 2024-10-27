@@ -124,7 +124,7 @@ object RankManager {
     fun initScoreBoard(scoreboard: Scoreboard) {
         ranks.forEach { rank ->
             val team = scoreboard.getTeam(rank.weight.toString()) ?: scoreboard.registerNewTeam(rank.weight.toString())
-            team.prefix(text("<color:${rank.color}>${rank.displayName}</color> <#3d3d3d>● <#c8d6e5> "))
+            team.prefix(text("<color:${rank.color}>${rank.displayName}</color> <#3d3d3d>● <#c8d6e5>"))
             team.color(NamedTextColor.WHITE)
         }
     }
