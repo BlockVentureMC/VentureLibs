@@ -60,6 +60,8 @@ class Balloon(val follow: Entity, val item: ItemStack) {
 
 
     fun update() {
+        if(chicken == null) return
+
         val playerLocation = follow.location
         val balloonLocation = chicken?.location ?: return
         var directionToFollower = follow.location.toVector().subtract(chicken!!.location.toVector())
@@ -125,6 +127,8 @@ class Balloon(val follow: Entity, val item: ItemStack) {
     fun remove() {
         itemDisplay?.remove()
         chicken?.remove()
+        chicken = null
+        itemDisplay = null
     }
 
     private fun lerp(start: Vector, end: Vector, t: Float): Vector {

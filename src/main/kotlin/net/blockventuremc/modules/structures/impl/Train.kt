@@ -1,17 +1,23 @@
 package net.blockventuremc.modules.structures.impl
 
 import net.blockventuremc.extensions.createQuaternionFromVectors
+import net.blockventuremc.extensions.remap
 import net.blockventuremc.modules.rides.track.TrackNode
 import net.blockventuremc.modules.rides.track.TrackRide
 import net.blockventuremc.modules.structures.CustomEntity
 import net.blockventuremc.modules.structures.airDensity
 import net.blockventuremc.modules.structures.deltaTime
 import net.blockventuremc.modules.structures.gravity
+import org.bukkit.Bukkit
+import org.bukkit.Location
+import org.bukkit.Sound
 import org.bukkit.World
 import org.bukkit.util.Vector
 import org.joml.Matrix4f
 import org.joml.Quaternionf
 import org.joml.Vector3f
+import kotlin.math.abs
+import kotlin.math.pow
 
 class Train(name: String, val trackRide: TrackRide, world: World, position: Vector, rotation: Vector) :
     CustomEntity(name, world, position, rotation) {
@@ -21,8 +27,13 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
 
     var mass = 700.0f //masse kilogramm
     val rollCoefficient = 0.002f * 8.0f  // Rollreibungskoeffizient (angenommener Wert) abhängig von wagen und schiene
-    val crossArea = 1.4f//m2 //Querschnittsfläche 0.5 bis 1,5 in Quadratmeter damit ist die Stirnfläche gemeint
+    val crossArea = 2.1f//m2 //Querschnittsfläche 0.5 bis 1,5 in Quadratmeter damit ist die Stirnfläche gemeint
     var velocity = 0.0f//m/s
+    private var ticksLived = 0
+
+    var front = Vector3f()
+    var up = Vector3f()
+    var left = Vector3f()
 
     fun simulate(trackNode: TrackNode, forward: Vector3f, up: Vector3f) {
 
@@ -35,16 +46,18 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
         val gravityForce = Vector(0.0f, -gravity * mass, 0.0f)
         totalForce.add(gravityForce)
 
-        val normalForce = gravityForce.dot(Vector(up.x, up.y, up.z))
+        val normalForce = mass * gravity * Vector(0.0f,1.0f,0.0f).dot(Vector(up.x, up.y, up.z))
 
         //Rollresistance
-        val rollingResistanceForce = directionOfMotion.clone().multiply(rollCoefficient * normalForce * -1.0f)
-        totalForce.add(rollingResistanceForce)
+        val k = 0.005f//EmpirischerKoeffizient
+        val Cr = rollCoefficient + k * velocity.pow(1);
+        val rollingResistanceForce = directionOfMotion.clone().multiply(Cr * normalForce * -1.0f)
+        if(velocity != 0.0f) totalForce.add(rollingResistanceForce)
 
-        //Airdrag
-        val dragCoefficient = 0.6f
+        //Airdrag = 0.5 * p * v^2 * A * Cd
+        val dragCoefficient = 0.6f//Cd Luftwiderstandsbeiwert
         var v2 = velocity * velocity
-        val airDragForce = directionOfMotion.clone().multiply(0.5f * airDensity * v2 * dragCoefficient * crossArea * -1.0f)
+        val airDragForce = directionOfMotion.clone().multiply((0.5f * airDensity * v2 * dragCoefficient * crossArea) * -1.0f)
         totalForce.add(airDragForce)
 
         //proiziert die forces auf die direction of motion
@@ -66,6 +79,7 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
     }
 
     override fun update() {
+        ticksLived++
         currentPosition += velocity * deltaTime
 
         if (currentPosition < 0) {
@@ -76,16 +90,27 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
 
         val trackNode = trackNodeAtDistance(currentPosition)
 
-        val front = trackNode.frontVector.toVector3f().normalize()
-        val up = trackNode.upVector.toVector3f().normalize()
-        val left = trackNode.leftVector.toVector3f().normalize()
+        front = trackNode.frontVector.toVector3f().normalize()
+        up = trackNode.upVector.toVector3f().normalize()
+        left = trackNode.leftVector.toVector3f().normalize()
 
         simulate(trackNode, front, up)
 
         rotationQuaternion = createQuaternionFromVectors(front, left, up)
         position = trackRide.origin.toVector().add(trackNode.position)
 
+        sounds()
+
         super.update()
+    }
+
+    fun sounds() {
+
+        if(ticksLived % 2 == 0) {
+            val volume = remap(abs(velocity), 2.0f,30.0f,0.0f,1.0f)
+            val pitch = remap(abs(velocity), 2.0f,30.0f,0.1f,1.2f)
+            world.playSound(Location(world, position.x, position.y, position.z), Sound.ENTITY_BREEZE_CHARGE, volume, pitch)
+        }
     }
 
     override val localTransform: Matrix4f

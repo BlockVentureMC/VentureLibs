@@ -213,7 +213,8 @@ class WarpCommand : CommandExecutor, TabExecutor {
             sender.sendMessagePrefixed("Only players can use this command.")
             return
         }
-        sender.teleportAsync(warp.location, PlayerTeleportEvent.TeleportCause.COMMAND, TeleportFlag.EntityState.RETAIN_PASSENGERS)
+
+        sender.teleportAsyncWithPassengers(warp.location)
         sender.sendSuccessSound()
     }
 

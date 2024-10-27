@@ -20,7 +20,7 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) :
     var interaction: Interaction? = null
     var dynamic = false
 
-    val offset = 0.53//0.53
+    val offset = 0.7//0.53
 
     init {
         localPosition.add(Vector(0.0, offset, 0.0))
@@ -58,7 +58,7 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) :
         val upVector = (rotation.clone() as Quaternionf).transform(Vector3f(0.0f, 1.0f, 0.0f)).normalize()
 
         val loopingOffset = upVector.dot(Vector3f(0.0f, -1.0f, 0.0f)).coerceIn(0.0f, 1.0f)
-        upVector.mul(loopingOffset).mul(0.5f)
+        upVector.mul(loopingOffset).mul(0.0f)
 
         itemDisplay?.teleport(
             bukkitLocation.add(Vector(0.0, -offset, 0.0))

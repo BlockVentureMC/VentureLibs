@@ -4,6 +4,7 @@ import io.papermc.paper.entity.TeleportFlag
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.extensions.sendMessagePrefixed
+import net.blockventuremc.extensions.teleportAsyncWithPassengers
 import net.blockventuremc.extensions.translate
 import org.bukkit.Bukkit
 import org.bukkit.WorldCreator
@@ -49,7 +50,8 @@ class WorldCommand : CommandExecutor, TabExecutor {
         }
 
         Bukkit.getScheduler().runTaskLater(VentureLibs.instance, Runnable {
-            sender.teleportAsync(world!!.spawnLocation, PlayerTeleportEvent.TeleportCause.COMMAND, TeleportFlag.EntityState.RETAIN_PASSENGERS)
+            sender.teleportAsyncWithPassengers(world!!.spawnLocation)
+
             sender.sendMessagePrefixed(
                 sender.translate(
                     "commands.world.teleported",

@@ -11,6 +11,7 @@ import net.blockventuremc.modules.rides.track.TrackManager
 import net.blockventuremc.modules.rides.track.segments.LiftSegment
 import net.blockventuremc.modules.rides.track.segments.SegmentTypes
 import net.blockventuremc.modules.rides.track.segments.TrackSegment
+import net.blockventuremc.modules.structures.Animation
 import net.blockventuremc.modules.structures.Attachment
 import net.blockventuremc.modules.structures.ItemAttachment
 import net.blockventuremc.modules.structures.StructureManager
@@ -128,7 +129,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
                     sender.sendMessage("Usage: /track speed <velocity>")
                     return true
                 }
-                performDebugSpeed(sender, args[1].toFloat().coerceIn(-4.0f, 4.0f))
+                performDebugSpeed(sender, args[1].toFloat().coerceIn(-200.0f, 200.0f))
             }
 
             "spawn" -> {
@@ -381,6 +382,27 @@ class TrackCommand : CommandExecutor, TabExecutor {
                 Vector()
             )
         )
+
+        train.animation = object : Animation() {
+            var prevDirection = Vector(0,1,0)
+            var rotationVelocity = 0.0
+            override fun animate() {
+                val direction = Vector(train.front.x, train.front.y, train.front.z)
+                val crossProduct = prevDirection.crossProduct(direction)
+
+                val spin = crossProduct.dot(Vector(0.0, 1.0, 0.0)) * -4.0f
+
+                Bukkit.getOnlinePlayers().forEach { player ->
+                    player.sendActionBar("spin: $spin")
+                }
+
+                rotationVelocity += spin
+                rotationVelocity *= 0.99f
+
+                rotator.localRotation.add(Vector(0.0, rotationVelocity, 0.0))
+                prevDirection = direction.clone()
+            }
+        }
 
         train.initialize()
         StructureManager.structures[train.uuid] = train
