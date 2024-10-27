@@ -22,7 +22,8 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
     var velocity = 0.0f//m/s
 
     fun simulate(trackNode: TrackNode, forward: Vector3f, up: Vector3f) {
-        val directionOfMotion = Vector(forward.x,forward.y,forward.z).multiply(sign(velocity)).normalize()
+
+        val directionOfMotion = Vector(forward.x,forward.y,forward.z).multiply(if(velocity < 0) -1 else 1)
 
         //Nettokraft
         var totalForce = Vector(0.0f,0.0f,0.0f)//In Newton

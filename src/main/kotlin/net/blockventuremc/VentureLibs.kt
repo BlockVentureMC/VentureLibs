@@ -98,7 +98,7 @@ class VentureLibs : JavaPlugin() {
 
         TrackManager.loadTracks()
 
-        logger.info("Custom Entity update...")
+        logger.info("Custom Entity ticking...")
         StructureManager.update()
 
 
