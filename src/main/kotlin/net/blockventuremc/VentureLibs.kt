@@ -9,7 +9,6 @@ import net.blockventuremc.cache.BoosterCache
 import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.database.DatabaseManager
 import net.blockventuremc.modules.i18n.TranslationCache
-import net.blockventuremc.modules.placeholders.PlayerPlaceholderManager
 import net.blockventuremc.modules.rides.track.TrackManager
 import net.blockventuremc.modules.structures.StructureManager
 import net.blockventuremc.modules.warps.WarpManager
@@ -72,7 +71,6 @@ class VentureLibs : JavaPlugin() {
         )
 
         logger.info("Registering placeholders...")
-        PlayerPlaceholderManager()
 
         PlayerCache.runOnlineTimeScheduler()
 
