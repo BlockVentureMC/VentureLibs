@@ -1,11 +1,9 @@
-package net.blockventuremc.modules.structures.impl
+package net.blockventuremc.modules.structures
 
 import net.blockventuremc.extensions.createQuaternionFromVectors
 import net.blockventuremc.modules.rides.track.TrackNode
 import net.blockventuremc.modules.rides.track.TrackRide
-import net.blockventuremc.modules.structures.CustomEntity
-import net.blockventuremc.modules.structures.airDensity
-import net.blockventuremc.modules.structures.gravity
+import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.util.Vector
 import org.joml.Matrix4f
@@ -13,46 +11,46 @@ import org.joml.Quaternionf
 import org.joml.Vector3f
 import kotlin.math.sign
 
-class Train(name: String, val trackRide: TrackRide, world: World, position: Vector, rotation: Vector) :
-    CustomEntity(name, world, position, rotation) {
+class Train(name: String, val trackRide: TrackRide, world: World, position: Vector, rotation: Vector): CustomEntity(name, world, position, rotation) {
 
     var currentPosition = 0.0
     var rotationQuaternion = Quaternionf()
 
     var mass = 700.0f //masse kilogramm
     val rollCoefficient = 0.07f  // Rollreibungskoeffizient (angenommener Wert) abhängig von wagen und schiene
-    val crossArea = 1.1f //Querschnittsfläche 0.5 bis 1,5 in Quadratmeter damit ist die Stirnfläche gemeint
-    var velocity = 0.0f
+    val crossArea = 1.4f//m2 //Querschnittsfläche 0.5 bis 1,5 in Quadratmeter damit ist die Stirnfläche gemeint
+    var velocity = 0.0f//m/s
 
     fun simulate(trackNode: TrackNode, forward: Vector3f, up: Vector3f) {
-        var force = 0.0f
-        var totalMass = 0.0f
 
-        val worldUp = Vector3f(0.0f, 1.0f, 0.0f)
-        repeat(2) {
-            totalMass += mass
-            //gravity
+        val directionOfMotion = Vector(forward.x,forward.y,forward.z).multiply(if(velocity < 0) -1 else 1)
 
-            val fdotUp = -forward.dot(worldUp)
+        //Nettokraft
+        var totalForce = Vector(0.0f,0.0f,0.0f)//In Newton
 
-            var fg = mass * gravity
-            force += fg * fdotUp
+        //Gewichtskraft N
+        val gravityForce = Vector(0.0f,-gravity,0.0f).multiply(mass)
+        totalForce.add(gravityForce)
 
-            //roll resistance
-            val NForce = up.dot(worldUp) * gravity
-            force += -sign(velocity) * rollCoefficient * (NForce * mass)
+        val normalForce = mass * gravity * up.y
 
-            //drag Diese Luftwiderstand steigt mit zunehmender Geschwindigkeit quadratisch an
-            val dragCoefficient = 0.6f
-            var v2 = velocity * velocity
-            force += -sign(velocity) * 0.5f * airDensity * v2 * dragCoefficient * crossArea
+        //Rollresistance
+        val rollingResistanceForce = directionOfMotion.clone().multiply(rollCoefficient * normalForce).multiply(-1)
+        totalForce.add(rollingResistanceForce)
 
-            //Winkelgeschwindigkeit
-            //TODO Zentripetalkraft  m*(v2/r) kurvenradius? wie finde ich ihn raus?
-        }
+        //Airdrag
+        val dragCoefficient = 0.6f
+        var v2 = velocity * velocity
+        val airDragForce = directionOfMotion.clone().multiply(0.5f * airDensity * v2 * dragCoefficient * crossArea).multiply(-1)
+        totalForce.add(airDragForce)
 
-        val deltaTime = 0.025f
-        velocity += force * deltaTime / totalMass
+        val forwardForceMagnitude = totalForce.dot(directionOfMotion).toFloat()
+        val acceleration = forwardForceMagnitude/mass//m/s²
+
+        velocity += acceleration * deltaTime
+
+        //Winkelgeschwindigkeit
+        //TODO Zentripetalkraft  m*(v2/r) kurvenradius? wie finde ich ihn raus?
 
         val segment = trackRide.findSegment(trackNode.id)
         segment.let { segment ->
@@ -61,7 +59,7 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
     }
 
     override fun update() {
-        currentPosition += velocity
+        currentPosition += velocity * deltaTime
 
         if (currentPosition < 0) {
             currentPosition += trackRide.totalLength
@@ -75,7 +73,7 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
         val up = trackNode.upVector.toVector3f().normalize()
         val left = trackNode.leftVector.toVector3f().normalize()
 
-        simulate(trackNode, front, up)
+        simulate(trackNode, front, up )
 
         rotationQuaternion = createQuaternionFromVectors(front, left, up)
         position = trackRide.origin.toVector().add(trackNode.position)
@@ -144,4 +142,5 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
             upZ = upZ
         )
     }
+
 }
