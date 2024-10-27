@@ -1,4 +1,4 @@
-package net.blockventuremc.modules.structures
+package net.blockventuremc.modules.`fun`.baloon
 
 
 import dev.fruxz.ascend.extension.isNull

@@ -4,7 +4,7 @@ import dev.fruxz.stacked.extension.asPlainString
 import dev.fruxz.stacked.text
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.blockventuremc.modules.general.events.custom.*
-import net.blockventuremc.modules.placeholders.parsePlaceholders
+import net.blockventuremc.utils.parsePlaceholders
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
 import org.bukkit.Bukkit

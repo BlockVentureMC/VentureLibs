@@ -1,7 +1,6 @@
-package net.blockventuremc.modules.animations.faucets
+package net.blockventuremc.modules.`fun`.faucets
 
 import net.blockventuremc.extensions.canBuild
-import net.blockventuremc.extensions.toBlockUser
 import org.bukkit.Material
 import org.bukkit.block.data.type.TripwireHook
 import org.bukkit.event.EventHandler

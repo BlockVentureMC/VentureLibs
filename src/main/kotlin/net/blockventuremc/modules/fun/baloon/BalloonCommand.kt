@@ -1,16 +1,13 @@
-package net.blockventuremc.modules.structures
+package net.blockventuremc.modules.`fun`.baloon
 
 import net.blockventuremc.annotations.VentureCommand
-import net.blockventuremc.utils.itembuilder.ItemBuilder
+import net.blockventuremc.modules.structures.StructureManager
 import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 import org.bukkit.permissions.PermissionDefault
-import org.bukkit.util.Vector
-import java.util.UUID
 
 @VentureCommand(
     name = "balloon",

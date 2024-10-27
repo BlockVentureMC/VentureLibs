@@ -1,24 +1,21 @@
-package net.blockventuremc.modules.rides.track
+package net.blockventuremc.modules.rides.track.commands
 
-import dev.fruxz.ascend.extension.container.first
-import dev.fruxz.ascend.extension.container.firstOrNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.modules.general.events.custom.toVentureLocation
+import net.blockventuremc.modules.rides.track.Nl2Importer
+import net.blockventuremc.modules.rides.track.TrackManager
 import net.blockventuremc.modules.rides.track.segments.LiftSegment
 import net.blockventuremc.modules.rides.track.segments.SegmentTypes
 import net.blockventuremc.modules.rides.track.segments.TrackSegment
-import net.blockventuremc.modules.structures.Animation
 import net.blockventuremc.modules.structures.Attachment
-import net.blockventuremc.modules.structures.CustomEntity
 import net.blockventuremc.modules.structures.ItemAttachment
-import net.blockventuremc.modules.structures.Seat
+import net.blockventuremc.modules.structures.impl.Seat
 import net.blockventuremc.modules.structures.StructureManager
-import net.blockventuremc.modules.structures.Train
+import net.blockventuremc.modules.structures.impl.Train
 import net.blockventuremc.utils.itembuilder.ItemBuilder
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -28,12 +25,10 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 import org.bukkit.permissions.PermissionDefault
 import org.bukkit.util.BlockVector
 import org.bukkit.util.Vector
 import java.io.File
-import java.util.*
 
 @VentureCommand(
     name = "track",

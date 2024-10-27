@@ -1,8 +1,11 @@
-package net.blockventuremc.modules.structures
+package net.blockventuremc.modules.structures.impl
 
 import net.blockventuremc.extensions.createQuaternionFromVectors
 import net.blockventuremc.modules.rides.track.TrackNode
 import net.blockventuremc.modules.rides.track.TrackRide
+import net.blockventuremc.modules.structures.CustomEntity
+import net.blockventuremc.modules.structures.airDensity
+import net.blockventuremc.modules.structures.gravity
 import org.bukkit.World
 import org.bukkit.util.Vector
 import org.joml.Matrix4f

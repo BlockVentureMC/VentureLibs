@@ -1,10 +1,8 @@
-package net.blockventuremc.modules.structures
+package net.blockventuremc.modules.structures.impl
 
 import io.papermc.paper.entity.TeleportFlag
-import me.m56738.smoothcoasters.api.DefaultNetworkInterface
-import me.m56738.smoothcoasters.api.NetworkInterface
 import net.blockventuremc.VentureLibs
-import net.blockventuremc.extensions.toEulerAngles
+import net.blockventuremc.modules.structures.Attachment
 import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Interaction
@@ -12,11 +10,8 @@ import org.bukkit.entity.ItemDisplay
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
-import org.joml.Matrix4f
 import org.joml.Quaternionf
 import org.joml.Vector3f
-import kotlin.math.cos
-import kotlin.math.sin
 
 class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachment(name, localPosition, localRotation) {
 

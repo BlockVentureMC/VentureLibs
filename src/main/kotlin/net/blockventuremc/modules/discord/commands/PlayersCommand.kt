@@ -2,7 +2,7 @@ package net.blockventuremc.modules.discord.commands
 
 import net.blockventuremc.modules.discord.annotations.SlashCommand
 import net.blockventuremc.modules.general.model.Ranks
-import net.blockventuremc.modules.placeholders.parsePlaceholders
+import net.blockventuremc.utils.parsePlaceholders
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter

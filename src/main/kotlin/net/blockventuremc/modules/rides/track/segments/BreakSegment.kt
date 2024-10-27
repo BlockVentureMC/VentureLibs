@@ -1,9 +1,6 @@
 package net.blockventuremc.modules.rides.track.segments
 
-import net.blockventuremc.modules.rides.track.TrackNode
-import net.blockventuremc.modules.rides.track.utils.calculateAdjustedSpeed
-import net.blockventuremc.modules.structures.Train
-import kotlin.math.abs
+import net.blockventuremc.modules.structures.impl.Train
 
 class BreakSegment(startId: Int, endId: Int, val minspeed: Float) : TrackSegment(startId, endId) {
 
