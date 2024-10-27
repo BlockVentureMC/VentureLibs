@@ -30,14 +30,21 @@ class BalloonCommand : CommandExecutor {
         val player = sender
         val item = player.inventory.itemInMainHand
 
-        StructureManager.balloons[player]?.let { balloon ->
-            balloon.remove()
-            StructureManager.balloons.remove(player)
+        val currentBalloon = StructureManager.balloons[player]
 
-            if (item.type == Material.AIR) {
+        if (item.type == Material.AIR) {
+            if(currentBalloon != null) {
                 player.sendMessage("byeee ballloon! :C")
+                currentBalloon.remove()
                 return true
             }
+            player.sendMessage("duu musst ein Block in der Hand haben um einen Balloon zu spawnen :3")
+            return true
+        }
+
+        currentBalloon?.let { balloon ->
+            balloon.remove()
+            StructureManager.balloons.remove(player)
         }
 
         val balloon = Balloon(player, item)
@@ -50,7 +57,6 @@ class BalloonCommand : CommandExecutor {
         StructureManager.balloons[player] = balloon
 
         player.sendMessage("balloon spawned! :)")
-
         return true
     }
 

@@ -1,5 +1,6 @@
 package net.blockventuremc.modules.general.commands.crew
 
+import io.papermc.paper.entity.TeleportFlag
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.extensions.sendMessagePrefixed
@@ -11,6 +12,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
+import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.permissions.PermissionDefault
 
 
@@ -47,7 +49,7 @@ class WorldCommand : CommandExecutor, TabExecutor {
         }
 
         Bukkit.getScheduler().runTaskLater(VentureLibs.instance, Runnable {
-            sender.teleport(world!!.spawnLocation)
+            sender.teleportAsync(world!!.spawnLocation, PlayerTeleportEvent.TeleportCause.COMMAND, TeleportFlag.EntityState.RETAIN_PASSENGERS)
             sender.sendMessagePrefixed(
                 sender.translate(
                     "commands.world.teleported",

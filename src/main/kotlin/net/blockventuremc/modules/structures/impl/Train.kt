@@ -20,7 +20,7 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
     var rotationQuaternion = Quaternionf()
 
     var mass = 700.0f //masse kilogramm
-    val rollCoefficient = 0.07f  // Rollreibungskoeffizient (angenommener Wert) abhängig von wagen und schiene
+    val rollCoefficient = 0.002f * 8.0f  // Rollreibungskoeffizient (angenommener Wert) abhängig von wagen und schiene
     val crossArea = 1.4f//m2 //Querschnittsfläche 0.5 bis 1,5 in Quadratmeter damit ist die Stirnfläche gemeint
     var velocity = 0.0f//m/s
 
@@ -28,29 +28,32 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
 
         val directionOfMotion = Vector(forward.x, forward.y, forward.z).multiply(if (velocity < 0) -1 else 1)
 
-        //Nettokraft
+        //Nettokraft alle forces in Newton
         var totalForce = Vector(0.0f, 0.0f, 0.0f)//In Newton
 
         //Gewichtskraft N
-        val gravityForce = Vector(0.0f, -gravity, 0.0f).multiply(mass)
+        val gravityForce = Vector(0.0f, -gravity * mass, 0.0f)
         totalForce.add(gravityForce)
 
-        val normalForce = mass * gravity * up.y
+        val normalForce = gravityForce.dot(Vector(up.x, up.y, up.z))
 
         //Rollresistance
-        val rollingResistanceForce = directionOfMotion.clone().multiply(rollCoefficient * normalForce).multiply(-1)
+        val rollingResistanceForce = directionOfMotion.clone().multiply(rollCoefficient * normalForce * -1.0f)
         totalForce.add(rollingResistanceForce)
 
         //Airdrag
         val dragCoefficient = 0.6f
         var v2 = velocity * velocity
-        val airDragForce =
-            directionOfMotion.clone().multiply(0.5f * airDensity * v2 * dragCoefficient * crossArea).multiply(-1)
+        val airDragForce = directionOfMotion.clone().multiply(0.5f * airDensity * v2 * dragCoefficient * crossArea * -1.0f)
         totalForce.add(airDragForce)
 
-        val forwardForceMagnitude = totalForce.dot(directionOfMotion).toFloat()
+        //proiziert die forces auf die direction of motion
+        val forwardForceMagnitude = totalForce.dot(Vector(forward.x, forward.y,forward.z)).toFloat()
+
+        //2 newtonsche gesetz a = F/m
         val acceleration = forwardForceMagnitude / mass//m/s²
 
+       // v = u + at
         velocity += acceleration * deltaTime
 
         //Winkelgeschwindigkeit
