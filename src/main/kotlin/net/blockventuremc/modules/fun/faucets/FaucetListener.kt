@@ -20,7 +20,7 @@ class FaucetListener : Listener {
         if (block.blockData !is TripwireHook) return@with
         val cauldronBlock = block.location.add(0.0, -1.0, 0.0).block
 
-        if(cauldronBlock.type != Material.CAULDRON && cauldronBlock.type != Material.WATER_CAULDRON) return@with
+        if (cauldronBlock.type != Material.CAULDRON && cauldronBlock.type != Material.WATER_CAULDRON) return@with
 
         FaucetAnimation(block.location, cauldronBlock)
     }

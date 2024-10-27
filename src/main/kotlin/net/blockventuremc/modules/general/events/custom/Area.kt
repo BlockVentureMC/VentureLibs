@@ -1,6 +1,6 @@
 package net.blockventuremc.modules.general.events.custom
 
-import net.blockventuremc.cache.AreaCache
+import net.blockventuremc.modules.general.cache.AreaCache
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import kotlin.math.max
@@ -13,7 +13,12 @@ import kotlin.math.min
  * @property point1 The first pixel location defining the area.
  * @property point2 The second pixel location defining the area.
  */
-class Area(val name: String, val point1: VentureLocation, val point2: VentureLocation, val chatRoomType: String = "<color:#7593ff>ChatRoom") {
+class Area(
+    val name: String,
+    val point1: VentureLocation,
+    val point2: VentureLocation,
+    val chatRoomType: String = "<color:#7593ff>ChatRoom"
+) {
 
     fun contains(location: VentureLocation): Boolean {
         return location.server == point1.server && contains(location.toBukkitLocation())

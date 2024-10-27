@@ -5,7 +5,6 @@ import io.sentry.Sentry
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.consts.NAMESPACE_PLUGIN
-import net.blockventuremc.extensions.code
 import net.blockventuremc.extensions.getLogger
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.modules.discord.annotations.PermissionScope

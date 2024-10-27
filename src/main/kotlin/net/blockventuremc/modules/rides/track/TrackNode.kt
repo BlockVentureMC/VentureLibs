@@ -107,7 +107,7 @@ data class TrackNode(
 
         // Display the item with the calculated orientation
         val itemDisplayEnt = loc.world.spawnEntity(loc, EntityType.ITEM_DISPLAY) as ItemDisplay
-        itemDisplayEnt.setItemStack( ItemStack(SegmentTypes.NORMAL.material))
+        itemDisplayEnt.setItemStack(ItemStack(SegmentTypes.NORMAL.material))
         itemDisplayEnt.itemDisplayTransform = ItemDisplayTransform.NONE
         itemDisplayEnt.viewRange = 16.0f
         itemDisplayEnt.transformation = Transformation(originVec, quaternion, Vector3f(1f, 1f, 1f), Quaternionf())

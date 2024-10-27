@@ -32,7 +32,8 @@ object TrackManager {
                 getLogger().info("Track file for TrackID $trackId does not exist. Please upload the track file to ${file.path}.")
                 return
             }
-            tracks[trackId] = Nl2Importer(file, trackId, origin?.toVentureLocation()?.toBukkitLocation() ?: return@forEach).import()
+            tracks[trackId] =
+                Nl2Importer(file, trackId, origin?.toVentureLocation()?.toBukkitLocation() ?: return@forEach).import()
             getLogger().info("Loaded track $trackId")
         }
     }

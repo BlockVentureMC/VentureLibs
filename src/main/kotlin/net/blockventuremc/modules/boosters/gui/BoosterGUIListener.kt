@@ -1,8 +1,7 @@
 package net.blockventuremc.modules.boosters.gui
 
-import net.blockventuremc.cache.BoosterCache
 import net.blockventuremc.extensions.*
-import net.blockventuremc.utils.itembuilder.toItemBuilder
+import net.blockventuremc.modules.boosters.BoosterCache
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -10,7 +9,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.inventory.ItemStack
 
-class BoosterGUIListener: Listener {
+class BoosterGUIListener : Listener {
     @EventHandler
     fun onInventoryClick(event: InventoryClickEvent): Unit = with(event) {
         val inv = clickedInventory ?: return

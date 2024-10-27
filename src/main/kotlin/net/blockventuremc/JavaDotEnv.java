@@ -6,11 +6,11 @@ import java.io.FileReader;
 import java.util.HashSet;
 import java.util.Set;
 
-public class  JavaDotEnv {
+public class JavaDotEnv {
 
-    private File envFile = new File(".env");
+    private final File envFile = new File(".env");
 
-    private Set<DotenvEntry> entries = new HashSet<>();
+    private final Set<DotenvEntry> entries = new HashSet<>();
 
     public JavaDotEnv() {
         if (!envFile.exists()) {
@@ -26,7 +26,7 @@ public class  JavaDotEnv {
         loadEntries();
     }
 
-    private void loadEntries()  {
+    private void loadEntries() {
         // Load the entries from the file
 
         BufferedReader reader = null;
@@ -48,8 +48,7 @@ public class  JavaDotEnv {
             }
         } catch (Exception e) {
             System.out.println("Failed to load .env file: " + e.getMessage());
-        }
-        finally {
+        } finally {
             if (reader != null) {
                 try {
                     reader.close();
@@ -80,7 +79,8 @@ public class  JavaDotEnv {
 
         /**
          * Creates a new dotenv entry using the provided key and value
-         * @param key the dotenv entry name
+         *
+         * @param key   the dotenv entry name
          * @param value the dotenv entry value
          */
         public DotenvEntry(String key, String value) {
@@ -90,6 +90,7 @@ public class  JavaDotEnv {
 
         /**
          * Returns the key for the {@link DotenvEntry}
+         *
          * @return the key for the {@link DotenvEntry}
          */
         public String getKey() {
@@ -98,6 +99,7 @@ public class  JavaDotEnv {
 
         /**
          * Returns the value for the {@link DotenvEntry}
+         *
          * @return the value for the {@link DotenvEntry}
          */
         public String getValue() {
@@ -106,7 +108,7 @@ public class  JavaDotEnv {
 
         @Override
         public String toString() {
-            return key+"="+value;
+            return key + "=" + value;
         }
     }
 

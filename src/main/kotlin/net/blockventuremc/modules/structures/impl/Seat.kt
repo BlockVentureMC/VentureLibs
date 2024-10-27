@@ -13,7 +13,8 @@ import org.bukkit.util.Vector
 import org.joml.Quaternionf
 import org.joml.Vector3f
 
-class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachment(name, localPosition, localRotation) {
+class Seat(name: String, localPosition: Vector, localRotation: Vector) :
+    Attachment(name, localPosition, localRotation) {
 
     var itemDisplay: ItemDisplay? = null
     var interaction: Interaction? = null
@@ -54,15 +55,27 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachm
         var rotation = Quaternionf()
         rotation = worldTransform.getNormalizedRotation(rotation)
 
-        val upVector =  (rotation.clone() as Quaternionf).transform(Vector3f(0.0f, 1.0f, 0.0f)).normalize()
+        val upVector = (rotation.clone() as Quaternionf).transform(Vector3f(0.0f, 1.0f, 0.0f)).normalize()
 
-        val loopingOffset = upVector.dot(Vector3f(0.0f, -1.0f, 0.0f)).coerceIn(0.0f,1.0f)
+        val loopingOffset = upVector.dot(Vector3f(0.0f, -1.0f, 0.0f)).coerceIn(0.0f, 1.0f)
         upVector.mul(loopingOffset).mul(0.5f)
 
-        itemDisplay?.teleport(bukkitLocation.add(Vector(0.0, -offset, 0.0)).add(upVector.x.toDouble(),upVector.y.toDouble(),upVector.z.toDouble()), TeleportFlag.EntityState.RETAIN_PASSENGERS)
+        itemDisplay?.teleport(
+            bukkitLocation.add(Vector(0.0, -offset, 0.0))
+                .add(upVector.x.toDouble(), upVector.y.toDouble(), upVector.z.toDouble()),
+            TeleportFlag.EntityState.RETAIN_PASSENGERS
+        )
 
         passenger?.let { player ->
-            VentureLibs.instance.smoothCoastersAPI.setRotation(VentureLibs.instance.networkInterface, player, rotation.x, rotation.y, rotation.z, rotation.w, 3)
+            VentureLibs.instance.smoothCoastersAPI.setRotation(
+                VentureLibs.instance.networkInterface,
+                player,
+                rotation.x,
+                rotation.y,
+                rotation.z,
+                rotation.w,
+                3
+            )
         }
     }
 

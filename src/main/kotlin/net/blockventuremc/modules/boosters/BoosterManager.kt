@@ -1,6 +1,5 @@
 package net.blockventuremc.modules.boosters
 
-import net.blockventuremc.cache.BoosterCache
 import net.blockventuremc.database.functions.makeBooster
 import net.blockventuremc.database.model.BitBoosters
 import net.blockventuremc.modules.discord.DiscordChannelEnvs
@@ -19,13 +18,14 @@ object BoosterManager {
         // use unixtimestamp for endTime
 
         mcasyncBlocking {
-            sendToMainChannel(DiscordChannelEnvs.ECONOMY_CHANNEL, EmbedBuilder()
-                .setTitle("Booster activated")
-                .setDescription("A new BitBooster has been activated by ${player.name}")
-                .addField("Bit Modifier","+${ boosters.modifier }", false)
-                .addField("Duration", (boosters.startTime.durationTo(boosters.endTime)).toString(), false)
-                .setColor(0xff9ff3)
-                .build()
+            sendToMainChannel(
+                DiscordChannelEnvs.ECONOMY_CHANNEL, EmbedBuilder()
+                    .setTitle("Booster activated")
+                    .setDescription("A new BitBooster has been activated by ${player.name}")
+                    .addField("Bit Modifier", "+${boosters.modifier}", false)
+                    .addField("Duration", (boosters.startTime.durationTo(boosters.endTime)).toString(), false)
+                    .setColor(0xff9ff3)
+                    .build()
             )?.queue()
         }
     }

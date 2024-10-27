@@ -1,7 +1,6 @@
 package net.blockventuremc.modules.rides.track
 
 import org.bukkit.Location
-import org.bukkit.World
 import java.io.File
 
 class Nl2Importer(private val file: File, private val trackId: Int, private val origin: Location) {

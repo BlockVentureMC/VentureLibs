@@ -1,4 +1,4 @@
-package net.blockventuremc.cache
+package net.blockventuremc.modules.general.cache
 
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.extensions.getLogger

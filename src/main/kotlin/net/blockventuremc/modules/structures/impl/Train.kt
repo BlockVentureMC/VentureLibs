@@ -13,7 +13,8 @@ import org.joml.Quaternionf
 import org.joml.Vector3f
 import kotlin.math.sign
 
-class Train(name: String, val trackRide: TrackRide, world: World, position: Vector, rotation: Vector): CustomEntity(name, world, position, rotation) {
+class Train(name: String, val trackRide: TrackRide, world: World, position: Vector, rotation: Vector) :
+    CustomEntity(name, world, position, rotation) {
 
     var currentPosition = 0.0
     var rotationQuaternion = Quaternionf()
@@ -74,7 +75,7 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
         val up = trackNode.upVector.toVector3f().normalize()
         val left = trackNode.leftVector.toVector3f().normalize()
 
-        simulate(trackNode, front, up )
+        simulate(trackNode, front, up)
 
         rotationQuaternion = createQuaternionFromVectors(front, left, up)
         position = trackRide.origin.toVector().add(trackNode.position)

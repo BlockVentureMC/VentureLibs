@@ -4,7 +4,7 @@ import net.blockventuremc.VentureLibs
 import net.blockventuremc.modules.`fun`.baloon.Balloon
 import org.bukkit.entity.Player
 import java.io.Closeable
-import java.util.UUID
+import java.util.*
 
 object StructureManager {
 
@@ -13,7 +13,7 @@ object StructureManager {
 
     fun update() {
 
-        interval (0, 1) {
+        interval(0, 1) {
 
             structures.forEach { (uuid, attachment) ->
                 attachment.update()

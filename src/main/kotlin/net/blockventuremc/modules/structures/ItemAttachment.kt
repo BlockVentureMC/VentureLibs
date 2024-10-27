@@ -7,7 +7,8 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
 import org.joml.Quaternionf
 
-class ItemAttachment(name: String, val item: ItemStack, localPosition: Vector, localRotation: Vector) : Attachment(name, localPosition, localRotation) {
+class ItemAttachment(name: String, val item: ItemStack, localPosition: Vector, localRotation: Vector) :
+    Attachment(name, localPosition, localRotation) {
 
     var itemDisplay: ItemDisplay? = null
 
@@ -36,7 +37,7 @@ class ItemAttachment(name: String, val item: ItemStack, localPosition: Vector, l
             var quaternion = Quaternionf()
             quaternion = worldTransform.getNormalizedRotation(quaternion)
             transform.leftRotation.set(quaternion)
-            if(transform != display.transformation) {
+            if (transform != display.transformation) {
                 display.interpolationDelay = 0
                 display.transformation = transform
             }

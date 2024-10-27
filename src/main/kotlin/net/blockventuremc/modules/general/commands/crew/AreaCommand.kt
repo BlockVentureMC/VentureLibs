@@ -2,9 +2,9 @@ package net.blockventuremc.modules.general.commands.crew
 
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
-import net.blockventuremc.cache.AreaCache
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.sendSuccessSound
+import net.blockventuremc.modules.general.cache.AreaCache
 import net.blockventuremc.modules.general.events.custom.getArea
 import net.blockventuremc.modules.general.events.custom.toSimpleString
 import net.blockventuremc.modules.general.events.custom.toVentureLocation
@@ -42,7 +42,10 @@ class AreaCommand : CommandExecutor, TabExecutor {
 
         if (args[0].equals("p1", true)) {
             val old = VentureLibs.instance.config.get("areas.$savableName.p1")
-            VentureLibs.instance.config.set("areas.$savableName.p1", sender.location.toVentureLocation().toSimpleString())
+            VentureLibs.instance.config.set(
+                "areas.$savableName.p1",
+                sender.location.toVentureLocation().toSimpleString()
+            )
             sender.sendMessagePrefixed(
                 "Set first point to ${
                     sender.location.toVentureLocation().toSimpleString()
@@ -50,7 +53,10 @@ class AreaCommand : CommandExecutor, TabExecutor {
             )
         } else if (args[0].equals("p2", true)) {
             val old = VentureLibs.instance.config.get("areas.$savableName.p2")
-            VentureLibs.instance.config.set("areas.$savableName.p2", sender.location.toVentureLocation().toSimpleString())
+            VentureLibs.instance.config.set(
+                "areas.$savableName.p2",
+                sender.location.toVentureLocation().toSimpleString()
+            )
             sender.sendMessagePrefixed(
                 "Set second point to ${
                     sender.location.toVentureLocation().toSimpleString()

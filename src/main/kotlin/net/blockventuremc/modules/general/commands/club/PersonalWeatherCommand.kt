@@ -29,7 +29,8 @@ class PersonalWeatherCommand : CommandExecutor, TabExecutor {
                 sender.translate(
                     "commands.personaweather.current",
                     mapOf("weather" to (sender.playerWeather?.name ?: "None"))
-                )?.message ?: "Personal current weather: <color:#feca57>${sender.playerWeather?.name ?: "None"}</color>. Use <color:#c8d6e5>/personaweather <reset|clear|rain></color> to change it."
+                )?.message
+                    ?: "Personal current weather: <color:#feca57>${sender.playerWeather?.name ?: "None"}</color>. Use <color:#c8d6e5>/personaweather <reset|clear|rain></color> to change it."
             )
             return true
         }
@@ -53,7 +54,8 @@ class PersonalWeatherCommand : CommandExecutor, TabExecutor {
                     sender.translate(
                         "commands.personaweather.invalid",
                         mapOf()
-                    )?.message ?: "Invalid weather. Use <color:#c8d6e5>/personalweather <reset|clear|rain></color> to change it."
+                    )?.message
+                        ?: "Invalid weather. Use <color:#c8d6e5>/personalweather <reset|clear|rain></color> to change it."
                 )
                 return true
             }

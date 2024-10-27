@@ -1,4 +1,4 @@
-package net.blockventuremc.cache
+package net.blockventuremc.modules.general.cache
 
 import dev.fruxz.ascend.tool.time.calendar.Calendar
 import dev.fruxz.stacked.text
@@ -10,7 +10,6 @@ import net.blockventuremc.extensions.bitsPerMinute
 import net.blockventuremc.extensions.getLogger
 import net.blockventuremc.extensions.toBlockUserDB
 import net.blockventuremc.extensions.translate
-import net.blockventuremc.modules.boosters.BoosterManager
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitTask
 import java.util.*

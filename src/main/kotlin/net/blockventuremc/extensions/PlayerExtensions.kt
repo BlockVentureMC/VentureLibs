@@ -1,7 +1,6 @@
 package net.blockventuremc.extensions
 
 import dev.fruxz.stacked.text
-import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.consts.BLOCK_PREFIX
 import net.blockventuremc.consts.PREFIX
 import net.blockventuremc.consts.TEXT_GRAY
@@ -9,6 +8,7 @@ import net.blockventuremc.database.functions.createDatabaseUser
 import net.blockventuremc.database.functions.getDatabaseUserOrNull
 import net.blockventuremc.database.model.BlockUser
 import net.blockventuremc.modules.boosters.BoosterManager
+import net.blockventuremc.modules.general.cache.PlayerCache
 import net.blockventuremc.modules.general.manager.RankManager
 import net.blockventuremc.modules.general.model.Languages
 import net.blockventuremc.modules.general.model.Rank

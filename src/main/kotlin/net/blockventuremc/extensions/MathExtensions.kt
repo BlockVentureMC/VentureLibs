@@ -1,8 +1,8 @@
 package net.blockventuremc.extensions
 
 import org.bukkit.util.EulerAngle
-import org.joml.Vector3f
 import org.joml.Quaternionf
+import org.joml.Vector3f
 import kotlin.math.*
 
 operator fun Vector3f.minus(toVector3f: Vector3f): Vector3f {

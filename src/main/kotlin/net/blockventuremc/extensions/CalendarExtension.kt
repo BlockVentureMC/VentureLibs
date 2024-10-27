@@ -1,8 +1,8 @@
 package net.blockventuremc.extensions
 
+import dev.fruxz.ascend.tool.time.calendar.Calendar
 import java.text.SimpleDateFormat
 import java.util.*
-import dev.fruxz.ascend.tool.time.calendar.Calendar
 
 
 fun calendarFromDateString(dateFormat: String): Calendar {

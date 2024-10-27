@@ -33,8 +33,15 @@ class CustomEntityCommand : CommandExecutor {
 
         val player = sender
 //
-        val customEntity = CustomEntity("test", player.world,player.location.toVector(), Vector())
-        customEntity.addChild(ItemAttachment("base", ItemBuilder(Material.DIAMOND_SWORD).customModelData(100).build(), Vector(0.0, 0.4, 0.0), Vector()))
+        val customEntity = CustomEntity("test", player.world, player.location.toVector(), Vector())
+        customEntity.addChild(
+            ItemAttachment(
+                "base",
+                ItemBuilder(Material.DIAMOND_SWORD).customModelData(100).build(),
+                Vector(0.0, 0.4, 0.0),
+                Vector()
+            )
+        )
         val rotator = Attachment("rotator", Vector(), Vector())
         customEntity.addChild(rotator)
 
@@ -43,15 +50,30 @@ class CustomEntityCommand : CommandExecutor {
         rotator.addChild(Seat("seat3", Vector(0.39, 0.6, -0.3), Vector()))
         rotator.addChild(Seat("seat4", Vector(-0.39, 0.6, -0.3), Vector()))
 
-        rotator.addChild(ItemAttachment("model", ItemBuilder(Material.DIAMOND_SWORD).customModelData(99).build(), Vector(0.0, 1.0, 0.0), Vector()))
-        rotator.addChild(ItemAttachment("test", ItemStack(Material.COMMAND_BLOCK), Vector(2.0, 0.0, 0.0), Vector(0.0, 0.0, 0.0)))
+        rotator.addChild(
+            ItemAttachment(
+                "model",
+                ItemBuilder(Material.DIAMOND_SWORD).customModelData(99).build(),
+                Vector(0.0, 1.0, 0.0),
+                Vector()
+            )
+        )
+        rotator.addChild(
+            ItemAttachment(
+                "test",
+                ItemStack(Material.COMMAND_BLOCK),
+                Vector(2.0, 0.0, 0.0),
+                Vector(0.0, 0.0, 0.0)
+            )
+        )
 
         customEntity.initialize()
         customEntity.animation = object : Animation() {
             override fun animate() {
 
                 customEntity.position = player.location.toVector()
-                customEntity.localRotation = Vector(player.location.pitch.toDouble(), player.location.yaw.toDouble(), 0.0)
+                customEntity.localRotation =
+                    Vector(player.location.pitch.toDouble(), player.location.yaw.toDouble(), 0.0)
                 rotator.localRotation.add(Vector(0.0, 1.0, 0.0))
             }
         }

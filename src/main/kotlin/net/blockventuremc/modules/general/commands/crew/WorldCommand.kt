@@ -35,7 +35,10 @@ class WorldCommand : CommandExecutor, TabExecutor {
 
         if (world == null) {
             world = Bukkit.createWorld(WorldCreator(worldName))
-            sender.sendMessagePrefixed(sender.translate("commands.world.created", mapOf("world" to worldName))?.message ?: "World $worldName created successfully")
+            sender.sendMessagePrefixed(
+                sender.translate("commands.world.created", mapOf("world" to worldName))?.message
+                    ?: "World $worldName created successfully"
+            )
         }
 
         if (sender !is Player) {
@@ -45,7 +48,12 @@ class WorldCommand : CommandExecutor, TabExecutor {
 
         Bukkit.getScheduler().runTaskLater(VentureLibs.instance, Runnable {
             sender.teleport(world!!.spawnLocation)
-            sender.sendMessagePrefixed(sender.translate("commands.world.teleported", mapOf("world" to worldName))?.message ?: "Teleported to world $worldName")
+            sender.sendMessagePrefixed(
+                sender.translate(
+                    "commands.world.teleported",
+                    mapOf("world" to worldName)
+                )?.message ?: "Teleported to world $worldName"
+            )
         }, 1L)
 
         return true

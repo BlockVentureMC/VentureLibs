@@ -18,12 +18,12 @@ open class Attachment(
     var worldTransform = Matrix4f()
 
     fun addChild(child: Attachment) {
-        if(this is CustomEntity) {
+        if (this is CustomEntity) {
             child.root = this
         } else {
             child.root = this.root
         }
-        child.parent = this;
+        child.parent = this
         children[child.name] = child
     }
 
@@ -33,14 +33,14 @@ open class Attachment(
 
     fun spawnAttachmentsRecurse() {
         spawn()
-        for(child in children.values) {
+        for (child in children.values) {
             child.spawnAttachmentsRecurse()
         }
     }
 
     fun despawnAttachmentsRecurse() {
         despawn()
-        for(child in children.values) {
+        for (child in children.values) {
             child.despawnAttachmentsRecurse()
         }
     }
@@ -51,7 +51,7 @@ open class Attachment(
 
         updateTransform()
 
-        for(child in children.values) {
+        for (child in children.values) {
             child.updateTransformRecurse(worldTransform.clone() as Matrix4f)
         }
     }
@@ -60,7 +60,7 @@ open class Attachment(
         get() {
             var matrix = Matrix4f().translate(localPosition.toVector3f())
 
-            if(localRotation.isZero) return matrix
+            if (localRotation.isZero) return matrix
 
             val yaw = Math.toRadians(localRotation.y).toFloat()
             val pitch = Math.toRadians(localRotation.x).toFloat()

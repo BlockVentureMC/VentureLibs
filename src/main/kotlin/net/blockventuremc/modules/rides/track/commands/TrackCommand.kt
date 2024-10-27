@@ -13,8 +13,8 @@ import net.blockventuremc.modules.rides.track.segments.SegmentTypes
 import net.blockventuremc.modules.rides.track.segments.TrackSegment
 import net.blockventuremc.modules.structures.Attachment
 import net.blockventuremc.modules.structures.ItemAttachment
-import net.blockventuremc.modules.structures.impl.Seat
 import net.blockventuremc.modules.structures.StructureManager
+import net.blockventuremc.modules.structures.impl.Seat
 import net.blockventuremc.modules.structures.impl.Train
 import net.blockventuremc.utils.itembuilder.ItemBuilder
 import org.bukkit.Bukkit
@@ -62,6 +62,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
                 }
                 performImportTrack(sender, trackId)
             }
+
             "placeblocks" -> {
                 if (args.size != 2) {
                     sender.sendMessage("Usage: /track placeblocks <trackId>")
@@ -73,6 +74,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
                 }
                 performPlaceTrackBlocks(sender, trackId)
             }
+
             "debug" -> {
                 if (args.size != 2) {
                     sender.sendMessage("Usage: /track debug <trackId>")
@@ -84,9 +86,11 @@ class TrackCommand : CommandExecutor, TabExecutor {
                 }
                 performDebugDistance(sender, trackId)
             }
+
             "list" -> {
                 performListTracks(sender)
             }
+
             "show" -> {
                 if (args.size != 2) {
                     sender.sendMessage("Usage: /track show <trackId>")
@@ -98,6 +102,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
                 }
                 performShowTrack(sender, trackId)
             }
+
             "hide" -> {
                 if (args.size != 2) {
                     sender.sendMessage("Usage: /track hide <trackId>")
@@ -109,19 +114,23 @@ class TrackCommand : CommandExecutor, TabExecutor {
                 }
                 performHideTrack(sender, trackId)
             }
+
             "select" -> {
                 selectTrackNode(args, sender)
             }
+
             "segment" -> {
                 setSegmentType(args, sender)
             }
+
             "speed" -> {
                 if (args.size != 2) {
                     sender.sendMessage("Usage: /track speed <velocity>")
                     return true
                 }
-                performDebugSpeed(sender, args[1].toFloat().coerceIn(-4.0f,4.0f))
+                performDebugSpeed(sender, args[1].toFloat().coerceIn(-4.0f, 4.0f))
             }
+
             "spawn" -> {
                 if (args.size != 2) {
                     sender.sendMessage("Usage: /track spawn <trackId>")
@@ -133,6 +142,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
                 }
                 performSpawnTrainOnTrack(sender, trackId)
             }
+
             "despawn" -> {
                 if (args.size != 2) {
                     sender.sendMessage("Usage: /track despawn <trackId>")
@@ -145,6 +155,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
 
                 performDespawnTrainOnTrack(sender, trackId)
             }
+
             else -> {
                 sender.sendMessage("Usage: /track <subcommand>")
             }
@@ -196,26 +207,32 @@ class TrackCommand : CommandExecutor, TabExecutor {
                 sender.sendMessage("new Lift Segment")
 
             }
+
             SegmentTypes.NORMAL -> {
                 trackSegment = TrackSegment(nodeIdStart, nodeIdEnd)
                 sender.sendMessage("set Normal Segment")
             }
+
             SegmentTypes.LAUNCH -> {
             }
+
             SegmentTypes.BRAKE -> {
 
             }
+
             SegmentTypes.STATION -> {
 
             }
+
             SegmentTypes.ACCELERATION -> {
 
             }
+
             else -> {
 
             }
         }
-        if(trackSegment == null) {
+        if (trackSegment == null) {
             sender.sendMessage("Logic fehlt hier")
             return
         }
@@ -309,11 +326,11 @@ class TrackCommand : CommandExecutor, TabExecutor {
 
         CoroutineScope(Dispatchers.Default).launch {
             track.nodes.forEach { node ->
-            Bukkit.getScheduler().runTask(VentureLibs.instance, Runnable {
-                val offset = node.upVector.normalize().multiply(-1.0)
-                val position = track.origin.toVector().add(node.position).add(offset)
-                sender.world.getBlockAt(Location(sender.world, position.x, position.y, position.z)).type = item.type
-            })
+                Bukkit.getScheduler().runTask(VentureLibs.instance, Runnable {
+                    val offset = node.upVector.normalize().multiply(-1.0)
+                    val position = track.origin.toVector().add(node.position).add(offset)
+                    sender.world.getBlockAt(Location(sender.world, position.x, position.y, position.z)).type = item.type
+                })
             }
         }
         sender.sendMessage("Es wurden Blöcke platziert.")
@@ -340,7 +357,14 @@ class TrackCommand : CommandExecutor, TabExecutor {
         }
         val train = Train("train", track, sender.world, sender.location.toVector(), BlockVector(0.0, 0.0, 0.0))
 
-        train.addChild(ItemAttachment("base", ItemBuilder(Material.DIAMOND_SWORD).customModelData(100).build(), Vector(0.0, 0.4, 0.0), Vector()))
+        train.addChild(
+            ItemAttachment(
+                "base",
+                ItemBuilder(Material.DIAMOND_SWORD).customModelData(100).build(),
+                Vector(0.0, 0.4, 0.0),
+                Vector()
+            )
+        )
         val rotator = Attachment("rotator", Vector(), Vector())
         train.addChild(rotator)
 
@@ -349,7 +373,14 @@ class TrackCommand : CommandExecutor, TabExecutor {
         rotator.addChild(Seat("seat3", Vector(0.39, 0.6, -0.3), Vector()))
         rotator.addChild(Seat("seat4", Vector(-0.39, 0.6, -0.3), Vector()))
 
-        rotator.addChild(ItemAttachment("model", ItemBuilder(Material.DIAMOND_SWORD).customModelData(99).build(), Vector(0.0, 1.0, 0.0), Vector()))
+        rotator.addChild(
+            ItemAttachment(
+                "model",
+                ItemBuilder(Material.DIAMOND_SWORD).customModelData(99).build(),
+                Vector(0.0, 1.0, 0.0),
+                Vector()
+            )
+        )
 
         train.initialize()
         StructureManager.structures[train.uuid] = train
@@ -363,7 +394,8 @@ class TrackCommand : CommandExecutor, TabExecutor {
             sender.sendMessage("Track $trackId does not exist.")
             return
         }
-        val trains = StructureManager.structures.filter { it.value is Train }.map {  it.value as Train }.filter { it.trackRide.id == trackId }
+        val trains = StructureManager.structures.filter { it.value is Train }.map { it.value as Train }
+            .filter { it.trackRide.id == trackId }
         trains.forEach { train ->
             train.despawnAttachmentsRecurse()
             StructureManager.structures.remove(train.uuid)
@@ -372,17 +404,38 @@ class TrackCommand : CommandExecutor, TabExecutor {
     }
 
 
-    override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): List<String> {
+    override fun onTabComplete(
+        sender: CommandSender,
+        command: Command,
+        alias: String,
+        args: Array<out String>
+    ): List<String> {
         return when (args.size) {
-            1 -> listOf("import", "show", "hide", "list", "select", "segment", "spawn", "despawn", "placeblocks", "speed").filter { it.startsWith(args[0]) }
+            1 -> listOf(
+                "import",
+                "show",
+                "hide",
+                "list",
+                "select",
+                "segment",
+                "spawn",
+                "despawn",
+                "placeblocks",
+                "speed"
+            ).filter { it.startsWith(args[0]) }
+
             2 -> when (args[0]) {
-                "show", "hide", "select", "segment", "spawn", "despawn", "placeblocks" -> TrackManager.tracks.keys.map { it.toString() }.filter { it.startsWith(args[1]) }
+                "show", "hide", "select", "segment", "spawn", "despawn", "placeblocks" -> TrackManager.tracks.keys.map { it.toString() }
+                    .filter { it.startsWith(args[1]) }
+
                 else -> emptyList()
             }
+
             5 -> when (args[0]) {
                 "segment" -> SegmentTypes.entries.map { it.name }.filter { it.startsWith(args[3]) }
                 else -> emptyList()
             }
+
             else -> emptyList()
         }
     }

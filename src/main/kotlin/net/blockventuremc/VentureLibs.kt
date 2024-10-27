@@ -5,9 +5,9 @@ import me.m56738.smoothcoasters.api.NetworkInterface
 import me.m56738.smoothcoasters.api.SmoothCoastersAPI
 import net.blockventuremc.audioserver.common.data.RabbitConfiguration
 import net.blockventuremc.audioserver.minecraft.AudioServer
-import net.blockventuremc.cache.BoosterCache
-import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.database.DatabaseManager
+import net.blockventuremc.modules.boosters.BoosterCache
+import net.blockventuremc.modules.general.cache.PlayerCache
 import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.modules.rides.track.TrackManager
 import net.blockventuremc.modules.structures.StructureManager
@@ -30,7 +30,7 @@ class VentureLibs : JavaPlugin() {
 
     lateinit var jda: JDA
     lateinit var smoothCoastersAPI: SmoothCoastersAPI
-    lateinit var networkInterface:  NetworkInterface
+    lateinit var networkInterface: NetworkInterface
 
     val shutDownHooks = mutableListOf<() -> Unit>()
 

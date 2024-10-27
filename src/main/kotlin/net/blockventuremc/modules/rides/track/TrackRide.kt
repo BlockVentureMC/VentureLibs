@@ -12,9 +12,6 @@ import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
 import java.io.File
 import java.util.*
-import kotlin.reflect.full.createInstance
-import kotlin.reflect.full.primaryConstructor
-import kotlin.time.measureTime
 
 class TrackRide(val id: Int, val origin: Location) {
 
@@ -55,12 +52,12 @@ class TrackRide(val id: Int, val origin: Location) {
         val newEntityUUID = itemDisplays[nodeId]
         if (newEntityUUID != null) {
             val entity = origin.world.getEntity(newEntityUUID) as ItemDisplay
-            entity.setItemStack( ItemStack(SegmentTypes.HIGHLIGHTED.material))
+            entity.setItemStack(ItemStack(SegmentTypes.HIGHLIGHTED.material))
             highlightedNode = nodeId
         }
     }
 
-    fun setSegmentType(nodeIdStart: Int,nodeIdEnd: Int, segment: TrackSegment) {
+    fun setSegmentType(nodeIdStart: Int, nodeIdEnd: Int, segment: TrackSegment) {
         val startNode = nodes.find { it.id == nodeIdStart } ?: run {
             getLogger().warn("Node $nodeIdStart not found.")
             return
@@ -69,7 +66,7 @@ class TrackRide(val id: Int, val origin: Location) {
             getLogger().warn("Node $nodeIdEnd not found.")
             return
         }
-        if(segment.type == SegmentTypes.NORMAL) {
+        if (segment.type == SegmentTypes.NORMAL) {
             trackSegments[Pair(nodeIdStart, nodeIdEnd)]?.let { segment ->
                 trackSegments.remove(Pair(nodeIdStart, nodeIdEnd))
             }
@@ -101,12 +98,12 @@ class TrackRide(val id: Int, val origin: Location) {
             val startNode = pair.first
             val endNode = pair.second
 
-            for(id in startNode..endNode) {
+            for (id in startNode..endNode) {
                 val entityUUID = itemDisplays[id]
                 if (entityUUID != null) {
                     val entity = origin.world.getEntity(entityUUID) as ItemDisplay
-                    entity.setItemStack( ItemStack(segment.type.material))
-                    if(id == startNode || id == endNode) {
+                    entity.setItemStack(ItemStack(segment.type.material))
+                    if (id == startNode || id == endNode) {
                         entity.isCustomNameVisible = true
                         entity.customName = "${segment.type.name} id=$id"
                     }
@@ -117,7 +114,7 @@ class TrackRide(val id: Int, val origin: Location) {
     }
 
     fun displayTrack() {
-        if(!itemDisplays.isEmpty()) return
+        if (!itemDisplays.isEmpty()) return
         for (node in nodes) {
             val display = node.displayInWord(origin)
             itemDisplays[node.id] = display
@@ -138,8 +135,8 @@ class TrackRide(val id: Int, val origin: Location) {
 
     fun findSegment(nodeId: Int): TrackSegment? {
         trackSegments.forEach { (pair, segment) ->
-            val (min,max) = pair
-            if(nodeId in min..max) {
+            val (min, max) = pair
+            if (nodeId in min..max) {
                 return segment
             }
         }
@@ -148,7 +145,10 @@ class TrackRide(val id: Int, val origin: Location) {
 
     private fun saveSegmentsToFile() {
         // Save the nodes to a file
-        val file = File(VentureLibs.instance.dataFolder, "rides/track/$id.json").also { it.parentFile.mkdirs(); it.createNewFile() }
+        val file = File(
+            VentureLibs.instance.dataFolder,
+            "rides/track/$id.json"
+        ).also { it.parentFile.mkdirs(); it.createNewFile() }
         val jsonArray = JSONArray()
         itemDisplays.forEach {
             val jsonObj = JSONObject()

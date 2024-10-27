@@ -70,7 +70,7 @@ internal class BlockDataListener : Listener {
         val cbdEvent = CustomBlockDataRemoveEvent(VentureLibs.instance, block, bukkitEvent)
         Bukkit.getPluginManager().callEvent(cbdEvent)
 
-        return !cbdEvent.isCancelled()
+        return !cbdEvent.isCancelled
     }
 
     private fun callAndRemoveBlockStateList(blockStates: List<BlockState>, bukkitEvent: Event) {

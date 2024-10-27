@@ -11,9 +11,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
-import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
-import java.util.*
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 
@@ -25,7 +23,7 @@ import kotlin.time.Duration.Companion.hours
     permission = "blockventure.boosters.create",
     usage = "/createbooster <player> [modifier] [duration] [userOnly]"
 )
-class CreateBoosterCommand: CommandExecutor, TabExecutor {
+class CreateBoosterCommand : CommandExecutor, TabExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         // duration, multiplier are optional
         if (args.isEmpty()) {
@@ -74,7 +72,12 @@ class CreateBoosterCommand: CommandExecutor, TabExecutor {
         return true
     }
 
-    override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): List<String> {
+    override fun onTabComplete(
+        sender: CommandSender,
+        command: Command,
+        alias: String,
+        args: Array<out String>
+    ): List<String> {
         // return users, true, false
         return when (args.size) {
             1 -> sender.server.onlinePlayers.map { it.name }

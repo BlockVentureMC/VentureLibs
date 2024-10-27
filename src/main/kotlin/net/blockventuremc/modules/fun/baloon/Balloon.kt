@@ -30,13 +30,13 @@ class Balloon(val follow: Entity, val item: ItemStack) {
 
     fun spawn() {
         val location = follow.location
-        location.add(0.0,0.5,0.0)
+        location.add(0.0, 0.5, 0.0)
         location.yaw = 0.0f
         location.pitch = 0.0f
         itemDisplay = follow.world.spawn(location, ItemDisplay::class.java).apply {
             setItemStack(item)
             val transform = transformation
-            transform.translation.add(0.0f,0f,0.0f)
+            transform.translation.add(0.0f, 0f, 0.0f)
             transform.scale.mul(0.74f)
             transformation = transform
             interpolationDuration = 3
@@ -59,13 +59,13 @@ class Balloon(val follow: Entity, val item: ItemStack) {
     }
 
 
-     fun update() {
-         val playerLocation = follow.location
+    fun update() {
+        val playerLocation = follow.location
         val balloonLocation = chicken?.location ?: return
         var directionToFollower = follow.location.toVector().subtract(chicken!!.location.toVector())
         val followerDirection = follow.location.direction
 
-        if(directionToFollower.isNull ||directionToFollower.isZero) return
+        if (directionToFollower.isNull || directionToFollower.isZero) return
 
         directionToFollower = directionToFollower.normalize()
 
@@ -73,27 +73,34 @@ class Balloon(val follow: Entity, val item: ItemStack) {
         val balloonDistancePlayer = playerLocation.distance(balloonLocation)
         val maxDistance = 3
 
-        if(balloonDistancePlayer > maxDistance) {
+        if (balloonDistancePlayer > maxDistance) {
             balloonLocation.add(directionToFollower.multiply(balloonDistancePlayer - maxDistance))
         }
 
-        val balloonRestPosition = follow.location.add(Vector(-followerDirection.z * 0.9,1.6 + if(follow.isSneaking) 0.5 else 0.9, followerDirection.x * 0.9))
+        val balloonRestPosition = follow.location.add(
+            Vector(
+                -followerDirection.z * 0.9,
+                1.6 + if (follow.isSneaking) 0.5 else 0.9,
+                followerDirection.x * 0.9
+            )
+        )
         val force = balloonLocation.toVector().subtract(balloonRestPosition.toVector())
         val displacement = force.length()
-        val ballonRotationDirection = balloonLocation.toVector().subtract(balloonRestPosition.toVector().add(Vector(0.0,-2.0,0.0)))
+        val ballonRotationDirection =
+            balloonLocation.toVector().subtract(balloonRestPosition.toVector().add(Vector(0.0, -2.0, 0.0)))
 
         val flatForce = force.clone()
         flatForce.y = 0.0
         val flatdisplacement = flatForce.length()
 
-        if(!displacement.isNaN()) {
+        if (!displacement.isNaN()) {
             force.normalize().multiply(-1.0 * stiffness * displacement)
             velocity.add(force)
             velocity.multiply(damping)
 
             velocity.y -= flatdisplacement * test
 
-            if(velocity.y > 0) {
+            if (velocity.y > 0) {
                 velocity.y *= ydamping
             }
             balloonLocation.add(velocity)
@@ -104,7 +111,7 @@ class Balloon(val follow: Entity, val item: ItemStack) {
 
         val normalizedSpinDirection = ballonRotationDirection.toVector3f().normalize()
         val matrix = Matrix4f()
-        val quaternion = Quaternionf().rotationTo(Vector3f(0f,1f,0f).normalize(), normalizedSpinDirection)
+        val quaternion = Quaternionf().rotationTo(Vector3f(0f, 1f, 0f).normalize(), normalizedSpinDirection)
         quaternion.rotateY(currentRotation)
         matrix.scale(0.74f)
         matrix.rotate(quaternion)

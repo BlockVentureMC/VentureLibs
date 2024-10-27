@@ -1,27 +1,43 @@
 package net.blockventuremc.extensions
 
-import net.blockventuremc.consts.*
+import net.blockventuremc.consts.NAMESPACE_GUI_IDENTIFIER
+import net.blockventuremc.consts.NAMESPACE_ITEM_IDENTIFIER
+import net.blockventuremc.consts.TEXT_GRADIENT_DEFAULT
 import net.blockventuremc.utils.itembuilder.ItemBuilder
+import net.blockventuremc.utils.itembuilder.toItemBuilder
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import net.blockventuremc.utils.itembuilder.toItemBuilder
 
-fun fillEmptyAndOpenInventory(player: Player, inv: Inventory, identifier: String? = null, vararg identifiers: Map<NamespacedKey, String>? = arrayOf()) {
+fun fillEmptyAndOpenInventory(
+    player: Player,
+    inv: Inventory,
+    identifier: String? = null,
+    vararg identifiers: Map<NamespacedKey, String>? = arrayOf()
+) {
     fillEmpty(inv)
     if (identifier != null) inv.identify(identifier, *identifiers)
     player.openInventory(inv)
 }
 
-fun openWithIdentifier(player: Player, inv: Inventory, identifier: String? = null, vararg identifiers: Map<NamespacedKey, String>? = arrayOf()) {
+fun openWithIdentifier(
+    player: Player,
+    inv: Inventory,
+    identifier: String? = null,
+    vararg identifiers: Map<NamespacedKey, String>? = arrayOf()
+) {
     if (identifier != null) inv.identify(identifier, *identifiers)
     player.openInventory(inv)
 }
 
-fun fillEmpty(inventory: Inventory, identifier: String? = null, vararg identifiers: Map<NamespacedKey, String>? = arrayOf()) {
+fun fillEmpty(
+    inventory: Inventory,
+    identifier: String? = null,
+    vararg identifiers: Map<NamespacedKey, String>? = arrayOf()
+) {
     val item = PLACEHOLDER_GRAY
     for (i in 0 until inventory.size) {
         if (inventory.getItem(i) == null || inventory.getItem(i)!!.type == Material.AIR) {
@@ -31,7 +47,11 @@ fun fillEmpty(inventory: Inventory, identifier: String? = null, vararg identifie
     if (identifier != null) inventory.identify(identifier, *identifiers)
 }
 
-fun Inventory.fillEmpty(filler: ItemStack, identifier: String? = null, vararg identifiers: Map<NamespacedKey, String>? = arrayOf()) {
+fun Inventory.fillEmpty(
+    filler: ItemStack,
+    identifier: String? = null,
+    vararg identifiers: Map<NamespacedKey, String>? = arrayOf()
+) {
     for (i in 0 until this.size) {
         if (this.getItem(i) == null || this.getItem(i)!!.type == Material.AIR) {
             this.setItem(i, filler)
@@ -115,7 +135,7 @@ fun ItemStack.getKey(namespacedKey: NamespacedKey): String? {
 val PLACEHOLDER_GRAY = ItemBuilder(Material.GRAY_STAINED_GLASS_PANE) {
     display(" ")
 }.build()
-val PLACEHOLDER_BACK = ItemBuilder(Material.STRUCTURE_VOID){
+val PLACEHOLDER_BACK = ItemBuilder(Material.STRUCTURE_VOID) {
     display("${TEXT_GRADIENT_DEFAULT}Zurück")
     addPersistentData(NAMESPACE_ITEM_IDENTIFIER, "back")
 }

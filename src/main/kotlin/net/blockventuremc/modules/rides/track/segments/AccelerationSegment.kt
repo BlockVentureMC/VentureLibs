@@ -10,7 +10,7 @@ import net.blockventuremc.modules.structures.impl.Train
  *
  * @param acceleration The acceleration value for the segment.
  */
-class AccelerationSegment(startId: Int,endId: Int, val acceleration: Float) : TrackSegment(startId, endId) {
+class AccelerationSegment(startId: Int, endId: Int, val acceleration: Float) : TrackSegment(startId, endId) {
 
     override fun applyForces(train: Train, deltaTime: Float) {
         train.velocity += acceleration

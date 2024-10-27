@@ -89,7 +89,7 @@ class CustomBlockData(
             return block.chunk.persistentDataContainer.has(getKey(plugin, block), PersistentDataType.TAG_CONTAINER)
         }
 
-        fun getBlocksWithCustomData(plugin: Plugin, chunk: Chunk): Collection<Block>? {
+        fun getBlocksWithCustomData(plugin: Plugin, chunk: Chunk): Collection<Block> {
             val dummy = NamespacedKey(plugin, "dummy")
             return getBlocksWithCustomData(chunk, dummy)
         }
@@ -103,7 +103,7 @@ class CustomBlockData(
             }.filterNotNull().toList()
         }
 
-        fun getBlocksWithCustomData(namespace: String, chunk: Chunk): List<Block>? {
+        fun getBlocksWithCustomData(namespace: String, chunk: Chunk): List<Block> {
             val dummy = NamespacedKey(namespace, "dummy")
             return getBlocksWithCustomData(chunk, dummy)
         }
@@ -145,7 +145,7 @@ class CustomBlockData(
 
     private fun save() {
         setDirty(plugin, blockEntry)
-        if (pdc.isEmpty()) {
+        if (pdc.isEmpty) {
             chunk.persistentDataContainer.remove(getKey(plugin, block))
         } else {
             chunk.persistentDataContainer.set(getKey(plugin, block), PersistentDataType.TAG_CONTAINER, pdc)
@@ -206,7 +206,7 @@ class CustomBlockData(
     }
 
     override fun isEmpty(): Boolean {
-        return pdc.isEmpty()
+        return pdc.isEmpty
     }
 
     override fun copyTo(pdc: PersistentDataContainer, replace: Boolean) {

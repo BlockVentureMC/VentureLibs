@@ -28,7 +28,8 @@ class PersonalTimeCommand : CommandExecutor, TabExecutor {
                 sender.translate(
                     "commands.personaltime.current",
                     mapOf("time" to sender.playerTime)
-                )?.message ?: "Personal current time: <color:#feca57>${sender.playerTime}</color>. Use <color:#c8d6e5>/personaltime <reset|noon|midnight|day|night|<0-24000>></color> to change it."
+                )?.message
+                    ?: "Personal current time: <color:#feca57>${sender.playerTime}</color>. Use <color:#c8d6e5>/personaltime <reset|noon|midnight|day|night|<0-24000>></color> to change it."
             )
             return true
         }
@@ -46,7 +47,8 @@ class PersonalTimeCommand : CommandExecutor, TabExecutor {
                     sender.translate(
                         "commands.personaltime.invalid",
                         mapOf()
-                    )?.message ?: "Invalid time. Use <color:#c8d6e5>/personaltime <reset|noon|midnight|day|night|<0-24000>></color> to change it."
+                    )?.message
+                        ?: "Invalid time. Use <color:#c8d6e5>/personaltime <reset|noon|midnight|day|night|<0-24000>></color> to change it."
                 )
                 return true
             }

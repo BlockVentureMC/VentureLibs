@@ -1,6 +1,5 @@
 package net.blockventuremc.modules.general.manager
 
-import dev.fruxz.stacked.extension.asPlainString
 import dev.fruxz.stacked.text
 import net.blockventuremc.database.functions.getLinkOfDiscord
 import net.blockventuremc.database.functions.getLinkOfUser
@@ -120,7 +119,6 @@ object RankManager {
     }
 
 
-
     fun initScoreBoard(scoreboard: Scoreboard) {
         ranks.forEach { rank ->
             val team = scoreboard.getTeam(rank.weight.toString()) ?: scoreboard.registerNewTeam(rank.weight.toString())
@@ -140,7 +138,8 @@ object RankManager {
 
     private fun setPlayerInScoreboard(player: Player, scoreBoard: Scoreboard) {
         val userRank = getRankOfUser(player.uniqueId)
-        val team = scoreBoard.getTeam(userRank.weight.toString()) ?: scoreBoard.registerNewTeam(userRank.weight.toString())
+        val team =
+            scoreBoard.getTeam(userRank.weight.toString()) ?: scoreBoard.registerNewTeam(userRank.weight.toString())
         team.addEntry(player.name)
     }
 }

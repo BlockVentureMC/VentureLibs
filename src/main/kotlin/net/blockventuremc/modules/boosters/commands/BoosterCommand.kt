@@ -14,7 +14,7 @@ import org.bukkit.permissions.PermissionDefault
     description = "List all boosters",
     permissionDefault = PermissionDefault.TRUE,
 )
-class BoosterCommand: CommandExecutor {
+class BoosterCommand : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         val player = sender as? Player ?: run {
             sender.sendMessagePrefixed("This command is only available to players.")

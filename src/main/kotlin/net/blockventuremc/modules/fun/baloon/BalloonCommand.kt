@@ -31,10 +31,10 @@ class BalloonCommand : CommandExecutor {
         val item = player.inventory.itemInMainHand
 
         StructureManager.balloons[player]?.let { balloon ->
-                balloon.remove()
-                StructureManager.balloons.remove(player)
+            balloon.remove()
+            StructureManager.balloons.remove(player)
 
-            if(item.type == Material.AIR) {
+            if (item.type == Material.AIR) {
                 player.sendMessage("byeee ballloon! :C")
                 return true
             }

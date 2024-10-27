@@ -4,5 +4,4 @@ package net.blockventuremc.modules.structures
 const val gravity = 1.981f//m/s²
 const val airDensity = 1.225f//kg/m³
 
-class Simulation {
-}
+class Simulation

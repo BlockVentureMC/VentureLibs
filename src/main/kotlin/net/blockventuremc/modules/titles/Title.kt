@@ -1,11 +1,11 @@
 package net.blockventuremc.modules.titles
 
-import net.blockventuremc.utils.itembuilder.ItemBuilder
 import dev.fruxz.ascend.tool.time.calendar.Calendar
-import net.blockventuremc.cache.PlayerCache
 import net.blockventuremc.extensions.sendMessageBlock
 import net.blockventuremc.extensions.toBlockUser
 import net.blockventuremc.extensions.translate
+import net.blockventuremc.modules.general.cache.PlayerCache
+import net.blockventuremc.utils.itembuilder.ItemBuilder
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
@@ -29,35 +29,50 @@ enum class Title(
     ONE_YEAR_VISITOR(
         TitleCategory.GENERIC,
         { player -> player.translate("title.one_year_visitor.display")?.message ?: "<#dff9fb>One Year Visitor" },
-        { player -> player.translate("title.one_year_visitor.description")?.message ?: "You have visited the server over one year ago" },
+        { player ->
+            player.translate("title.one_year_visitor.description")?.message
+                ?: "You have visited the server over one year ago"
+        },
         ItemBuilder(Material.BOOK),
         50
     ),
     TWO_YEAR_VISITOR(
         TitleCategory.GENERIC,
         { player -> player.translate("title.two_year_visitor.display")?.message ?: "<#dff9fb>Two Year Visitor" },
-        { player -> player.translate("title.two_year_visitor.description")?.message ?: "You have visited the server over two years ago" },
+        { player ->
+            player.translate("title.two_year_visitor.description")?.message
+                ?: "You have visited the server over two years ago"
+        },
         ItemBuilder(Material.BOOK),
         100
     ),
     THREE_YEAR_VISITOR(
         TitleCategory.GENERIC,
         { player -> player.translate("title.three_year_visitor.display")?.message ?: "<#dff9fb>Three Year Visitor" },
-        { player -> player.translate("title.three_year_visitor.description")?.message ?: "You have visited the server over three years ago" },
+        { player ->
+            player.translate("title.three_year_visitor.description")?.message
+                ?: "You have visited the server over three years ago"
+        },
         ItemBuilder(Material.BOOK),
         150
     ),
     FOUR_YEAR_VISITOR(
         TitleCategory.GENERIC,
         { player -> player.translate("title.four_year_visitor.display")?.message ?: "<#dff9fb>Four Year Visitor" },
-        { player -> player.translate("title.four_year_visitor.description")?.message ?: "You have visited the server over four years ago" },
+        { player ->
+            player.translate("title.four_year_visitor.description")?.message
+                ?: "You have visited the server over four years ago"
+        },
         ItemBuilder(Material.BOOK),
         200
     ),
     FIVE_YEAR_VISITOR(
         TitleCategory.GENERIC,
         { player -> player.translate("title.five_year_visitor.display")?.message ?: "<#dff9fb>Five Year Visitor" },
-        { player -> player.translate("title.five_year_visitor.description")?.message ?: "You have visited the server over five years ago" },
+        { player ->
+            player.translate("title.five_year_visitor.description")?.message
+                ?: "You have visited the server over five years ago"
+        },
         ItemBuilder(Material.BOOK),
         250
     );
@@ -108,7 +123,12 @@ enum class Title(
             " ",
             "    <b>${display(player)}</b>",
             "    <dark_gray>»</dark_gray>   <#95afc0>${description(player)}",
-            if(award > 0) "    <dark_gray>»</dark_gray>   <#95afc0>${player.translate("title.unlocked.award", mapOf("award" to award))?.message ?: "You have been awarded <color:#f78fb3>${award} VentureBits</color>."}" else "",
+            if (award > 0) "    <dark_gray>»</dark_gray>   <#95afc0>${
+                player.translate(
+                    "title.unlocked.award",
+                    mapOf("award" to award)
+                )?.message ?: "You have been awarded <color:#f78fb3>${award} VentureBits</color>."
+            }" else "",
             " ",
             "<i><#778ca3>${player.translate("title.unlocked.command")?.message ?: "Change your selected title with <color:#eaff94>/title</color>."}"
         )
