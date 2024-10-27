@@ -18,39 +18,36 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
 
     var mass = 700.0f //masse kilogramm
     val rollCoefficient = 0.07f  // Rollreibungskoeffizient (angenommener Wert) abhängig von wagen und schiene
-    val crossArea = 1.4f//m2 //Querschnittsfläche 0.5 bis 1,5 in Quadratmeter damit ist die Stirnfläche gemeint
-    var velocity = 0.0f//m/s
+    val crossArea = 1.1f //Querschnittsfläche 0.5 bis 1,5 in Quadratmeter damit ist die Stirnfläche gemeint
+    var velocity = 0.0f
 
     fun simulate(trackNode: TrackNode, forward: Vector3f, up: Vector3f) {
-        val directionOfMotion = Vector(forward.x,forward.y,forward.z).multiply(sign(velocity)).normalize()
+        var force = 0.0f
+        var totalMass = 0.0f
 
-        //Nettokraft
-        var totalForce = Vector(0.0f,0.0f,0.0f)//In Newton
+        val worldUp = Vector3f(0.0f, 1.0f, 0.0f)
+        repeat(2) {
+            totalMass += mass
+            //gravity
+            val fdotUp = -forward.dot(worldUp)
+            var fg = mass * gravity
+            force += fg * fdotUp
 
-        //Gewichtskraft N
-        val gravityForce = Vector(0.0f,-gravity,0.0f).multiply(mass)
-        totalForce.add(gravityForce)
+            //roll resistance
+            val NForce = up.dot(worldUp) * gravity
+            force += -sign(velocity) * rollCoefficient * (NForce * mass)
 
-        //Normalforce
-        val normalForce = mass * gravity * up.y
+            //drag Diese Luftwiderstand steigt mit zunehmender Geschwindigkeit quadratisch an
+            val dragCoefficient = 0.6f
+            var v2 = velocity * velocity
+            force += -sign(velocity) * 0.5f * airDensity * v2 * dragCoefficient * crossArea
 
-        //Rollresistance
-        val rollingResistanceForce = directionOfMotion.clone().multiply(rollCoefficient * normalForce).multiply(-1)
-        totalForce.add(rollingResistanceForce)
+            //Winkelgeschwindigkeit
+            //TODO Zentripetalkraft  m*(v2/r) kurvenradius? wie finde ich ihn raus?
+        }
 
-        //Airdrag
-        val dragCoefficient = 0.6f
-        var v2 = velocity * velocity
-        val airDragForce = directionOfMotion.clone().multiply(0.5f * airDensity * v2 * dragCoefficient * crossArea).multiply(-1)
-        totalForce.add(airDragForce)
-
-        val forwardForceMagnitude = totalForce.dot(directionOfMotion).toFloat()
-        val acceleration = forwardForceMagnitude/mass//m/s²
-
-        velocity += acceleration * deltaTime
-
-        //Winkelgeschwindigkeit
-        //TODO Zentripetalkraft  m*(v2/r) kurvenradius? wie finde ich ihn raus?
+        val deltaTime = 0.025f
+        velocity += force * deltaTime / totalMass
 
         val segment = trackRide.findSegment(trackNode.id)
         segment.let { segment ->
@@ -59,7 +56,7 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
     }
 
     override fun update() {
-        currentPosition += velocity * deltaTime
+        currentPosition += velocity
 
         if (currentPosition < 0) {
             currentPosition += trackRide.totalLength

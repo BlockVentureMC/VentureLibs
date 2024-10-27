@@ -83,6 +83,6 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) : Attachm
 
     val passenger: Player?
         get() {
-            return itemDisplay?.passengers?.get(0) as? Player
+            return itemDisplay?.passengers?.getOrNull(0) as? Player
         }
 }

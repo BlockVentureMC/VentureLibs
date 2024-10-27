@@ -23,6 +23,11 @@ class BuildCommand : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender !is Player) return false
 
+        if (args.isNotEmpty() && args[0].equals("test", true)) {
+            sender.sendMessage("Passengers: ${sender.passengers.size} - ${sender.passengers.map { it.uniqueId }}")
+            return true
+        }
+
         sender.hasBuildTag = !sender.hasBuildTag
 
         sender.sendMessagePrefixed(

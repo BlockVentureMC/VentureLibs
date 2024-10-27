@@ -11,6 +11,7 @@ class TitleChangedEvent(val player: Player, val newTitle: Title? = null) : Event
     companion object {
         private val handlerList = HandlerList()
 
+        @JvmStatic
         fun getHandlerList(): HandlerList {
             return handlerList
         }

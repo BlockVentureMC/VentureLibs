@@ -3,6 +3,7 @@ package net.blockventuremc.modules.structures.events
 import me.m56738.smoothcoasters.api.event.PlayerSmoothCoastersHandshakeEvent
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.modules.structures.StructureManager
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Interaction
@@ -27,12 +28,20 @@ class StructureEvents: Listener {
         val passenger = event.entity
         if(passenger !is Player) return
         VentureLibs.instance.smoothCoastersAPI.resetRotation(VentureLibs.instance.networkInterface, passenger)
+
+        val trainExitEvent = TrainExitEvent(passenger, event.dismounted)
+        Bukkit.getPluginManager().callEvent(trainExitEvent)
     }
 
     @EventHandler
     fun onLeave(event: PlayerQuitEvent) {
         val player = event.player
-        player.leaveVehicle()
+
+        if (player.leaveVehicle()) {
+            val trainExitEvent = TrainExitEvent(player, player.vehicle!!)
+            Bukkit.getPluginManager().callEvent(trainExitEvent)
+        }
+
         StructureManager.balloons[player]?.let { balloon ->
             balloon.remove()
             StructureManager.balloons.remove(player)
@@ -56,6 +65,9 @@ class StructureEvents: Listener {
 
         event.isCancelled = true
         seat.addPassenger(player)
+
+        val trainEnterEvent = TrainEnterEvent(player, seat)
+        Bukkit.getPluginManager().callEvent(trainEnterEvent)
     }
 
 }
