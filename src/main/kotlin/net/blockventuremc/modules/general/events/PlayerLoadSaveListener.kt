@@ -33,12 +33,30 @@ class PlayerLoadSaveListener : Listener {
 
             Bukkit.getOnlinePlayers().forEach { RankManager.updateScoreBoardForPlayer(it) }
 
+            setTabList(player)
             player.sendActionBar(text("<green>" + "Loaded userdata..."))
 
             awardTimedTitles(player, blockUser)
         }, 10L)
 
         event.joinMessage(text("<color:#95a5a6>[ <color:#2ecc71>\uD83D\uDC49</color> ] <color:#c8d6e5>${player.name}"))
+    }
+
+    private fun setTabList(player: Player) {
+        player.sendPlayerListHeaderAndFooter(
+            text(
+                "<#ff8aff>┌                                                  <#10eefe>┐\n" +
+                "<gradient:#70b5ff:#6fbaf7>}<b>BlockVenture</b></gradient>\n" +
+                " "
+            ),
+            text(
+                " \n" +
+                "<color:#266ee0>Sᴇʀᴠᴇʀ: <color:#b2bec3>ʙʟᴏᴄᴋᴠᴇɴᴛᴜʀᴇᴍᴄ.ɴᴇᴛ\n" +
+                "<color:#266ee0>Wᴇʙsɪᴛᴇ: <color:#b2bec3>ʙʟᴏᴄᴋᴠᴇɴᴛᴜʀᴇᴍᴄ.ɴᴇᴛ\n" +
+                "<color:#266ee0>Sᴛᴏʀᴇ: <color:#b2bec3>Sᴛᴏʀᴇ.ʙʟᴏᴄᴋᴠᴇɴᴛᴜʀᴇᴍᴄ.ɴᴇᴛ\n" +
+                "<#10eefe>└                                                  <#ff8aff>┘ "
+            )
+        )
     }
 
     private fun awardTimedTitles(player: Player, blockUser: BlockUser) {
