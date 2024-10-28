@@ -1,24 +1,15 @@
 package net.blockventuremc.modules.rides.track.segments
 
 import net.blockventuremc.modules.structures.impl.Train
+import kotlin.math.abs
 
-class BreakSegment(startId: Int, endId: Int, val minspeed: Float) : TrackSegment(startId, endId) {
+class BreakSegment(startId: Int, endId: Int, var breakType: BreakType = BreakType.BLOCKBREAK, var minspeed: Float) : TrackSegment(startId, endId) {
 
-    val breakType: BreakType = BreakType.BLOCKBREAK
+    constructor(startId: Int, endId: Int) : this(startId, endId, BreakType.BLOCKBREAK, 1.0f)
 
     override fun applyForces(train: Train, deltaTime: Float) {
-
-        when (breakType) {
-            BreakType.BLOCKBREAK -> {
-                //  train.velocity = 0.0
-            }
-
-            BreakType.TRIMBREAK -> {
-                //   train.velocity = liftSpeed
-            }
-        }
-        //if(abs(train.velocity) > liftSpeed) return
-        //train.velocity = liftSpeed
+        if (abs(train.velocity) < minspeed) return
+        train.velocity /= breakType.force
     }
 
     override val type: SegmentTypes
@@ -26,9 +17,20 @@ class BreakSegment(startId: Int, endId: Int, val minspeed: Float) : TrackSegment
 
 
     enum class BreakType(val force: Float) {
-        BLOCKBREAK(0.0f), TRIMBREAK(0.0f)
+        BLOCKBREAK(1.5f), TRIMBREAK(1.1f)
     }
 
+    override fun getSaveData(): Map<String, String> {
+        return mapOf(
+            "breakType" to breakType.name,
+            "minspeed" to minspeed.toString()
+        )
+    }
+
+    override fun setSaveData(data: Map<String, String>) {
+        breakType = BreakType.entries.find { it.name.equals(data["breakType"], true) } ?: BreakType.BLOCKBREAK
+        minspeed = data["minspeed"]?.toFloat() ?: 1.0f
+    }
 }
 
 

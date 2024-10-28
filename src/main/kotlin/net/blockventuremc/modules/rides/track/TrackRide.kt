@@ -18,7 +18,7 @@ class TrackRide(val id: Int, val origin: Location) {
     val nodes = mutableListOf<TrackNode>()
     private val itemDisplays = mutableMapOf<Int, UUID>()
 
-    private val trackSegments = mutableMapOf<Pair<Int, Int>, TrackSegment>()
+    val trackSegments = mutableMapOf<Pair<Int, Int>, TrackSegment>()
 
     private var highlightedNode = -1
 
@@ -77,7 +77,7 @@ class TrackRide(val id: Int, val origin: Location) {
         recalculateSegments()
     }
 
-    private fun recalculateSegments() {
+    fun recalculateSegments() {
 
         // Calculate the total length of the track
         nodeDistance = nodes[0].position.distance(nodes[1].position)

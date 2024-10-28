@@ -14,6 +14,7 @@ import org.bukkit.entity.TextDisplay
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.vehicle.VehicleEnterEvent
 import org.bukkit.event.vehicle.VehicleExitEvent
 import org.bukkit.util.Transformation
@@ -66,7 +67,7 @@ class TitleOverheadDisplayListener : Listener {
     }
 
     @EventHandler
-    fun onPlayerQuit(event: PlayerJoinEvent) {
+    fun onPlayerQuit(event: PlayerQuitEvent) {
         val player = event.player
         textDisplays[player]?.remove()
     }

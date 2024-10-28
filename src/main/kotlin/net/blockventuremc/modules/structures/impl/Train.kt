@@ -27,7 +27,7 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
 
     var mass = 700.0f //masse kilogramm
     val rollCoefficient = 0.002f * 8.0f  // Rollreibungskoeffizient (angenommener Wert) abhängig von wagen und schiene
-    val crossArea = 2.1f//m2 //Querschnittsfläche 0.5 bis 1,5 in Quadratmeter damit ist die Stirnfläche gemeint
+    val crossArea = 1.5f//m2 //Querschnittsfläche 0.5 bis 1,5 in Quadratmeter damit ist die Stirnfläche gemeint
     var velocity = 0.0f//m/s
     private var ticksLived = 0
 
@@ -63,11 +63,8 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
         //proiziert die forces auf die direction of motion
         val forwardForceMagnitude = totalForce.dot(Vector(forward.x, forward.y,forward.z)).toFloat()
 
-        //2 newtonsche gesetz a = F/m
-        val acceleration = forwardForceMagnitude / mass//m/s²
-
        // v = u + at
-        velocity += acceleration * deltaTime
+        applyForce(forwardForceMagnitude)
 
         //Winkelgeschwindigkeit
         //TODO Zentripetalkraft  m*(v2/r) kurvenradius? wie finde ich ihn raus?
@@ -76,6 +73,13 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
         segment.let { segment ->
             segment?.applyForces(this, deltaTime)
         }
+    }
+
+    //2 newtonsche gesetz a = F/m
+    fun applyForce(newtonForce: Float) {
+        val acceleration = newtonForce / mass//m/s²
+        // v = u + at
+        velocity += acceleration * deltaTime
     }
 
     override fun update() {

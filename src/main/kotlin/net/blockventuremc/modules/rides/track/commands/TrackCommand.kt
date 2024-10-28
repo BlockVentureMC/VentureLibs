@@ -8,8 +8,13 @@ import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.modules.general.events.custom.toVentureLocation
 import net.blockventuremc.modules.rides.track.Nl2Importer
 import net.blockventuremc.modules.rides.track.TrackManager
+import net.blockventuremc.modules.rides.track.segments.AccelerationSegment
+import net.blockventuremc.modules.rides.track.segments.BreakSegment
+import net.blockventuremc.modules.rides.track.segments.BreakSegment.BreakType
+import net.blockventuremc.modules.rides.track.segments.LaunchSegment
 import net.blockventuremc.modules.rides.track.segments.LiftSegment
 import net.blockventuremc.modules.rides.track.segments.SegmentTypes
+import net.blockventuremc.modules.rides.track.segments.StationSegment
 import net.blockventuremc.modules.rides.track.segments.TrackSegment
 import net.blockventuremc.modules.structures.Animation
 import net.blockventuremc.modules.structures.Attachment
@@ -215,22 +220,48 @@ class TrackCommand : CommandExecutor, TabExecutor {
             }
 
             SegmentTypes.LAUNCH -> {
+                val value = args[5].toFloatOrNull() ?: run {
+                    sender.sendMessage("Invalid acceleration (m/s²) value")
+                    return
+                }
+                trackSegment = LaunchSegment(nodeIdStart, nodeIdEnd, value)
+                sender.sendMessage("new Launch Segment")
             }
 
             SegmentTypes.BRAKE -> {
+                val breakType = BreakType.entries.find { it.name.equals(args[5], true) } ?: run {
+                    sender.sendMessage("Invalid break type (blockbreak, trimbreak)")
+                    return
+                }
+                val minspeed = args[6].toFloatOrNull() ?: run {
+                    sender.sendMessage("Invalid minspeed value")
+                    return
+                }
 
+                trackSegment = BreakSegment(nodeIdStart, nodeIdEnd, breakType, minspeed)
+                sender.sendMessage("new Break Segment")
             }
 
             SegmentTypes.STATION -> {
-
+                val stationSpeed = args[5].toFloatOrNull() ?: run {
+                    sender.sendMessage("Invalid station speed value")
+                    return
+                }
+                trackSegment = StationSegment(nodeIdStart, nodeIdEnd, stationSpeed)
+                sender.sendMessage("new Station Segment")
             }
 
             SegmentTypes.ACCELERATION -> {
-
+                val value = args[5].toFloatOrNull() ?: run {
+                    sender.sendMessage("Invalid fixedSpeed (m/s) value")
+                    return
+                }
+                trackSegment = AccelerationSegment(nodeIdStart, nodeIdEnd, value)
+                sender.sendMessage("new Acceleration Segment")
             }
 
-            else -> {
-
+            SegmentTypes.HIGHLIGHTED -> {
+                // No action required
             }
         }
         if (trackSegment == null) {
@@ -238,6 +269,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
             return
         }
 
+        TrackManager.saveTrack(track)
         track.setSegmentType(nodeIdStart, nodeIdEnd, trackSegment)
     }
 
@@ -285,8 +317,9 @@ class TrackCommand : CommandExecutor, TabExecutor {
             return
         }
 
-        TrackManager.tracks[trackId] = Nl2Importer(file, trackId, sender.location).import()
-        TrackManager.saveTrack(trackId, sender.location.toVentureLocation())
+        val trackRide = Nl2Importer(file, trackId, sender.location).import()
+        TrackManager.tracks[trackId] = trackRide
+        TrackManager.saveTrack(trackRide)
         sender.sendMessage("Track $trackId imported.")
         performShowTrack(sender, trackId)
     }
