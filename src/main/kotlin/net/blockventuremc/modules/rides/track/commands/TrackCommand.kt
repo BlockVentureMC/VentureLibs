@@ -394,8 +394,8 @@ class TrackCommand : CommandExecutor, TabExecutor {
 
         val train = Train("train", track, 0.0)
 
-        repeat(4) {
-            val cart = Cart(2.0f, 0.3f)
+        repeat(5) {
+            val cart = Cart(2.3f, 0.5f)
             cart.addChild(
                 ItemAttachment(
                     "base",
@@ -430,10 +430,6 @@ class TrackCommand : CommandExecutor, TabExecutor {
 
                     val spin = crossProduct.dot(Vector(0.0, 1.0, 0.0)) * -4.0f
 
-                    Bukkit.getOnlinePlayers().forEach { player ->
-                        player.sendActionBar("spin: $spin")
-                    }
-
                     rotationVelocity += spin
                     rotationVelocity *= 0.99f
 
@@ -460,7 +456,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
             .filter { it.trackRide.id == trackId }
         trains.forEach { train ->
             train.remove()
-            StructureManager.structures.remove(train.uuid)
+            StructureManager.trains.remove(train.uuid)
         }
         sender.sendMessage("Trains despawned on Track $trackId.")
     }

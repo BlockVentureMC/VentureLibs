@@ -34,7 +34,6 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) :
             teleportDuration = 3
             interpolationDuration = 3
             itemDisplayTransform = ItemDisplay.ItemDisplayTransform.HEAD
-            setItemStack(ItemStack(Material.ACACIA_WOOD))
             isCustomNameVisible = false
             customName = "seat"
             var transform = transformation

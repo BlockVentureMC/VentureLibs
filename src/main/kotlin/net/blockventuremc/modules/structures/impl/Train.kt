@@ -5,11 +5,13 @@ import net.blockventuremc.extensions.remap
 import net.blockventuremc.modules.rides.track.TrackNode
 import net.blockventuremc.modules.rides.track.TrackRide
 import net.blockventuremc.modules.structures.deltaTime
+import org.bukkit.util.Vector
 import java.util.UUID
 import kotlin.math.abs
 import kotlin.collections.mutableListOf
+import kotlin.math.sign
 
-class Train(name: String, val trackRide: TrackRide, val startPosition: Double = 0.0) {
+class Train(name: String, val trackRide: TrackRide, var startPosition: Double = 0.0) {
 
     val uuid = UUID.randomUUID()
 
@@ -87,9 +89,13 @@ class Train(name: String, val trackRide: TrackRide, val startPosition: Double = 
 
     fun initialize() {
         //var cartPosition = currentPosition
+        if(startPosition == 0.0) {
+            startPosition += carts.sumOf { it.cartLength.toDouble() + it.cartDistance.toDouble() }.toFloat()
+        }
+        currentPosition = startPosition
         carts.forEach { cart ->
             cart.world = trackRide.origin.world
-            val trackNode = trackNodeAtDistance(startPosition)
+            val trackNode = trackNodeAtDistance(currentPosition)
             cart.position = trackRide.origin.toVector().add(trackNode.position)
             cart.initialize()
         }
@@ -101,10 +107,20 @@ class Train(name: String, val trackRide: TrackRide, val startPosition: Double = 
         }
     }
 
+    fun adjustPosition(position: Float): Float {
+        var p = position
+        if (position <= 0) {
+            return p + trackRide.totalLength.toFloat()
+        } else if (position >= trackRide.totalLength) {
+            return p % trackRide.totalLength.toFloat()
+        }
+        return position
+    }
+
     fun update() {
         ticksLived++
-        currentPosition += velocity * deltaTime
 
+        currentPosition += velocity * deltaTime
         if (currentPosition < 0) {
             currentPosition += trackRide.totalLength
         } else if (currentPosition >= trackRide.totalLength) {
@@ -113,11 +129,11 @@ class Train(name: String, val trackRide: TrackRide, val startPosition: Double = 
 
         var cartPosition = currentPosition
 
-        var netforce = 0.0f
-        var totalMass = 0.0f
+        var resultVelocity = 0.0f
+        val velocityDir = if (velocity < 0) -1 else 1// sign(velocity)
+        val v = velocity
 
         carts.forEach { cart ->
-            totalMass += cart.mass
             val trackNode = trackNodeAtDistance(cartPosition)
             val front = trackNode.frontVector.toVector3f().normalize()
             val up = trackNode.upVector.toVector3f().normalize()
@@ -125,33 +141,21 @@ class Train(name: String, val trackRide: TrackRide, val startPosition: Double = 
             cart.front = front
             cart.up = up
             cart.left = left
-            cart.currentPosition = cartPosition
 
-            val trackLength = trackRide.totalLength
-            if (currentPosition < 0) {
-                currentPosition += trackLength
-            } else if (currentPosition >= trackLength) {
-                currentPosition %= trackLength
-            }
+            // simulation
+            val velocity = cart.simulate(trackNode, velocityDir,v)
+            resultVelocity += velocity * (1.0f / (carts.size + 1.0f))
 
             //position update
+
             cart.rotationQuaternion = createQuaternionFromVectors(front, left, up)
             cart.position = trackRide.origin.toVector().add(trackNode.position)
             cart.update()
 
-            //force simulation
-            val force = cart.simulate(trackNode, front, up)
-            netforce += force
-
-            cartPosition -= cart.cartLength + cart.cartDistance
+            cartPosition -= adjustPosition(cart.cartLength + cart.cartDistance)
         }
 
-        //2 newtonsche gesetz a = F/m
-        val acceleration = netforce / totalMass//m/s²
-        // v = u + at
-        velocity += acceleration * deltaTime
-
-        sounds()
+        velocity += resultVelocity
     }
 
     fun sounds() {
