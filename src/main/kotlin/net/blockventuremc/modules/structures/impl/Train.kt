@@ -152,7 +152,12 @@ class Train(name: String, val trackRide: TrackRide, var startPosition: Double = 
             cart.position = trackRide.origin.toVector().add(trackNode.position)
             cart.update()
 
-            cartPosition -= adjustPosition(cart.cartLength + cart.cartDistance)
+            cartPosition -= cart.cartLength + cart.cartDistance
+            if (cartPosition < 0) {
+                cartPosition += trackRide.totalLength.toFloat()
+            } else if (cartPosition >= trackRide.totalLength) {
+                cartPosition %= trackRide.totalLength.toFloat()
+            }
         }
 
         velocity += resultVelocity

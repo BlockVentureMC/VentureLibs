@@ -139,15 +139,15 @@ class TrackCommand : CommandExecutor, TabExecutor {
             }
 
             "spawn" -> {
-                if (args.size != 2) {
-                    sender.sendMessage("Usage: /track spawn <trackId>")
+                if (args.size != 3) {
+                    sender.sendMessage("Usage: /track spawn <name> <trackId>")
                     return true
                 }
-                val trackId = args[1].toIntOrNull() ?: run {
+                val trackId = args[2].toIntOrNull() ?: run {
                     sender.sendMessage("Invalid track ID.")
                     return true
                 }
-                performSpawnTrainOnTrack(sender, trackId)
+                performSpawnTrainOnTrack(sender, trackId, args[1])
             }
 
             "despawn" -> {
@@ -385,15 +385,41 @@ class TrackCommand : CommandExecutor, TabExecutor {
         sender.sendMessage("Distance between nodes 0 and 1 is ${track.nodeDistance} meters. Total Length of ${track.totalLength}")
     }
 
-    private fun performSpawnTrainOnTrack(sender: Player, trackId: Int) {
+    private fun performSpawnTrainOnTrack(sender: Player, trackId: Int, name: String) {
         val track = TrackManager.tracks[trackId] ?: run {
             sender.sendMessage("Track $trackId does not exist.")
             return
         }
 
-
-        val train = Train("train", track, 0.0)
-
+        val train = Train(name, track, 0.0)
+        when (name) {
+            "train1" -> {
+                val frontCart = Cart(1.2f, 0.4f)
+                frontCart.addChild(
+                    ItemAttachment(
+                        "base",
+                        ItemBuilder(Material.DIAMOND_SWORD).customModelData(122).build(),
+                        Vector(0.0, 0.9, 0.0),
+                        Vector()
+                    )
+                )
+                train.addCart(frontCart)
+                repeat(5) {
+                    val cart = Cart(1.2f, 0.4f)
+                    cart.addChild(
+                        ItemAttachment(
+                            "base",
+                            ItemBuilder(Material.DIAMOND_SWORD).customModelData(125).build(),
+                            Vector(0.0, 0.9, 0.0),
+                            Vector()
+                        )
+                    )
+                    cart.addChild(Seat("seat1", Vector(0.4, 0.7, 0.0), Vector()))
+                    cart.addChild(Seat("seat2", Vector(-0.4, 0.7, 0.0), Vector()))
+                    train.addCart(cart)
+                }
+            }
+            "spin" -> {
         repeat(5) {
             val cart = Cart(2.3f, 0.5f)
             cart.addChild(
@@ -439,6 +465,12 @@ class TrackCommand : CommandExecutor, TabExecutor {
             }
             train.addCart(cart)
         }
+            }
+        }
+        if(train.carts.isEmpty()) {
+            sender.sendMessage("No carts found ohoh!")
+            return
+        }
 
         train.initialize()
         StructureManager.trains[train.uuid] = train
@@ -482,7 +514,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
                 "speed"
             ).filter { it.startsWith(args[0]) }
 
-            2 -> when (args[0]) {
+            2 -> when(args[0]) {
                 "show", "hide", "select", "segment", "spawn", "despawn", "placeblocks" -> TrackManager.tracks.keys.map { it.toString() }
                     .filter { it.startsWith(args[1]) }
 
