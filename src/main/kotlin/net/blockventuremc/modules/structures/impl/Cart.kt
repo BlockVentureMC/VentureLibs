@@ -12,7 +12,6 @@ import org.joml.Matrix4f
 import org.joml.Quaternionf
 import org.joml.Vector3f
 import kotlin.math.abs
-import kotlin.math.sign
 
 class Cart(val cartLength: Float, val cartDistance: Float) :
     RootAttachment("cart") {
@@ -22,14 +21,14 @@ class Cart(val cartLength: Float, val cartDistance: Float) :
     var rotationQuaternion = Quaternionf()
 
     var mass = 700.0f //masse kilogramm
-    val rollCoefficient = 0.002f * 4.0f  // Rollreibungskoeffizient (angenommener Wert) abhängig von wagen und schiene
+    val rollCoefficient = 0.002f * 1.0f  // Rollreibungskoeffizient (angenommener Wert) abhängig von wagen und schiene
     val crossArea = 1.5f//m2 //Querschnittsfläche 0.5 bis 1,5 in Quadratmeter damit ist die Stirnfläche gemeint
 
     var front = Vector3f()
     var up = Vector3f()
     var left = Vector3f()
 
-    fun simulate(trackNode: TrackNode, dirMotion: Int, velocity: Float): Float {
+    fun simulate(trackNode: TrackNode, dirMotion: Float, velocity: Float): Float {
         val directionOfMotion = Vector(front.x, front.y, front.z).multiply(dirMotion)
 
         //Nettokraft alle forces in Newton

@@ -5,7 +5,6 @@ import net.blockventuremc.extensions.remap
 import net.blockventuremc.modules.rides.track.TrackNode
 import net.blockventuremc.modules.rides.track.TrackRide
 import net.blockventuremc.modules.structures.deltaTime
-import org.bukkit.util.Vector
 import java.util.UUID
 import kotlin.math.abs
 import kotlin.collections.mutableListOf
@@ -130,10 +129,10 @@ class Train(name: String, val trackRide: TrackRide, var startPosition: Double = 
         var cartPosition = currentPosition
 
         var resultVelocity = 0.0f
-        val velocityDir = if (velocity < 0) -1 else 1// sign(velocity)
+        val velocityDir = sign(velocity) //if (velocity < 0) -1 else 1//
         val v = velocity
 
-        carts.forEach { cart ->
+        carts.forEachIndexed  { i,cart ->
             val trackNode = trackNodeAtDistance(cartPosition)
             val front = trackNode.frontVector.toVector3f().normalize()
             val up = trackNode.upVector.toVector3f().normalize()
@@ -144,6 +143,14 @@ class Train(name: String, val trackRide: TrackRide, var startPosition: Double = 
 
             // simulation
             val velocity = cart.simulate(trackNode, velocityDir,v)
+
+            if(i == 0) {
+                val segment = trackRide.findSegment(trackNode.id)
+                segment.let { segment ->
+                    segment?.applyForces(this, deltaTime)
+                }
+            }
+
             resultVelocity += velocity * (1.0f / (carts.size + 1.0f))
 
             //position update

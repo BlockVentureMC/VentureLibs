@@ -394,7 +394,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
         val train = Train(name, track, 0.0)
         when (name) {
             "train1" -> {
-                val frontCart = Cart(1.2f, 0.4f)
+                val frontCart = Cart(1.2f, 0.8f)
                 frontCart.addChild(
                     ItemAttachment(
                         "base",
@@ -404,18 +404,20 @@ class TrackCommand : CommandExecutor, TabExecutor {
                     )
                 )
                 train.addCart(frontCart)
-                repeat(5) {
-                    val cart = Cart(1.2f, 0.4f)
+                repeat(5) { i -> //122 red
+                    val cart = Cart(1.2f, 0.53f)
+                    var itemId = if (i == 0) 123 else 124
+                    if(i == 4 || i == 1) itemId = 125
                     cart.addChild(
                         ItemAttachment(
                             "base",
-                            ItemBuilder(Material.DIAMOND_SWORD).customModelData(125).build(),
+                            ItemBuilder(Material.DIAMOND_SWORD).customModelData(itemId).build(),
                             Vector(0.0, 0.9, 0.0),
                             Vector()
                         )
                     )
-                    cart.addChild(Seat("seat1", Vector(0.4, 0.7, 0.0), Vector()))
-                    cart.addChild(Seat("seat2", Vector(-0.4, 0.7, 0.0), Vector()))
+                    cart.addChild(Seat("seat1", Vector(0.4, 0.4, 0.0), Vector()))
+                    cart.addChild(Seat("seat2", Vector(-0.4, 0.4, 0.0), Vector()))
                     train.addCart(cart)
                 }
             }
