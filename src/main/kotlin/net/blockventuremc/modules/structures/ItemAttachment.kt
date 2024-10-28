@@ -17,8 +17,8 @@ class ItemAttachment(name: String, val item: ItemStack, localPosition: Vector, l
         itemDisplay = location.world.spawnEntity(location, EntityType.ITEM_DISPLAY) as ItemDisplay
         itemDisplay?.apply {
             shadowStrength = 0.0f
-            teleportDuration = 2
-            interpolationDuration = 2
+            teleportDuration = 3
+            interpolationDuration = 3
             itemDisplayTransform = ItemDisplay.ItemDisplayTransform.HEAD
             setItemStack(item)
             isCustomNameVisible = false

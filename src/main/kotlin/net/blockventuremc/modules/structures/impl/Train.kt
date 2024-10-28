@@ -4,38 +4,39 @@ import net.blockventuremc.extensions.createQuaternionFromVectors
 import net.blockventuremc.extensions.remap
 import net.blockventuremc.modules.rides.track.TrackNode
 import net.blockventuremc.modules.rides.track.TrackRide
-import net.blockventuremc.modules.structures.CustomEntity
-import net.blockventuremc.modules.structures.airDensity
 import net.blockventuremc.modules.structures.deltaTime
-import net.blockventuremc.modules.structures.gravity
-import org.bukkit.Bukkit
-import org.bukkit.Location
-import org.bukkit.Sound
-import org.bukkit.World
-import org.bukkit.util.Vector
-import org.joml.Matrix4f
-import org.joml.Quaternionf
-import org.joml.Vector3f
+import java.util.UUID
 import kotlin.math.abs
-import kotlin.math.pow
+import kotlin.collections.mutableListOf
 
-class Train(name: String, val trackRide: TrackRide, world: World, position: Vector, rotation: Vector) :
-    CustomEntity(name, world, position, rotation) {
+class Train(name: String, val trackRide: TrackRide, val startPosition: Double = 0.0) {
 
+    val uuid = UUID.randomUUID()
+
+    val carts: MutableList<Cart> = mutableListOf()
     var currentPosition = 0.0
-    var rotationQuaternion = Quaternionf()
-
-    var mass = 700.0f //masse kilogramm
-    val rollCoefficient = 0.002f * 8.0f  // Rollreibungskoeffizient (angenommener Wert) abhängig von wagen und schiene
-    val crossArea = 1.5f//m2 //Querschnittsfläche 0.5 bis 1,5 in Quadratmeter damit ist die Stirnfläche gemeint
+    var ticksLived = 0
     var velocity = 0.0f//m/s
-    private var ticksLived = 0
 
-    var front = Vector3f()
-    var up = Vector3f()
-    var left = Vector3f()
+    fun addCart(cart: Cart) {
+        cart.train = this
+        carts.add(cart)
+    }
 
-    fun simulate(trackNode: TrackNode, forward: Vector3f, up: Vector3f) {
+    fun addCarts(carts: List<Cart>) {
+        carts.forEach { cart ->
+            cart.train = this
+        }
+        this.carts.addAll(carts)
+    }
+
+    val totalLength: Float
+        get() {
+            return carts.sumOf { it.cartLength.toDouble() + it.cartDistance.toDouble() }.toFloat()
+        }
+
+    /*
+    fun oldsimulate(trackNode: TrackNode, forward: Vector3f, up: Vector3f) {
 
         val directionOfMotion = Vector(forward.x, forward.y, forward.z).multiply(if (velocity < 0) -1 else 1)
 
@@ -43,10 +44,10 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
         var totalForce = Vector(0.0f, 0.0f, 0.0f)//In Newton
 
         //Gewichtskraft N
-        val gravityForce = Vector(0.0f, -gravity * mass, 0.0f)
+        val gravityForce = Vector(0.0f, -gravity * totalMass, 0.0f)
         totalForce.add(gravityForce)
 
-        val normalForce = mass * gravity * Vector(0.0f,1.0f,0.0f).dot(Vector(up.x, up.y, up.z))
+        val normalForce = totalMass * gravity * Vector(0.0f,1.0f,0.0f).dot(Vector(up.x, up.y, up.z))
 
         //Rollresistance
         val k = 0.005f//EmpirischerKoeffizient
@@ -74,15 +75,33 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
             segment?.applyForces(this, deltaTime)
         }
     }
-
-    //2 newtonsche gesetz a = F/m
+ //2 newtonsche gesetz a = F/m
     fun applyForce(newtonForce: Float) {
-        val acceleration = newtonForce / mass//m/s²
+        val acceleration = newtonForce / totalMass//m/s²
         // v = u + at
         velocity += acceleration * deltaTime
     }
+     */
 
-    override fun update() {
+
+
+    fun initialize() {
+        //var cartPosition = currentPosition
+        carts.forEach { cart ->
+            cart.world = trackRide.origin.world
+            val trackNode = trackNodeAtDistance(startPosition)
+            cart.position = trackRide.origin.toVector().add(trackNode.position)
+            cart.initialize()
+        }
+    }
+
+    fun remove() {
+        carts.forEach { cart ->
+            cart.despawnAttachmentsRecurse()
+        }
+    }
+
+    fun update() {
         ticksLived++
         currentPosition += velocity * deltaTime
 
@@ -92,20 +111,47 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
             currentPosition %= trackRide.totalLength
         }
 
-        val trackNode = trackNodeAtDistance(currentPosition)
+        var cartPosition = currentPosition
 
-        front = trackNode.frontVector.toVector3f().normalize()
-        up = trackNode.upVector.toVector3f().normalize()
-        left = trackNode.leftVector.toVector3f().normalize()
+        var netforce = 0.0f
+        var totalMass = 0.0f
 
-        simulate(trackNode, front, up)
+        carts.forEach { cart ->
+            totalMass += cart.mass
+            val trackNode = trackNodeAtDistance(cartPosition)
+            val front = trackNode.frontVector.toVector3f().normalize()
+            val up = trackNode.upVector.toVector3f().normalize()
+            val left = trackNode.leftVector.toVector3f().normalize()
+            cart.front = front
+            cart.up = up
+            cart.left = left
+            cart.currentPosition = cartPosition
 
-        rotationQuaternion = createQuaternionFromVectors(front, left, up)
-        position = trackRide.origin.toVector().add(trackNode.position)
+            val trackLength = trackRide.totalLength
+            if (currentPosition < 0) {
+                currentPosition += trackLength
+            } else if (currentPosition >= trackLength) {
+                currentPosition %= trackLength
+            }
+
+            //position update
+            cart.rotationQuaternion = createQuaternionFromVectors(front, left, up)
+            cart.position = trackRide.origin.toVector().add(trackNode.position)
+            cart.update()
+
+            //force simulation
+            val force = cart.simulate(trackNode, front, up)
+            netforce += force
+
+            cartPosition -= cart.cartLength + cart.cartDistance
+        }
+
+        //2 newtonsche gesetz a = F/m
+        val acceleration = netforce / totalMass//m/s²
+        // v = u + at
+        velocity += acceleration * deltaTime
 
         sounds()
-
-        super.update()
     }
 
     fun sounds() {
@@ -113,16 +159,9 @@ class Train(name: String, val trackRide: TrackRide, world: World, position: Vect
         if(ticksLived % 2 == 0) {
             val volume = remap(abs(velocity), 2.0f,30.0f,0.0f,1.0f)
             val pitch = remap(abs(velocity), 2.0f,30.0f,0.1f,1.2f)
-            world.playSound(Location(world, position.x, position.y, position.z), Sound.ENTITY_BREEZE_CHARGE, volume, pitch)
+            //world.playSound(Location(world, position.x, position.y, position.z), Sound.ENTITY_BREEZE_CHARGE, volume, pitch)
         }
     }
-
-    override val localTransform: Matrix4f
-        get() {
-            var matrix = Matrix4f().translate(localPosition.toVector3f())
-            matrix.rotate(rotationQuaternion)
-            return matrix
-        }
 
     fun trackNodeAtDistance(distance: Double): TrackNode {
         val totalNodes = trackRide.nodes.size - 1

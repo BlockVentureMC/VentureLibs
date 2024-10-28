@@ -20,6 +20,7 @@ import net.blockventuremc.modules.structures.Animation
 import net.blockventuremc.modules.structures.Attachment
 import net.blockventuremc.modules.structures.ItemAttachment
 import net.blockventuremc.modules.structures.StructureManager
+import net.blockventuremc.modules.structures.impl.Cart
 import net.blockventuremc.modules.structures.impl.Seat
 import net.blockventuremc.modules.structures.impl.Train
 import net.blockventuremc.utils.itembuilder.ItemBuilder
@@ -371,7 +372,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
     }
 
     private fun performDebugSpeed(sender: Player, velocity: Float) {
-        val first = StructureManager.structures.values.last() as Train
+        val first = StructureManager.trains.values.last()
         first.velocity = velocity
         sender.sendMessage("Velocity $velocity")
     }
@@ -389,56 +390,62 @@ class TrackCommand : CommandExecutor, TabExecutor {
             sender.sendMessage("Track $trackId does not exist.")
             return
         }
-        val train = Train("train", track, sender.world, sender.location.toVector(), BlockVector(0.0, 0.0, 0.0))
 
-        train.addChild(
-            ItemAttachment(
-                "base",
-                ItemBuilder(Material.DIAMOND_SWORD).customModelData(100).build(),
-                Vector(0.0, 0.4, 0.0),
-                Vector()
+
+        val train = Train("train", track, 0.0)
+
+        repeat(4) {
+            val cart = Cart(2.0f, 0.3f)
+            cart.addChild(
+                ItemAttachment(
+                    "base",
+                    ItemBuilder(Material.DIAMOND_SWORD).customModelData(100).build(),
+                    Vector(0.0, 0.4, 0.0),
+                    Vector()
+                )
             )
-        )
-        val rotator = Attachment("rotator", Vector(), Vector())
-        train.addChild(rotator)
+            val rotator = Attachment("rotator", Vector(), Vector())
+            cart.addChild(rotator)
 
-        rotator.addChild(Seat("seat1", Vector(0.39, 0.6, 0.3), Vector()))
-        rotator.addChild(Seat("seat2", Vector(-0.39, 0.6, 0.3), Vector()))
-        rotator.addChild(Seat("seat3", Vector(0.39, 0.6, -0.3), Vector()))
-        rotator.addChild(Seat("seat4", Vector(-0.39, 0.6, -0.3), Vector()))
+            rotator.addChild(Seat("seat1", Vector(0.39, 0.6, 0.3), Vector()))
+            rotator.addChild(Seat("seat2", Vector(-0.39, 0.6, 0.3), Vector()))
+            rotator.addChild(Seat("seat3", Vector(0.39, 0.6, -0.3), Vector()))
+            rotator.addChild(Seat("seat4", Vector(-0.39, 0.6, -0.3), Vector()))
 
-        rotator.addChild(
-            ItemAttachment(
-                "model",
-                ItemBuilder(Material.DIAMOND_SWORD).customModelData(99).build(),
-                Vector(0.0, 1.0, 0.0),
-                Vector()
+            rotator.addChild(
+                ItemAttachment(
+                    "model",
+                    ItemBuilder(Material.DIAMOND_SWORD).customModelData(99).build(),
+                    Vector(0.0, 1.0, 0.0),
+                    Vector()
+                )
             )
-        )
 
-        train.animation = object : Animation() {
-            var prevDirection = Vector(0,1,0)
-            var rotationVelocity = 0.0
-            override fun animate() {
-                val direction = Vector(train.front.x, train.front.y, train.front.z)
-                val crossProduct = prevDirection.crossProduct(direction)
+            cart.animation = object : Animation() {
+                var prevDirection = Vector(0, 1, 0)
+                var rotationVelocity = 0.0
+                override fun animate() {
+                    val direction = Vector(cart.front.x, cart.front.y, cart.front.z)
+                    val crossProduct = prevDirection.crossProduct(direction)
 
-                val spin = crossProduct.dot(Vector(0.0, 1.0, 0.0)) * -4.0f
+                    val spin = crossProduct.dot(Vector(0.0, 1.0, 0.0)) * -4.0f
 
-                Bukkit.getOnlinePlayers().forEach { player ->
-                    player.sendActionBar("spin: $spin")
+                    Bukkit.getOnlinePlayers().forEach { player ->
+                        player.sendActionBar("spin: $spin")
+                    }
+
+                    rotationVelocity += spin
+                    rotationVelocity *= 0.99f
+
+                    rotator.localRotation.add(Vector(0.0, rotationVelocity, 0.0))
+                    prevDirection = direction.clone()
                 }
-
-                rotationVelocity += spin
-                rotationVelocity *= 0.99f
-
-                rotator.localRotation.add(Vector(0.0, rotationVelocity, 0.0))
-                prevDirection = direction.clone()
             }
+            train.addCart(cart)
         }
 
         train.initialize()
-        StructureManager.structures[train.uuid] = train
+        StructureManager.trains[train.uuid] = train
 
         sender.sendMessage("Train spawned on Track $trackId.")
 
@@ -449,10 +456,10 @@ class TrackCommand : CommandExecutor, TabExecutor {
             sender.sendMessage("Track $trackId does not exist.")
             return
         }
-        val trains = StructureManager.structures.filter { it.value is Train }.map { it.value as Train }
+        val trains = StructureManager.trains.map { it.value }
             .filter { it.trackRide.id == trackId }
         trains.forEach { train ->
-            train.despawnAttachmentsRecurse()
+            train.remove()
             StructureManager.structures.remove(train.uuid)
         }
         sender.sendMessage("Trains despawned on Track $trackId.")

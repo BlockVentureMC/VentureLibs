@@ -20,7 +20,7 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) :
     var interaction: Interaction? = null
     var dynamic = false
 
-    val offset = 0.7//0.53
+    val offset = 0.8//0.53
 
     init {
         localPosition.add(Vector(0.0, offset, 0.0))
@@ -31,8 +31,8 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) :
         itemDisplay = location.world.spawnEntity(location, EntityType.ITEM_DISPLAY) as ItemDisplay
         itemDisplay?.apply {
             shadowStrength = 0.0f
-            teleportDuration = 2
-            interpolationDuration = 2
+            teleportDuration = 3
+            interpolationDuration = 3
             itemDisplayTransform = ItemDisplay.ItemDisplayTransform.HEAD
             setItemStack(ItemStack(Material.ACACIA_WOOD))
             isCustomNameVisible = false

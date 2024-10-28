@@ -10,7 +10,7 @@ open class Attachment(
     var localRotation: Vector
 ) {
 
-    lateinit var root: CustomEntity
+    lateinit var root: RootAttachment
 
     var parent: Attachment? = null
     private val children: MutableMap<String, Attachment> = HashMap()
@@ -18,7 +18,7 @@ open class Attachment(
     var worldTransform = Matrix4f()
 
     fun addChild(child: Attachment) {
-        if (this is CustomEntity) {
+        if (this is RootAttachment) {
             child.root = this
         } else {
             child.root = this.root
