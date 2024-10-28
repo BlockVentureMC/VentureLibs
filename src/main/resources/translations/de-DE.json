@@ -71,5 +71,8 @@
     "booster.category.user_activated": "Spielerbooster",
     "discord.commands.link.name": "link",
     "discord.commands.link.option.username.name": "nutzername",
-    "discord.commands.players.name": "spieler"
+    "discord.commands.players.name": "spieler",
+    "title.one_year_visitor.display": "<#dff9fb>Einjähriger Besucher",
+    "title.one_year_visitor.description": "Du bist schon seit über einem Jahr auf dem Server.",
+    "title.two_year_visitor.display": "<#dff9fb>Zweijähriger Besucher"
 }
