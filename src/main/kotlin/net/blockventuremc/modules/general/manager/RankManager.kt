@@ -4,6 +4,7 @@ import dev.fruxz.stacked.text
 import net.blockventuremc.database.functions.getLinkOfDiscord
 import net.blockventuremc.database.functions.getLinkOfUser
 import net.blockventuremc.extensions.getLogger
+import net.blockventuremc.extensions.toFixedString
 import net.blockventuremc.modules.general.model.Rank
 import net.blockventuremc.utils.mcasyncBlocking
 import net.kyori.adventure.text.format.NamedTextColor
@@ -58,7 +59,7 @@ object RankManager {
             getLogger().info("Loaded rank ${rank.name}")
         }
 
-        ranks = ranks.sortedBy { it.weight }
+        ranks = ranks.sortedByDescending { it.weight }
         Bukkit.getOnlinePlayers().forEach { updateScoreBoardForPlayer(it) }
 
         getLogger().info("Loaded ${ranks.size} ranks")
@@ -121,7 +122,7 @@ object RankManager {
 
     fun initScoreBoard(scoreboard: Scoreboard) {
         ranks.forEach { rank ->
-            val team = scoreboard.getTeam(rank.weight.toString()) ?: scoreboard.registerNewTeam(rank.weight.toString())
+            val team = scoreboard.getTeam(rank.weight.toFixedString()) ?: scoreboard.registerNewTeam(rank.weight.toFixedString())
             team.prefix(text("<color:${rank.color}>${rank.displayName}</color> <#3d3d3d>● <#c8d6e5>"))
             team.color(NamedTextColor.WHITE)
         }
@@ -139,7 +140,7 @@ object RankManager {
     private fun setPlayerInScoreboard(player: Player, scoreBoard: Scoreboard) {
         val userRank = getRankOfUser(player.uniqueId)
         val team =
-            scoreBoard.getTeam(userRank.weight.toString()) ?: scoreBoard.registerNewTeam(userRank.weight.toString())
+            scoreBoard.getTeam(userRank.weight.toFixedString()) ?: scoreBoard.registerNewTeam(userRank.weight.toFixedString())
         team.addEntry(player.name)
     }
 }

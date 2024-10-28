@@ -16,3 +16,8 @@ fun <T : Any> T.nullIf(condition: (T) -> Boolean): T? {
 val DiscordLocale.code: String
     get() = Languages.entries.firstOrNull { it.locale == this.toLocale() }?.getLanguageCode()
         ?: throw IllegalArgumentException("Locale $this is not supported")
+
+
+fun Int.toFixedString(digits: Int = 3): String {
+    return this.toString().padStart(digits, '0')
+}
