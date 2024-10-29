@@ -47,7 +47,7 @@ class BalloonCommand : CommandExecutor {
             StructureManager.balloons.remove(player)
         }
 
-        val balloon = Balloon(player, item)
+        val balloon = ItemBalloon(player, item)
         balloon.stiffness = 0.02
         balloon.damping = 0.91
         balloon.ydamping = 0.91

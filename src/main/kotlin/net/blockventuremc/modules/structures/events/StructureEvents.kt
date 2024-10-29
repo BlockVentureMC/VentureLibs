@@ -33,9 +33,10 @@ class StructureEvents : Listener {
     fun onLeave(event: PlayerQuitEvent) {
         val player = event.player
 
-        if (player.leaveVehicle()) {
+        if(player.isInsideVehicle) {
             val trainExitEvent = TrainExitEvent(player, player.vehicle!!)
             Bukkit.getPluginManager().callEvent(trainExitEvent)
+            player.leaveVehicle()
         }
 
         StructureManager.balloons[player]?.let { balloon ->
