@@ -14,11 +14,13 @@ import org.bukkit.NamespacedKey
 import org.bukkit.OfflinePlayer
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataType
+import org.jetbrains.annotations.ApiStatus
 import java.lang.reflect.Field
 import java.net.URL
 import java.util.*
@@ -453,6 +455,35 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
     fun clearFlags(): ItemBuilder {
         val meta = itemStack.itemMeta
         meta.removeItemFlags(*ItemFlag.entries.toTypedArray())
+        itemStack.itemMeta = meta
+        return this
+    }
+
+
+    /**
+     * Sets the equippable state of the item in the specified slot.
+     * This method is not yet supported in PaperMC 1.21.1.
+     */
+    @ApiStatus.Internal
+    fun setEquippable(slot: EquipmentSlot, equippable: Boolean): ItemBuilder {
+        val meta = itemStack.itemMeta
+
+        TODO("Waiting for 1.21.2+ support")
+
+        itemStack.itemMeta = meta
+        return this
+    }
+
+    /**
+     * Sets the consumable state of the item.
+     * This method is not yet supported in PaperMC 1.21.1.
+     */
+    @ApiStatus.Internal
+    fun setConsumable(consumable: Boolean): ItemBuilder {
+        val meta = itemStack.itemMeta
+
+        TODO("Waiting for 1.21.2+ support")
+
         itemStack.itemMeta = meta
         return this
     }

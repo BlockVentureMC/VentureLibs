@@ -17,7 +17,6 @@ val minecraftVersion: String by project
 val authlibVersion: String by project
 val placeholderApiVersion: String by project
 val audioServerVersion: String by project
-val fastNBTVersion: String by project
 val sentryVersion: String by project
 val jdaVersion: String by project
 val smoothCoastersAPIVersion: String by project
@@ -78,7 +77,6 @@ val deps = listOf(
     "org.mariadb.jdbc:mariadb-java-client:$mariadbVersion",
     "net.blockventuremc.audioserver:minecraft:$audioServerVersion",
 
-    "dev.lone:FastNbt-jar:$fastNBTVersion",
     "io.sentry:sentry:$sentryVersion",
     "io.sentry:sentry-kotlin-extensions:$sentryVersion",
     "io.sentry:sentry-logback:$sentryVersion",
