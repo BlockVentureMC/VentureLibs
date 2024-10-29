@@ -10,6 +10,8 @@ import org.bukkit.entity.Player
 private val urlRegex =
     Regex("http[s]?:\\/\\/(?:[a-zA-Z]|[0-9]|[\$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
 
+private val commandRegex = Regex("/[a-zA-Z]+")
+
 fun parsePlaceholders(text: String, player: Player): String {
     var parsed = text
     parsed = parsed.replace("%playername%", player.name)
@@ -29,5 +31,14 @@ fun parsePlaceholders(text: String, player: Player): String {
         val urlText = "<color:#7593ff><click:open_url:'$url'>$url</click></color>"
         parsed = parsed.replace(url, urlText)
     }
+
+    // Test for command and replace it with a clickable command
+    for (match in commandRegex.findAll(plainText)) {
+        val command = match.value
+        val commandText = "<color:#7593ff><click:suggest_command:'$command'>$command</click></color>"
+        parsed = parsed.replace(command, commandText)
+    }
+
+
     return parsed
 }
