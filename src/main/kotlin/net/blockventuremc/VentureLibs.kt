@@ -11,6 +11,7 @@ import net.blockventuremc.modules.general.cache.PlayerCache
 import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.modules.rides.track.TrackManager
 import net.blockventuremc.modules.structures.StructureManager
+import net.blockventuremc.modules.structures.TrainRegistry
 import net.blockventuremc.modules.warps.WarpManager
 import net.blockventuremc.utils.Environment
 import net.blockventuremc.utils.RegisterManager.registerAll
@@ -94,9 +95,17 @@ class VentureLibs : JavaPlugin() {
             }
             .registerCommands()
 
+        logger.info("register trains...")
+        TrainRegistry.registerTrains()
+
+
+        logger.info("loading tracks...")
         TrackManager.loadTracks()
 
-        logger.info("Custom Entity ticking...")
+        logger.info("Cleaning up world...")
+        StructureManager.cleanUpWorld()
+
+        logger.info("Setting up custom entities...")
         StructureManager.update()
 
 

@@ -1,9 +1,13 @@
 package net.blockventuremc.modules.structures
 
 import net.blockventuremc.VentureLibs
+import net.blockventuremc.consts.NAMESPACE_CUSTOMENTITY_IDENTIFIER
 import net.blockventuremc.modules.`fun`.baloon.Balloon
 import net.blockventuremc.modules.structures.impl.Train
+import org.bukkit.Bukkit
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import org.bukkit.persistence.PersistentDataType
 import java.io.Closeable
 import java.util.*
 
@@ -46,6 +50,17 @@ object StructureManager {
         balloons.clear()
         structures.clear()
     }
+
+    fun cleanUpWorld() {
+        Bukkit.getWorlds().forEach { world ->
+            world.loadedChunks.forEach { chunk ->
+                chunk.entities.forEach { entity ->
+                    if(entity.persistentDataContainer.keys.contains(NAMESPACE_CUSTOMENTITY_IDENTIFIER)) entity.remove()
+                }
+            }
+        }
+    }
+
 }
 
 fun interval(delay: Long, period: Long, task: () -> Unit): Closeable {
@@ -54,4 +69,17 @@ fun interval(delay: Long, period: Long, task: () -> Unit): Closeable {
     return Closeable {
         handler.cancel()
     }
+}
+
+enum class StructureType {
+    TRAIN,
+    BALLOON,
+    TRACK,
+    GENERIC,
+    VEHICLE,
+    SEAT
+}
+
+fun Entity.setCustomType(type: StructureType, value: String = "") {
+    this.persistentDataContainer.set(NAMESPACE_CUSTOMENTITY_IDENTIFIER, PersistentDataType.STRING, value)
 }

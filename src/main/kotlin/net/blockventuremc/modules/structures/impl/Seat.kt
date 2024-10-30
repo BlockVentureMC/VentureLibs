@@ -3,6 +3,8 @@ package net.blockventuremc.modules.structures.impl
 import io.papermc.paper.entity.TeleportFlag
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.modules.structures.Attachment
+import net.blockventuremc.modules.structures.StructureType
+import net.blockventuremc.modules.structures.setCustomType
 import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Interaction
@@ -39,6 +41,7 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) :
             var transform = transformation
             transform.scale.mul(0.03f)
             transformation = transform
+            setCustomType(StructureType.SEAT)
         }
 
         interaction = location.world.spawnEntity(location, EntityType.INTERACTION) as Interaction
@@ -47,6 +50,7 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) :
             interactionWidth = 0.45f
             isCustomNameVisible = false
             itemDisplay?.addPassenger(this)
+            setCustomType(StructureType.SEAT)
         }
     }
 

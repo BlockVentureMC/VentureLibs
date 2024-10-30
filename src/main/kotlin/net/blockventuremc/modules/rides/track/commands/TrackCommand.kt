@@ -20,6 +20,7 @@ import net.blockventuremc.modules.structures.Animation
 import net.blockventuremc.modules.structures.Attachment
 import net.blockventuremc.modules.structures.ItemAttachment
 import net.blockventuremc.modules.structures.StructureManager
+import net.blockventuremc.modules.structures.TrainRegistry
 import net.blockventuremc.modules.structures.impl.Cart
 import net.blockventuremc.modules.structures.impl.Seat
 import net.blockventuremc.modules.structures.impl.Train
@@ -391,93 +392,15 @@ class TrackCommand : CommandExecutor, TabExecutor {
             return
         }
 
-        val train = Train(name, track, 0.0)
-        when (name) {
-            "train1" -> {
-                val frontCart = Cart(1.2f, 0.8f)
-                frontCart.addChild(
-                    ItemAttachment(
-                        "base",
-                        ItemBuilder(Material.DIAMOND_SWORD).customModelData(122).build(),
-                        Vector(0.0, 0.9, 0.0),
-                        Vector()
-                    )
-                )
-                train.addCart(frontCart)
-                repeat(5) { i -> //122 red
-                    val cart = Cart(1.2f, 0.53f)
-                    var itemId = if (i == 0) 123 else 124
-                    if(i == 4 || i == 1) itemId = 125
-                    cart.addChild(
-                        ItemAttachment(
-                            "base",
-                            ItemBuilder(Material.DIAMOND_SWORD).customModelData(itemId).build(),
-                            Vector(0.0, 0.9, 0.0),
-                            Vector()
-                        )
-                    )
-                    cart.addChild(Seat("seat1", Vector(0.4, 0.4, 0.0), Vector()))
-                    cart.addChild(Seat("seat2", Vector(-0.4, 0.4, 0.0), Vector()))
-                    train.addCart(cart)
-                }
-            }
-            "spin" -> {
-        repeat(5) {
-            val cart = Cart(2.3f, 0.5f)
-            cart.addChild(
-                ItemAttachment(
-                    "base",
-                    ItemBuilder(Material.DIAMOND_SWORD).customModelData(100).build(),
-                    Vector(0.0, 0.4, 0.0),
-                    Vector()
-                )
-            )
-            val rotator = Attachment("rotator", Vector(), Vector())
-            cart.addChild(rotator)
-
-            rotator.addChild(Seat("seat1", Vector(0.39, 0.6, 0.3), Vector()))
-            rotator.addChild(Seat("seat2", Vector(-0.39, 0.6, 0.3), Vector()))
-            rotator.addChild(Seat("seat3", Vector(0.39, 0.6, -0.3), Vector()))
-            rotator.addChild(Seat("seat4", Vector(-0.39, 0.6, -0.3), Vector()))
-
-            rotator.addChild(
-                ItemAttachment(
-                    "model",
-                    ItemBuilder(Material.DIAMOND_SWORD).customModelData(99).build(),
-                    Vector(0.0, 1.0, 0.0),
-                    Vector()
-                )
-            )
-
-            cart.animation = object : Animation() {
-                var prevDirection = Vector(0, 1, 0)
-                var rotationVelocity = 0.0
-                override fun animate() {
-                    val direction = Vector(cart.front.x, cart.front.y, cart.front.z)
-                    val crossProduct = prevDirection.crossProduct(direction)
-
-                    val spin = crossProduct.dot(Vector(0.0, 1.0, 0.0)) * -4.0f
-
-                    rotationVelocity += spin
-                    rotationVelocity *= 0.99f
-
-                    rotator.localRotation.add(Vector(0.0, rotationVelocity, 0.0))
-                    prevDirection = direction.clone()
-                }
-            }
-            train.addCart(cart)
-        }
-            }
-        }
-        if(train.carts.isEmpty()) {
-            sender.sendMessage("No carts found ohoh!")
+        val trainAbstract = TrainRegistry.trains[name] ?: run {
+            sender.sendMessage("Train $name does not exist.")
             return
         }
-
+        val train = trainAbstract.train(track, 0.1)
         train.initialize()
         StructureManager.trains[train.uuid] = train
 
-        sender.sendMessage("Train spawned on Track $trackId.")
+        sender.sendMessage("Train $name spawned on Track $trackId.")
 
     }
 
@@ -517,12 +440,16 @@ class TrackCommand : CommandExecutor, TabExecutor {
             ).filter { it.startsWith(args[0]) }
 
             2 -> when(args[0]) {
-                "show", "hide", "select", "segment", "spawn", "despawn", "placeblocks" -> TrackManager.tracks.keys.map { it.toString() }
-                    .filter { it.startsWith(args[1]) }
+                "show", "hide", "select", "segment", "despawn", "placeblocks" ->
+                    TrackManager.tracks.keys.map { it.toString() }.filter { it.startsWith(args[1]) }
+                "spawn" -> TrainRegistry.trains.keys.map { it.toString() }.filter { it.startsWith(args[1]) }
 
                 else -> emptyList()
             }
-
+            3 -> when (args[0]) {
+                "spawn" ->  TrackManager.tracks.keys.map { it.toString() }.filter { it.startsWith(args[1]) }
+                else -> emptyList()
+            }
             5 -> when (args[0]) {
                 "segment" -> SegmentTypes.entries.map { it.name }.filter { it.startsWith(args[3]) }
                 else -> emptyList()

@@ -10,4 +10,7 @@ val BLOCKVENTURE_DOOR_LOCKS = NamespacedKey(NAMESPACE_PLUGIN, "door_locks")
 val NAMESPACE_GUI_IDENTIFIER = NamespacedKey(NAMESPACE_PLUGIN, "gui_identifier")
 val NAMESPACE_ITEM_IDENTIFIER = NamespacedKey(NAMESPACE_PLUGIN, "item_identifier")
 
+// Custom Entities System
+val NAMESPACE_CUSTOMENTITY_IDENTIFIER = NamespacedKey(NAMESPACE_PLUGIN, "custom_identifier")
+
 val BOOSTER_IDENTIFIER = NamespacedKey(NAMESPACE_PLUGIN, "booster")

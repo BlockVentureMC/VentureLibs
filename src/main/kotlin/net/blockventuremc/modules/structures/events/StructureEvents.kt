@@ -1,7 +1,9 @@
 package net.blockventuremc.modules.structures.events
 
+import io.papermc.paper.entity.TeleportFlag
 import me.m56738.smoothcoasters.api.event.PlayerSmoothCoastersHandshakeEvent
 import net.blockventuremc.VentureLibs
+import net.blockventuremc.modules.`fun`.baloon.Balloon
 import net.blockventuremc.modules.structures.StructureManager
 import org.bukkit.Bukkit
 import org.bukkit.entity.EntityType
@@ -11,6 +13,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDismountEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.PlayerTeleportEvent
+import org.bukkit.util.Vector
 
 class StructureEvents : Listener {
 
@@ -27,6 +31,36 @@ class StructureEvents : Listener {
 
         val trainExitEvent = TrainExitEvent(passenger, event.dismounted)
         Bukkit.getPluginManager().callEvent(trainExitEvent)
+    }
+
+    @EventHandler
+    fun onTeleport(event: PlayerTeleportEvent) {
+        val player = event.player
+
+        if(event.cause == PlayerTeleportEvent.TeleportCause.PLUGIN) return
+
+        val targetLocation = event.to
+        var currentBalloon: Balloon? = null
+
+        currentBalloon = StructureManager.balloons[player]
+        currentBalloon?.remove()
+
+        val passengers = player.passengers
+        val shouldRemovePassengers = passengers.isNotEmpty() && player.world != targetLocation.world
+        if (shouldRemovePassengers) {
+            for (passenger in passengers) {
+                player.removePassenger(passenger)
+                passenger.teleportAsync(targetLocation)
+            }
+        }
+
+        if (shouldRemovePassengers) {
+            for (passenger in passengers) {
+                player.addPassenger(passenger)
+            }
+        }
+
+        currentBalloon?.spawn(targetLocation.add(Vector(0.0, 0.1, 0.0)))
     }
 
     @EventHandler

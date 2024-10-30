@@ -3,6 +3,9 @@ package net.blockventuremc.modules.`fun`.baloon
 
 import dev.fruxz.ascend.extension.isNull
 import io.papermc.paper.entity.TeleportFlag
+import net.blockventuremc.modules.structures.StructureType
+import net.blockventuremc.modules.structures.setCustomType
+import org.bukkit.Location
 import org.bukkit.entity.Chicken
 import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
@@ -21,8 +24,7 @@ open class Balloon(val follow: Entity) {
     var velocity = Vector()
     var balloon: PufferFish? = null
 
-    open fun spawn() {
-        val location = follow.location
+    open fun spawn(location: Location = follow.location) {
         location.add(0.0, 0.5, 0.0)
         location.yaw = 0.0f
         location.pitch = 0.0f
@@ -32,9 +34,11 @@ open class Balloon(val follow: Entity) {
             setGravity(false)
             isSilent = true
             isInvulnerable = true
+            setNoPhysics(true)
             isInvisible = false
             addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, Int.MAX_VALUE, Int.MAX_VALUE))
             setLeashHolder(follow)
+            setCustomType(StructureType.BALLOON)
         }
     }
 
@@ -68,8 +72,8 @@ class EntityBalloon(follow: Entity, val entityType: EntityType): Balloon(follow)
 
     private var entity: Entity? = null
 
-    override fun spawn() {
-        super.spawn()
+    override fun spawn(location: Location) {
+        super.spawn(location)
         val location = follow.location
         location.add(0.0, 0.5, 0.0)
         location.yaw = 0.0f
@@ -77,6 +81,7 @@ class EntityBalloon(follow: Entity, val entityType: EntityType): Balloon(follow)
         entity = follow.world.spawnEntity(location, entityType).apply {
             setGravity(false)
             isInvulnerable = true
+            setCustomType(StructureType.BALLOON)
         }
         balloon!!.addPassenger(entity!!)
     }
@@ -131,7 +136,7 @@ class EntityBalloon(follow: Entity, val entityType: EntityType): Balloon(follow)
             balloonLocation.add(velocity)
         }
 
-        currentRotation += (velocity.length().toFloat() * 0.9f) + 0.02f
+        currentRotation += (velocity.length().toFloat() * 0.9f) + 0.4f
 
         entity?.setRotation(currentRotation, 0.0f)
         balloon!!.velocity = Vector()
@@ -156,8 +161,8 @@ class ItemBalloon(follow: Entity, val item: ItemStack): Balloon(follow) {
 
     private var itemDisplay: ItemDisplay? = null
 
-    override fun spawn() {
-        super.spawn()
+    override fun spawn(location: Location) {
+        super.spawn(location)
         val location = follow.location
         location.add(0.0, 0.5, 0.0)
         location.yaw = 0.0f
@@ -170,6 +175,7 @@ class ItemBalloon(follow: Entity, val item: ItemStack): Balloon(follow) {
             transformation = transform
             interpolationDuration = 3
             teleportDuration = 3
+            setCustomType(StructureType.BALLOON)
         }
         balloon!!.addPassenger(itemDisplay!!)
     }
