@@ -61,7 +61,8 @@ object WarpManager {
                     val warp = Warp(
                         warpKey,
                         ventureLocation.toBukkitLocation(),
-                        warpSection.getString("rankNeeded")?.let { Ranks.valueOf(it) } ?: Ranks.TEAM
+                        warpSection.getString("rankNeeded")?.let { Ranks.valueOf(it) } ?: Ranks.TEAM,
+                        warpSection.getString("type")?.let { WarpType.valueOf(it) } ?: WarpType.GENERIC
                     )
                     warps[warpKey] = warp
                 }, 1L)
@@ -98,8 +99,8 @@ object WarpManager {
             server = Bukkit.getServer().motd().asPlainString
         )
 
-        warpConfig.set("${warpKey}.location", ventureLocation.toSimpleString())
-        warpConfig.set("${warpKey}.old_location", null)
+        warpConfig["${warpKey}.location"] = ventureLocation.toSimpleString()
+        warpConfig["${warpKey}.old_location"] = null
         warpConfig.saveConfig()
 
         getLogger().info("Warp $warpKey migrated.")
@@ -138,9 +139,10 @@ object WarpManager {
         // Save warp to config
         try {
             val warpConfig = FileConfig(WARP_CONFIG_FILE)
-            warpConfig.set(warp.name, null)
-            warpConfig.set("${warp.name}.location", warp.location.toVentureLocation().toSimpleString())
-            warpConfig.set("${warp.name}.rankNeeded", warp.rankNeeded.name)
+            warpConfig[warp.name] = null
+            warpConfig["${warp.name}.location"] = warp.location.toVentureLocation().toSimpleString()
+            warpConfig["${warp.name}.rankNeeded"] = warp.rankNeeded.name
+            warpConfig["${warp.name}.type"] = warp.type.name
             warpConfig.saveConfig()
             getLogger().info("Warp ${warp.name} added.")
             return true
@@ -164,7 +166,7 @@ object WarpManager {
         // Save updated warps to config
         try {
             val warpConfig = FileConfig(WARP_CONFIG_FILE)
-            warpConfig.set(name, null)
+            warpConfig[name] = null
             warpConfig.saveConfig()
             getLogger().info("Warp $name removed.")
             return true

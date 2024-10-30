@@ -15,5 +15,6 @@ import org.bukkit.Location
 data class Warp(
     val name: String,
     val location: Location,
-    val rankNeeded: Ranks = Ranks.TEAM
+    val rankNeeded: Ranks = Ranks.TEAM,
+    val type: WarpType = WarpType.GENERIC
 )

@@ -57,6 +57,7 @@
     "commands.warp.create.success": "<green>Warp <yellow>%warp%</yellow> created for rank %rank%.",
     "commands.warp.invalid_usage": "<color:#e74c3c>Invalid usage. Use <color:#f78fb3>/warp <color:#e74c3c>to teleport to a warp.",
     "commands.warp.invalid_rank": "<color:#f78fb3>%rank% <color:#e74c3c>is no valid rank.",
+    "commands.warp.invalid_type": "<color:#f78fb3>%type% <color:#e74c3c>is no valid type.",
     "commands.personaltime.current": "Personal current time: <color:#feca57>%time%</color>. Use <color:#c8d6e5>/personaltime <reset|noon|midnight|day|night|<0-24000>></color> to change it.",
     "commands.personaltime.reset": "Personal time reset to <color:#feca57>%time%</color>.",
     "commands.personaltime.invalid": "Invalid time. Use <color:#c8d6e5>/personaltime <reset|noon|midnight|day|night|<0-24000>></color> to change it.",
