@@ -4,10 +4,7 @@ import com.destroystokyo.paper.MaterialSetTag
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.consts.BLOCKVENTURE_DOOR_LOCKS
-import net.blockventuremc.extensions.sendDeniedSound
-import net.blockventuremc.extensions.sendMessagePrefixed
-import net.blockventuremc.extensions.sendSuccessSound
-import net.blockventuremc.extensions.translate
+import net.blockventuremc.extensions.*
 import net.blockventuremc.modules.customblockdata.CustomBlockData
 import net.blockventuremc.modules.general.model.Ranks
 import org.bukkit.block.data.Bisected
@@ -39,13 +36,13 @@ class LockCommand : CommandExecutor, TabCompleter {
         if (sender !is Player) return false
 
         if (args.isEmpty()) {
-            sender.sendMessagePrefixed(sender.translate("lock.usage")?.message ?: "Usage: /lock <rank>")
+            sender.sendError(sender.translate("lock.usage")?.message ?: "Usage: /lock <rank>")
             return true
         }
 
         val rank = Ranks.entries.find { it.name.equals(args[0], true) }
         if (rank == null) {
-            sender.sendMessagePrefixed(
+            sender.sendError(
                 sender.translate("commands.rank_not_found", mapOf("rank" to args[0]))?.message ?: "Rank not found"
             )
             sender.sendDeniedSound()
@@ -54,7 +51,7 @@ class LockCommand : CommandExecutor, TabCompleter {
 
         val lookingAtBlock = sender.getTargetBlockExact(5)
         if (lookingAtBlock == null || !MaterialSetTag.DOORS.isTagged(lookingAtBlock.type)) {
-            sender.sendMessagePrefixed(
+            sender.sendError(
                 sender.translate("lock.no_door")?.message ?: "You must look at a door to lock it."
             )
             sender.sendDeniedSound()
@@ -67,7 +64,7 @@ class LockCommand : CommandExecutor, TabCompleter {
         val customBlockData = CustomBlockData(bottomBlock, VentureLibs.instance)
         customBlockData[BLOCKVENTURE_DOOR_LOCKS, PersistentDataType.BYTE] = rank.ordinal.toByte()
 
-        sender.sendMessagePrefixed(
+        sender.sendSuccess(
             sender.translate("lock.success", mapOf("rank" to rank.name))?.message
                 ?: "The door is now locked to only open for <color:#f78fb3>${rank.name}</color> or higher."
         )

@@ -1,7 +1,8 @@
 package net.blockventuremc.modules.titles
 
 import net.blockventuremc.annotations.VentureCommand
-import net.blockventuremc.extensions.sendMessagePrefixed
+import net.blockventuremc.extensions.sendError
+import net.blockventuremc.extensions.sendSuccess
 import net.blockventuremc.extensions.translate
 import net.blockventuremc.modules.general.cache.PlayerCache
 import net.blockventuremc.modules.titles.events.TitleChangedEvent
@@ -32,7 +33,7 @@ class TitleCommand : CommandExecutor, TabExecutor {
         }
 
         val title = Title.entries.firstOrNull { titles: Title -> titles.name == args[0].uppercase() } ?: run {
-            sender.sendMessagePrefixed(
+            sender.sendError(
                 sender.translate("title.command.not_found", mapOf("title" to args[0]))?.message
                     ?: "<color:#e74c3c>Title ${args[0]} not found."
             )
@@ -41,7 +42,7 @@ class TitleCommand : CommandExecutor, TabExecutor {
         val blockPlayer = PlayerCache.getOrNull(sender.uniqueId) ?: return true
 
         if (!blockPlayer.titles.containsKey(title)) {
-            sender.sendMessagePrefixed(
+            sender.sendError(
                 sender.translate(
                     "title.not_unlocked",
                     mapOf("title" to title.display(sender))
@@ -57,11 +58,11 @@ class TitleCommand : CommandExecutor, TabExecutor {
         val titleChangedEvent = TitleChangedEvent(sender, title)
         Bukkit.getPluginManager().callEvent(titleChangedEvent)
 
-        sender.sendMessagePrefixed(
+        sender.sendSuccess(
             blockPlayer.translate(
                 "title.changed",
                 mapOf("title" to title.display(sender))
-            )?.message ?: "<green>Your title has been changed to <yellow>${title.display(sender)}</yellow> <green>!"
+            )?.message ?: "Your title has been changed to <yellow>${title.display(sender)}</yellow>!"
         )
         sender.playSound(sender, Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 0.4f, 1.3f)
 

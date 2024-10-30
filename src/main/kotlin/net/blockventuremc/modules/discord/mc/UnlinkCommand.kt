@@ -4,7 +4,8 @@ import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.database.functions.getLinkOfUser
 import net.blockventuremc.database.functions.unlinkUser
-import net.blockventuremc.extensions.sendMessagePrefixed
+import net.blockventuremc.extensions.sendError
+import net.blockventuremc.extensions.sendSuccess
 import net.blockventuremc.modules.discord.manager.LinkManager
 import net.blockventuremc.utils.mcroutine
 import org.bukkit.command.Command
@@ -22,7 +23,7 @@ import org.bukkit.permissions.PermissionDefault
 class UnlinkCommand : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         val player = sender as? Player ?: run {
-            sender.sendMessagePrefixed("This command is only available to players.")
+            sender.sendError("This command is only available to players.")
             return true
         }
 
@@ -30,14 +31,14 @@ class UnlinkCommand : CommandExecutor {
 
         if (linking != null) {
             LinkManager.remove(player.uniqueId)
-            sender.sendMessagePrefixed("You have successfully cancelled the linking process.")
+            sender.sendSuccess("You have successfully cancelled the linking process.")
             return true
         }
 
         val linked = getLinkOfUser(player.uniqueId)
 
         if (linked == null) {
-            sender.sendMessagePrefixed("You are not linked to any Discord account.")
+            sender.sendError("You are not linked to any Discord account.")
             return true
         }
 
@@ -46,7 +47,7 @@ class UnlinkCommand : CommandExecutor {
         mcroutine {
             val name = VentureLibs.instance.jda.getUserById(linked.discordID)?.name ?: "Unknown"
 
-            sender.sendMessagePrefixed("You have successfully unlinked your account from $name's Discord account.")
+            sender.sendSuccess("You have successfully unlinked your account from $name's Discord account.")
         }
 
         return true

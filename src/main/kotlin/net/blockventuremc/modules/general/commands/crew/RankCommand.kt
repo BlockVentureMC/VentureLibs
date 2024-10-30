@@ -1,10 +1,7 @@
 package net.blockventuremc.modules.general.commands.crew
 
 import net.blockventuremc.annotations.VentureCommand
-import net.blockventuremc.extensions.sendMessageBlock
-import net.blockventuremc.extensions.sendMessagePrefixed
-import net.blockventuremc.extensions.sendSuccessSound
-import net.blockventuremc.extensions.translate
+import net.blockventuremc.extensions.*
 import net.blockventuremc.modules.general.manager.RankManager
 import net.blockventuremc.modules.general.model.Ranks
 import org.bukkit.command.Command
@@ -26,12 +23,12 @@ class RankCommand : CommandExecutor, TabCompleter {
 
         if (args.size == 1 && args[0].equals("reload", true)) {
             RankManager.reloadRanks()
-            sender.sendMessagePrefixed("Ranks reloaded.")
+            sender.sendSuccess("Ranks reloaded.")
             return true
         }
 
         if (args.size < 2) {
-            sender.sendMessagePrefixed("/rank <player> <rank>")
+            sender.sendError("/rank <player> <rank>")
             sender.sendMessageBlock(
                 "Ranks:",
                 Ranks.entries.joinToString(", ") { "<color:${it.rank.color}>${it.name}</color>" }
@@ -44,7 +41,7 @@ class RankCommand : CommandExecutor, TabCompleter {
 
         val realRank = Ranks.entries.find { it.name.equals(rank, true) }?.rank
         if (realRank == null) {
-            sender.sendMessagePrefixed(
+            sender.sendError(
                 sender.translate("commands.rank_not_found", mapOf("rank" to args[0]))?.message ?: "Rank not found"
             )
             return true
@@ -52,7 +49,7 @@ class RankCommand : CommandExecutor, TabCompleter {
 
         RankManager.updateRank(realRank, targetPlayer.uniqueId)
         if (targetPlayer.isOnline) {
-            targetPlayer.player?.sendMessagePrefixed(
+            targetPlayer.player?.sendSuccess(
                 targetPlayer.player?.translate(
                     "commands.rank_changed",
                     mapOf("rank" to realRank.displayName, "color" to realRank.color)
@@ -64,7 +61,7 @@ class RankCommand : CommandExecutor, TabCompleter {
             sender.sendSuccessSound()
 
             if (sender.uniqueId != targetPlayer.uniqueId) {
-                sender.sendMessagePrefixed(
+                sender.sendSuccess(
                     sender.translate(
                         "commands.rank_changed_other",
                         mapOf("other" to targetPlayer.name, "rank" to realRank.displayName, "color" to realRank.color)
@@ -74,7 +71,7 @@ class RankCommand : CommandExecutor, TabCompleter {
             return true
         }
 
-        sender.sendMessagePrefixed(
+        sender.sendSuccess(
             sender.translate(
                 "commands.rank_changed_other",
                 mapOf("other" to targetPlayer.name, "rank" to realRank.displayName, "color" to realRank.color)

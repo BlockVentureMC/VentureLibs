@@ -1,6 +1,7 @@
 package net.blockventuremc.modules.`fun`.baloon
 
 import net.blockventuremc.annotations.VentureCommand
+import net.blockventuremc.extensions.sendInfo
 import net.blockventuremc.modules.structures.StructureManager
 import org.bukkit.Material
 import org.bukkit.command.Command
@@ -35,7 +36,7 @@ class BalloonCommand : CommandExecutor {
             StructureManager.balloons.remove(player)
 
             if (item.type == Material.AIR) {
-                player.sendMessage("byeee ballloon! :C")
+                player.sendInfo("byeee ballloon! :C")
                 return true
             }
         }
@@ -49,7 +50,7 @@ class BalloonCommand : CommandExecutor {
         balloon.spawn()
         StructureManager.balloons[player] = balloon
 
-        player.sendMessage("balloon spawned! :)")
+        player.sendInfo("balloon spawned! :)")
 
         return true
     }

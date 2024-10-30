@@ -1,6 +1,7 @@
 package net.blockventuremc.modules.structures.commands
 
 import net.blockventuremc.annotations.VentureCommand
+import net.blockventuremc.extensions.sendSuccess
 import net.blockventuremc.modules.structures.*
 import net.blockventuremc.modules.structures.impl.Seat
 import net.blockventuremc.utils.itembuilder.ItemBuilder
@@ -78,7 +79,7 @@ class CustomEntityCommand : CommandExecutor {
             }
         }
         StructureManager.structures[customEntity.uuid] = customEntity
-        player.sendMessage("§eCustom Entity Spawned!")
+        player.sendSuccess("Custom Entity Spawned!")
         return true
     }
 
