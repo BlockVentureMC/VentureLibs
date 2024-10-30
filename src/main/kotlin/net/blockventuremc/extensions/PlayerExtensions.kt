@@ -38,6 +38,8 @@ fun CommandSender.sendMessageBlock(vararg lines: String) {
 
 fun CommandSender.sendMessageFormated(message: String, format: MessageFormat, args: String? = null) = format.sendCommandSender(this, message, args)
 
+// TODO: auto use translation system and add placeholders and replace msg
+
 fun CommandSender.sendInfo(message: String) = sendMessageFormated(message, MessageFormat.INFO)
 fun CommandSender.sendWarning(message: String) = sendMessageFormated(message, MessageFormat.WARNING)
 fun CommandSender.sendError(message: String) = sendMessageFormated(message, MessageFormat.ERROR)

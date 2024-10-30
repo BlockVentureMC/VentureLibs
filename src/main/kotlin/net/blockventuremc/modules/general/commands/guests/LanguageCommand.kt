@@ -1,7 +1,8 @@
 package net.blockventuremc.modules.general.commands.guests
 
 import net.blockventuremc.annotations.VentureCommand
-import net.blockventuremc.extensions.sendMessagePrefixed
+import net.blockventuremc.extensions.sendError
+import net.blockventuremc.extensions.sendSuccess
 import net.blockventuremc.extensions.sendSuccessSound
 import net.blockventuremc.extensions.translate
 import net.blockventuremc.modules.general.cache.PlayerCache
@@ -33,14 +34,14 @@ class LanguageCommand : CommandExecutor, TabExecutor {
         if (sender !is Player) return true
 
         if (args.isEmpty()) {
-            sender.sendMessagePrefixed(
+            sender.sendError(
                 sender.translate("commands.language.usage")?.message ?: "Usage: /language <color:#f78fb3><language>"
             )
             return true
         }
 
         val language = Languages.entries.firstOrNull { it.name.equals(args[0], ignoreCase = true) } ?: run {
-            sender.sendMessagePrefixed(sender.translate("commands.language.invalid", mapOf(
+            sender.sendError(sender.translate("commands.language.invalid", mapOf(
                 "languages" to Languages.entries.joinToString(", ") { it.name }
             ))?.message ?: "Invalid language")
             return true
@@ -49,7 +50,7 @@ class LanguageCommand : CommandExecutor, TabExecutor {
         val blockPlayer = PlayerCache.getOrNull(sender.uniqueId) ?: return true
         PlayerCache.updateCached(blockPlayer.copy(language = language))
 
-        sender.sendMessagePrefixed(
+        sender.sendSuccess(
             sender.translate(
                 "commands.language.changed", mapOf(
                     "language" to language.name
