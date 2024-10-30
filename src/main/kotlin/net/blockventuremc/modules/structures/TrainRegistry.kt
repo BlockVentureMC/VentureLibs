@@ -82,7 +82,7 @@ object TrainRegistry {
                 )
                 train.addCart(frontCart)
                 repeat(5) { i -> //122 red
-                    val cart = Cart(1.2f, 0.53f)
+                    val cart = Cart(0.8f, 0.53f)
                     var itemId = if (i == 0) 123 else 124
                     if (i == 4 || i == 1) itemId = 125
                     cart.addChild(
@@ -117,16 +117,6 @@ object TrainRegistry {
                             Vector()
                         )
                     )
-                    cart.animation = object : Animation() {
-
-                        var rotationVelocity = 0.0 + (i * 10)
-                        override fun animate() {
-
-                            rotationVelocity += 2.0
-
-                            rotator.localRotation = Vector(0.0, 0.0, rotationVelocity)
-                        }
-                    }
                     rotator.addChild(Seat("seat1", Vector(1.4, -0.3, 0.0), Vector()))
                     rotator.addChild(Seat("seat2", Vector(2.1, -0.3, 0.0), Vector()))
                     rotator.addChild(Seat("seat3", Vector(-1.4, -0.3, 0.0), Vector()))
@@ -149,7 +139,7 @@ object TrainRegistry {
                         ItemAttachment(
                             "base",
                             ItemBuilder(Material.DIAMOND_SWORD).customModelData(itemId).build(),
-                            Vector(-0.4, 0.1, 1.0),
+                            Vector(0.4, 0.1, 1.0),
                             Vector()
                         )
                     )
