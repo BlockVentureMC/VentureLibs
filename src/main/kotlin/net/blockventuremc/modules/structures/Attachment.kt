@@ -13,7 +13,7 @@ open class Attachment(
     lateinit var root: RootAttachment
 
     var parent: Attachment? = null
-    private val children: MutableMap<String, Attachment> = HashMap()
+    val children: MutableMap<String, Attachment> = HashMap()
 
     var worldTransform = Matrix4f()
 
