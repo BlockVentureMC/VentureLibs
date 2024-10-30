@@ -30,7 +30,7 @@ class BoosterGUIListener : Listener {
                 inv.setItem(slot, ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE))
                 inv.identify("booster_gui")
 
-                whoClicked.translate("booster.deleted")?.message?.let { it1 -> whoClicked.sendMessagePrefixed(it1) }
+                whoClicked.translate("booster.deleted")?.message?.let { it1 -> whoClicked.sendSuccess(it1) }
             }
         }
     }
