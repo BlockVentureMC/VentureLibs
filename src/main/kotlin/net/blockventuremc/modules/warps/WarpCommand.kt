@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
+import java.util.Locale
 
 @VentureCommand(
     name = "warp",
@@ -98,6 +99,10 @@ class WarpCommand : CommandExecutor, TabExecutor {
                 handleCreateWarpWithRank(sender, args[0], args[1], args[2])
             }
 
+            4 -> {
+                handleCreateWarpWithRank(sender, args[0], args[1], args[2], args[3])
+            }
+
             else -> {
                 showUsage(sender)
             }
@@ -154,6 +159,17 @@ class WarpCommand : CommandExecutor, TabExecutor {
                 }
             }
 
+            4 -> {
+                if (!sender.isRankOrHigher(Ranks.TEAM)) return emptyList()
+                when (args[0]) {
+                    "create" -> {
+                        // Return all types
+                        WarpType.entries.map { it.name }.filter { it.startsWith(args[3]) }
+                    }
+                    else -> emptyList()
+                }
+            }
+
             else -> emptyList()
         }
     }
@@ -186,7 +202,7 @@ class WarpCommand : CommandExecutor, TabExecutor {
         val translatedClickToWarp = sender.translate("commands.warp.click_to_warp")?.message ?: "Click to warp."
 
         val warps = WarpManager.getWarps().filter { sender.isRankOrHigher(it.rankNeeded) }
-            .map { "<click:run_command:'/warp ${it.name}'><hover:show_text:'<color:#2ecc71>$translatedClickToWarp</color>'><color:${it.rankNeeded.rank.color}>${it.name}</color></hover></click>" }
+            .map { "<click:run_command:'/warp ${it.name}'><hover:show_text:'<color:#2ecc71>$translatedClickToWarp (${it.type.name})</color>'><color:${it.rankNeeded.rank.color}>${it.name}</color></hover></click>" }
         sender.sendMessagePrefixed("Warps: ${warps.joinToString(", ")}")
         sender.sendOpenSound()
     }
@@ -235,16 +251,17 @@ class WarpCommand : CommandExecutor, TabExecutor {
      *
      * @param sender the command sender creating the warp
      * @param arg the name of the warp
-     * @param ranks the minimum rank required to access the warp, default is [Ranks.Crew]
+     * @param ranks the minimum rank required to access the warp, default is [Ranks.TEAM]
+     * @param type the type of the warp, default is [WarpType.GENERIC]
      */
-    private fun createWarp(sender: CommandSender, arg: String, ranks: Ranks = Ranks.TEAM) {
+    private fun createWarp(sender: CommandSender, arg: String, ranks: Ranks = Ranks.TEAM, type: WarpType = WarpType.GENERIC) {
         // Create warp
         if (sender !is Player) {
             sender.sendMessagePrefixed("Only players can use this command.")
             return
         }
 
-        val warp = Warp(arg, sender.location, ranks)
+        val warp = Warp(arg, sender.location, ranks, type)
 
         WarpManager.addWarp(warp)
         sender.sendMessagePrefixed(
@@ -299,7 +316,7 @@ class WarpCommand : CommandExecutor, TabExecutor {
      * @param warp The name of the warp.
      * @param rankString The rank requirement for the warp.
      */
-    private fun handleCreateWarpWithRank(sender: CommandSender, subcommand: String, warp: String, rankString: String) {
+    private fun handleCreateWarpWithRank(sender: CommandSender, subcommand: String, warp: String, rankString: String, type: String = "GENERIC") {
         if (testIfSubcommand(sender, subcommand)) return
 
         if (subcommand != "create") {
@@ -320,6 +337,18 @@ class WarpCommand : CommandExecutor, TabExecutor {
             return
         }
 
-        createWarp(sender, warp, rank)
+        val warpType = WarpType.entries.find { it.name.equals(type, true) } ?: run {
+            sender.sendMessagePrefixed(
+                sender.translate(
+                    "commands.warp.invalid_type",
+                    mapOf("type" to type)
+                )?.message ?: "Invalid type $type."
+            )
+            sender.sendDeniedSound()
+            return
+        }
+
+
+        createWarp(sender, warp, rank, warpType)
     }
 }
