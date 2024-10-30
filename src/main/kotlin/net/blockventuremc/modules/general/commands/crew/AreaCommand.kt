@@ -2,7 +2,9 @@ package net.blockventuremc.modules.general.commands.crew
 
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
-import net.blockventuremc.extensions.sendMessagePrefixed
+import net.blockventuremc.extensions.sendError
+import net.blockventuremc.extensions.sendInfo
+import net.blockventuremc.extensions.sendSuccess
 import net.blockventuremc.extensions.sendSuccessSound
 import net.blockventuremc.modules.general.cache.AreaCache
 import net.blockventuremc.modules.general.events.custom.getArea
@@ -30,10 +32,10 @@ class AreaCommand : CommandExecutor, TabExecutor {
         if (args.size < 2) {
             val area = sender.location.getArea()
             if (area != null) {
-                sender.sendMessagePrefixed("You are in area ${area.name}")
+                sender.sendInfo("You are in area ${area.name}")
             }
 
-            sender.sendMessagePrefixed("Usage: /area <p1/p2> <area>")
+            sender.sendError("Usage: /area <p1/p2> <area>")
             return true
         }
 
@@ -46,7 +48,7 @@ class AreaCommand : CommandExecutor, TabExecutor {
                 "areas.$savableName.p1",
                 sender.location.toVentureLocation().toSimpleString()
             )
-            sender.sendMessagePrefixed(
+            sender.sendSuccess(
                 "Set first point to ${
                     sender.location.toVentureLocation().toSimpleString()
                 } for area $area ${if (old != null) "(old: $old)" else ""}"
@@ -57,13 +59,13 @@ class AreaCommand : CommandExecutor, TabExecutor {
                 "areas.$savableName.p2",
                 sender.location.toVentureLocation().toSimpleString()
             )
-            sender.sendMessagePrefixed(
+            sender.sendSuccess(
                 "Set second point to ${
                     sender.location.toVentureLocation().toSimpleString()
                 } for area $area ${if (old != null) "(old: $old)" else ""}"
             )
         } else {
-            sender.sendMessagePrefixed("Usage: /area <p1/p2> <area>")
+            sender.sendError("Usage: /area <p1/p2> <area>")
             return true
         }
         VentureLibs.instance.config.set("areas.$savableName.name", area)

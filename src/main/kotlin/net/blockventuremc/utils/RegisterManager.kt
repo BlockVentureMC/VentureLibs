@@ -6,6 +6,7 @@ import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.consts.NAMESPACE_PLUGIN
 import net.blockventuremc.extensions.getLogger
+import net.blockventuremc.extensions.sendInfo
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.modules.discord.annotations.PermissionScope
 import net.blockventuremc.modules.discord.annotations.SlashCommand
@@ -333,7 +334,7 @@ object RegisterManager {
 
 
             Bukkit.getCommandMap().register(NAMESPACE_PLUGIN, command)
-            Bukkit.getConsoleSender().sendMessage("Command ${command.name} registered")
+            Bukkit.getConsoleSender().sendInfo("Command ${command.name} registered")
         }
 
         logger.info("Registered ${commandClasses.size} minecraft commands")

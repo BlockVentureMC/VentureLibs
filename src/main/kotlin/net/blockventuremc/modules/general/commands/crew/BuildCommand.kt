@@ -21,13 +21,13 @@ class BuildCommand : CommandExecutor {
         if (sender !is Player) return false
 
         if (args.isNotEmpty() && args[0].equals("test", true)) {
-            sender.sendMessage("Passengers: ${sender.passengers.size} - ${sender.passengers.map { it.uniqueId }}")
+            sender.sendInfo("Passengers: ${sender.passengers.size} - ${sender.passengers.map { it.uniqueId }}")
             return true
         }
 
         sender.hasBuildTag = !sender.hasBuildTag
 
-        sender.sendMessagePrefixed(
+        sender.sendSuccess(
             sender.toBlockUser().translate(
                 "build_mode_toggled",
                 mapOf("enabled" to (if (sender.hasBuildTag) "enabled" else "disabled"))
