@@ -100,6 +100,68 @@ object TrainRegistry {
                 return train
             }
         })
+        //lumbertrack_coaster
+        trains.put("feng_huang", object : AbstractTrain() {
+            override fun train(trackRide: TrackRide, startPosition: Double): Train {
+                val train = Train("feng_huang", trackRide, 0.0)
+
+                repeat(7) { i ->
+                    val cart = Cart(2.0f, 0.3f)
+                    val rotator = Attachment("rotator", Vector(0.0,0.0,0.0), Vector())
+                    cart.addChild(rotator)
+                    rotator.addChild(
+                        ItemAttachment(
+                            "base",
+                            ItemBuilder(Material.DIAMOND_SWORD).customModelData(24).build(),
+                            Vector(0.0, 1.0, 0.0),
+                            Vector()
+                        )
+                    )
+                    cart.animation = object : Animation() {
+
+                        var rotationVelocity = 0.0 + (i * 10)
+                        override fun animate() {
+
+                            rotationVelocity += 2.0
+
+                            rotator.localRotation = Vector(0.0, 0.0, rotationVelocity)
+                        }
+                    }
+                    rotator.addChild(Seat("seat1", Vector(1.4, -0.3, 0.0), Vector()))
+                    rotator.addChild(Seat("seat2", Vector(2.1, -0.3, 0.0), Vector()))
+                    rotator.addChild(Seat("seat3", Vector(-1.4, -0.3, 0.0), Vector()))
+                    rotator.addChild(Seat("seat4", Vector(-2.1, -0.3, 0.0), Vector()))
+                    train.addCart(cart)
+                }
+                return train
+            }
+        })
+
+        //lumbertrack_coaster
+        trains.put("halloween_coaster", object : AbstractTrain() {
+            override fun train(trackRide: TrackRide, startPosition: Double): Train {
+                val train = Train("halloween_coaster", trackRide, 0.0)
+
+                repeat(3) { i ->
+                    val cart = Cart(2.0f, 0.3f)
+                    var itemId = if (i == 0) 73 else 72
+                    cart.addChild(
+                        ItemAttachment(
+                            "base",
+                            ItemBuilder(Material.DIAMOND_SWORD).customModelData(itemId).build(),
+                            Vector(-0.4, 0.1, 1.0),
+                            Vector()
+                        )
+                    )
+                    cart.addChild(Seat("seat1", Vector(0.4, 0.0, 1.0), Vector()))
+                    cart.addChild(Seat("seat2", Vector(-0.4, 0.0, 1.0), Vector()))
+                    cart.addChild(Seat("seat3", Vector(0.4, 0.0, -0.1), Vector()))
+                    cart.addChild(Seat("seat4", Vector(-0.4, 0.0, -0.1), Vector()))
+                    train.addCart(cart)
+                }
+                return train
+            }
+        })
 
     }
 
