@@ -8,11 +8,10 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import org.bukkit.scheduler.BukkitTask
 import java.util.UUID
 
 class AFKEvent: Listener {
-    val afkPlayers = mutableSetOf<UUID>()
+    private val afkPlayers = mutableSetOf<UUID>()
 
     init {
         runTask()
