@@ -12,11 +12,12 @@ import org.bukkit.entity.ItemDisplay
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
+import org.joml.Matrix4f
 import org.joml.Quaternionf
 import org.joml.Vector3f
 
 class Seat(name: String, localPosition: Vector, localRotation: Vector) :
-    Attachment(name, localPosition, localRotation) {
+    Attachment(name, localPosition, localRotation, Matrix4f(), true) {
 
     var itemDisplay: ItemDisplay? = null
     var interaction: Interaction? = null
@@ -26,6 +27,7 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) :
 
     init {
         localPosition.add(Vector(0.0, offset, 0.0))
+        localTransformChance = false
     }
 
     override fun spawn() {

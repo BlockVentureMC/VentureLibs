@@ -1,12 +1,16 @@
 package net.blockventuremc.modules.rides.flat
 
 import net.blockventuremc.annotations.VentureCommand
+import net.blockventuremc.extensions.lerp
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.modules.structures.Animation
 import net.blockventuremc.modules.structures.Attachment
 import net.blockventuremc.modules.structures.ItemAttachment
 import net.blockventuremc.modules.structures.RootAttachment
 import net.blockventuremc.modules.structures.StructureManager
+import net.blockventuremc.modules.structures.commands.StructureCommand
+import net.blockventuremc.modules.structures.commands.selectedStructure
+import net.blockventuremc.modules.structures.deltaTime
 import net.blockventuremc.modules.structures.impl.Seat
 import net.blockventuremc.utils.itembuilder.ItemBuilder
 import org.bukkit.Location
@@ -30,10 +34,6 @@ import kotlin.math.sin
 )
 class FlatRideCommand : CommandExecutor, TabExecutor {
 
-    var speed = 1.5
-    var tiltAngle = 42.0
-    var currentTiltAngle = 0.0
-
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender !is Player) return true
 
@@ -46,32 +46,9 @@ class FlatRideCommand : CommandExecutor, TabExecutor {
 
         if (ride == "pinball") {
             generatePinball(sender.location)
+            sender.sendMessagePrefixed("FlatRide initialized")
             return true
         }
-
-        if (ride == "speed") {
-            if (args.size < 2) {
-                sender.sendMessagePrefixed("Usage: /flatride speed <speed>")
-                return true
-            }
-            val newSpeed = args[1].toDouble()
-            speed = newSpeed
-            sender.sendMessagePrefixed("Speed set to $newSpeed")
-            return true
-        }
-
-        if (ride == "tilt") {
-            if (args.size < 2) {
-                sender.sendMessagePrefixed("Usage: /flatride tilt <tiltAngle>")
-                return true
-            }
-            val newTiltAngle = args[1].toDouble()
-            tiltAngle = newTiltAngle
-            sender.sendMessagePrefixed("Tilt Angle set to $newTiltAngle")
-            return true
-        }
-
-        sender.sendMessagePrefixed("FlatRide initialized")
         return true
     }
 
@@ -87,8 +64,12 @@ class FlatRideCommand : CommandExecutor, TabExecutor {
 
         // Add rotator attachment
         val rotator = Attachment("rotator", Vector(0.0, 0.0, 10.0), Vector())
+        rotator.localTransformChance = true
         tiltShift.addChild(rotator)
+        rotator.addChild(ItemAttachment("modell", ItemBuilder(Material.DIAMOND_SWORD).customModelData(70).build(), Vector(0.0, 0.0, 0.0), Vector()).setScale(10.0f))
 
+        val cartRotator = Attachment("cartrotator", Vector(0.0, 0.0, 0.0), Vector())
+        rotator.addChild(cartRotator)
         // Generate the carts
 
         val radius = 5.0
@@ -98,41 +79,48 @@ class FlatRideCommand : CommandExecutor, TabExecutor {
             val x = cos(angle) * radius
             val z = sin(angle) * radius
 
-            generateCart(rotator, n, Vector(x, 0.0, z), angle)
+            generateCart(cartRotator, n, Vector(x, 0.0, z), angle)
         }
 
         rootAttachment.animation = object : Animation() {
             var time = 0.0
+            var armRotation = 0.0f
+
+            init {
+                animationMap["speed"] = 1.5f
+                animationMap["tiltangle"] = 42.0f
+                animationMap["cartspeed"] = 1.5f
+                animationMap["armspeed"] = 0.2f
+            }
             override fun animate() {
                 time++
 
-                rotator.localRotation.add(Vector(0.0, speed, 0.0))
+                val speed = animationMap["speed"] as Float
+                val tiltAngleTarget = animationMap["tiltangle"] as Float
+                val cartspeed = animationMap["cartspeed"] as Float
+                val armSpeed = animationMap["armspeed"] as Float
 
-                rotator.children.forEach { name, child ->
-                    child.localRotation.add(Vector(0.0, speed * 2, 0.0))
+                rotator.localRotation.add(Vector(0.0f, speed, 0.0f))
+
+                cartRotator.children.forEach { name, child ->
+                    child.localRotation.add(Vector(0.0f, cartspeed, 0.0f))
                 }
 
-                if (tiltAngle == currentTiltAngle) {
-                    return
-                }
+                armRotation = lerp(armRotation, tiltAngleTarget, deltaTime, armSpeed)
 
-                if (tiltAngle > currentTiltAngle) {
-                    currentTiltAngle += 0.1
-                } else {
-                    currentTiltAngle -= 0.1
-                }
-
-                val armRotation = sin(time * 0.05) * currentTiltAngle - currentTiltAngle
-                tiltShift.localRotation = Vector(armRotation, 0.0, 0.0)
+                //val armRotation = (sin(time * 0.05) * tiltAngle) + (tiltAngle * 0.5)
+                tiltShift.localRotation = Vector(armRotation, 0.0f, 0.0f)
             }
         }
 
+        selectedStructure = rootAttachment
         rootAttachment.initialize()
         StructureManager.structures[rootAttachment.uuid] = rootAttachment
     }
 
     private fun generateCart(rotator: Attachment, n: Int, offset: Vector, angle: Double) {
         val cartRotator = Attachment("rotator$n", offset, Vector(0.0, Math.toDegrees(angle), 0.0))
+        cartRotator.localTransformChance = true
         rotator.addChild(cartRotator)
 
         cartRotator.addChild(Seat("seat1", Vector(0.39, 0.6, 0.3), Vector()))
@@ -157,7 +145,7 @@ class FlatRideCommand : CommandExecutor, TabExecutor {
         args: Array<out String>
     ): List<String> {
         return when (args.size) {
-            1 -> listOf("pinball", "speed", "tilt").filter { it.startsWith(args[0]) }
+            1 -> listOf("pinball").filter { it.startsWith(args[0]) }
             else -> emptyList()
         }
     }

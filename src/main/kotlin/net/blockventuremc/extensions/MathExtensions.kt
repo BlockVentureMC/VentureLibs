@@ -32,6 +32,11 @@ fun remap(
     }
 }
 
+fun lerp(currentValue: Float, targetValue: Float, deltaTime: Float, speed: Float): Float {
+    val difference = targetValue - currentValue
+    return currentValue + difference * speed * deltaTime
+}
+
 // Function to create a quaternion from front, left, and up vectors
 fun createQuaternionFromVectors(front: Vector3f, left: Vector3f, up: Vector3f): Quaternionf {
     val mat = org.joml.Matrix3f()

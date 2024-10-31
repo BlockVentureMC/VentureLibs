@@ -7,8 +7,14 @@ import org.joml.Matrix4f
 open class Attachment(
     val name: String,
     val localPosition: Vector,
-    var localRotation: Vector
+    var localRotation: Vector,
+    var transform: Matrix4f = Matrix4f(),
+    var localTransformChance: Boolean = false
 ) {
+
+    init {
+        if(!localTransformChance) transform = calculateLocalTransform
+    }
 
     lateinit var root: RootAttachment
 
@@ -56,21 +62,24 @@ open class Attachment(
         }
     }
 
-    open val localTransform: Matrix4f
+    private val calculateLocalTransform: Matrix4f
         get() {
-            var matrix = Matrix4f().translate(localPosition.toVector3f())
+        var matrix = Matrix4f().translate(localPosition.toVector3f())
 
-            if (localRotation.isZero) return matrix
+        if (localRotation.isZero) return matrix
 
-            val yaw = Math.toRadians(localRotation.y).toFloat()
-            val pitch = Math.toRadians(localRotation.x).toFloat()
-            val roll = Math.toRadians(localRotation.z).toFloat()
-            matrix.rotateY(-yaw)
-            matrix.rotateX(pitch)
-            matrix.rotateZ(roll)
+        val yaw = Math.toRadians(localRotation.y).toFloat()
+        val pitch = Math.toRadians(localRotation.x).toFloat()
+        val roll = Math.toRadians(localRotation.z).toFloat()
+        matrix.rotateY(-yaw)
+        matrix.rotateX(pitch)
+        matrix.rotateZ(roll)
 
-            return matrix
-        }
+        return matrix
+    }
+
+    open val localTransform: Matrix4f
+        get() = calculateLocalTransform
 
     val bukkitLocation: Location
         get() {

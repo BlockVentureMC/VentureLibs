@@ -45,6 +45,15 @@ class ItemAttachment(name: String, val item: ItemStack, localPosition: Vector, l
         }
     }
 
+    fun setScale(scale: Float): ItemAttachment {
+        itemDisplay?.let { display ->
+            val transform = display.transformation
+            transform.scale.set(scale)
+            itemDisplay?.transformation = transform
+        }
+        return this
+    }
+
     override fun despawn() {
         itemDisplay?.remove()
     }
