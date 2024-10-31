@@ -16,7 +16,6 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 import org.bukkit.permissions.PermissionDefault
 import org.bukkit.util.Vector
 import kotlin.math.cos
@@ -31,7 +30,9 @@ import kotlin.math.sin
 )
 class FlatRideCommand : CommandExecutor, TabExecutor {
 
-    var speed = 0.1
+    var speed = 1.5
+    var tiltAngle = 42.0
+    var currentTiltAngle = 0.0
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender !is Player) return true
@@ -59,6 +60,17 @@ class FlatRideCommand : CommandExecutor, TabExecutor {
             return true
         }
 
+        if (ride == "tilt") {
+            if (args.size < 2) {
+                sender.sendMessagePrefixed("Usage: /flatride tilt <tiltAngle>")
+                return true
+            }
+            val newTiltAngle = args[1].toDouble()
+            tiltAngle = newTiltAngle
+            sender.sendMessagePrefixed("Tilt Angle set to $newTiltAngle")
+            return true
+        }
+
         sender.sendMessagePrefixed("FlatRide initialized")
         return true
     }
@@ -74,7 +86,7 @@ class FlatRideCommand : CommandExecutor, TabExecutor {
 
 
         // Add rotator attachment
-        val rotator = Attachment("rotator", Vector(10.0, 0.0, 0.0), Vector())
+        val rotator = Attachment("rotator", Vector(0.0, 0.0, 10.0), Vector())
         tiltShift.addChild(rotator)
 
         // Generate the carts
@@ -97,11 +109,20 @@ class FlatRideCommand : CommandExecutor, TabExecutor {
                 rotator.localRotation.add(Vector(0.0, speed, 0.0))
 
                 rotator.children.forEach { name, child ->
-                    child.localRotation.add(Vector(0.0, speed / 10, 0.0))
+                    child.localRotation.add(Vector(0.0, speed * 2, 0.0))
                 }
 
+                if (tiltAngle == currentTiltAngle) {
+                    return
+                }
 
-                val armRotation = sin(time * 0.1) * 20.0
+                if (tiltAngle > currentTiltAngle) {
+                    currentTiltAngle += 0.1
+                } else {
+                    currentTiltAngle -= 0.1
+                }
+
+                val armRotation = sin(time * 0.05) * currentTiltAngle - currentTiltAngle
                 tiltShift.localRotation = Vector(armRotation, 0.0, 0.0)
             }
         }
@@ -136,7 +157,7 @@ class FlatRideCommand : CommandExecutor, TabExecutor {
         args: Array<out String>
     ): List<String> {
         return when (args.size) {
-            1 -> listOf("pinball", "speed").filter { it.startsWith(args[0]) }
+            1 -> listOf("pinball", "speed", "tilt").filter { it.startsWith(args[0]) }
             else -> emptyList()
         }
     }
