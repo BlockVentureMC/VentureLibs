@@ -11,7 +11,6 @@ import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.permissions.PermissionDefault
-import java.util.Locale
 
 @VentureCommand(
     name = "warp",
@@ -61,7 +60,7 @@ class WarpCommand : CommandExecutor, TabExecutor {
                 when (arg) {
                     "create" -> {
                         // Create warp
-                        sender.sendMessagePrefixed(
+                        sender.sendError(
                             sender.translate("commands.warp.create.usage")?.message ?: "Usage: /warp create <warp>"
                         )
                         sender.sendDeniedSound()
@@ -69,7 +68,7 @@ class WarpCommand : CommandExecutor, TabExecutor {
 
                     "delete" -> {
                         // Delete warp
-                        sender.sendMessagePrefixed(
+                        sender.sendError(
                             sender.translate("commands.warp.delete.usage")?.message ?: "Usage: /warp delete <warp>"
                         )
                         sender.sendDeniedSound()
@@ -186,7 +185,7 @@ class WarpCommand : CommandExecutor, TabExecutor {
     private fun testIfSubcommand(sender: CommandSender, subcommand: String): Boolean {
         val rankNeeded = subcommandRanks[subcommand] ?: return false
         if (!sender.isRankOrHigher(rankNeeded)) {
-            sender.sendMessage(
+            sender.sendError(
                 sender.translate("no_permission.rank", mapOf("rank" to rankNeeded.name))?.message
                     ?: "You need to be ${rankNeeded.name} to use this command."
             )
@@ -205,7 +204,7 @@ class WarpCommand : CommandExecutor, TabExecutor {
 
         val warps = WarpManager.getWarps().filter { sender.isRankOrHigher(it.rankNeeded) }
             .map { "<click:run_command:'/warp ${it.name}'><hover:show_text:'<color:#2ecc71>$translatedClickToWarp (${it.type.name})</color>'><color:${it.rankNeeded.rank.color}>${it.name}</color></hover></click>" }
-        sender.sendMessagePrefixed("Warps: ${warps.joinToString(", ")}")
+        sender.sendInfo("Warps: ${warps.joinToString(", ")}")
         sender.sendOpenSound()
     }
 
@@ -219,14 +218,14 @@ class WarpCommand : CommandExecutor, TabExecutor {
         val warp = WarpManager.getWarp(arg)
 
         if (warp == null || !sender.isRankOrHigher(warp.rankNeeded)) {
-            sender.sendMessagePrefixed(
+            sender.sendError(
                 sender.translate("commands.warp.not_found", mapOf("warp" to arg))?.message ?: "Warp $arg not found."
             )
             return
         }
 
         if (sender !is Player) {
-            sender.sendMessagePrefixed("Only players can use this command.")
+            sender.sendError("Only players can use this command.")
             return
         }
         sender.teleportAsyncWithPassengers(warp.location)
@@ -243,7 +242,7 @@ class WarpCommand : CommandExecutor, TabExecutor {
     private fun reloadWarps(sender: CommandSender) {
         // Reload warps
         WarpManager.reloadWarps()
-        sender.sendMessagePrefixed(sender.translate("commands.warp.reload.success")?.message ?: "Warps reloaded.")
+        sender.sendSuccess(sender.translate("commands.warp.reload.success")?.message ?: "Warps reloaded.")
         sender.sendSuccessSound()
     }
 
@@ -258,14 +257,14 @@ class WarpCommand : CommandExecutor, TabExecutor {
     private fun createWarp(sender: CommandSender, arg: String, ranks: Ranks = Ranks.TEAM, type: WarpType = WarpType.GENERIC) {
         // Create warp
         if (sender !is Player) {
-            sender.sendMessagePrefixed("Only players can use this command.")
+            sender.sendError("Only players can use this command.")
             return
         }
 
         val warp = Warp(arg, sender.location, ranks, type)
 
         WarpManager.addWarp(warp)
-        sender.sendMessagePrefixed(
+        sender.sendSuccess(
             sender.translate(
                 "commands.warp.create.success",
                 mapOf("warp" to arg, "rank" to "<color:${ranks.rank.color}>${ranks.name}</color>")
@@ -285,14 +284,14 @@ class WarpCommand : CommandExecutor, TabExecutor {
         val warp = WarpManager.getWarp(arg)
 
         if (warp == null) {
-            sender.sendMessagePrefixed(
+            sender.sendError(
                 sender.translate("commands.warp.not_found", mapOf("warp" to arg))?.message ?: "Warp $arg not found."
             )
             return
         }
 
         WarpManager.removeWarp(warp.name)
-        sender.sendMessagePrefixed(
+        sender.sendSuccess(
             sender.translate("commands.warp.delete.success", mapOf("warp" to arg))?.message ?: "Warp $arg deleted."
         )
         sender.sendSuccessSound()
@@ -305,7 +304,7 @@ class WarpCommand : CommandExecutor, TabExecutor {
      */
     private fun showUsage(sender: CommandSender) {
         // Show usage
-        sender.sendMessagePrefixed(sender.translate("commands.warp.invalid_usage")?.message ?: "Invalid usage.")
+        sender.sendError(sender.translate("commands.warp.invalid_usage")?.message ?: "Invalid usage.")
         sender.sendDeniedSound()
     }
 
@@ -328,7 +327,7 @@ class WarpCommand : CommandExecutor, TabExecutor {
         val rank = Ranks.entries.find { it.name.equals(rankString, ignoreCase = true) }
 
         if (rank == null) {
-            sender.sendMessagePrefixed(
+            sender.sendError(
                 sender.translate(
                     "commands.warp.invalid_rank",
                     mapOf("rank" to rankString)
@@ -339,7 +338,7 @@ class WarpCommand : CommandExecutor, TabExecutor {
         }
 
         val warpType = WarpType.entries.find { it.name.equals(type, true) } ?: run {
-            sender.sendMessagePrefixed(
+            sender.sendError(
                 sender.translate(
                     "commands.warp.invalid_type",
                     mapOf("type" to type)

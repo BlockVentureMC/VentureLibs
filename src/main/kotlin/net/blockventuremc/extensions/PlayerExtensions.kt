@@ -2,6 +2,7 @@ package net.blockventuremc.extensions
 
 import dev.fruxz.stacked.text
 import net.blockventuremc.consts.BLOCK_PREFIX
+import net.blockventuremc.consts.MessageFormat
 import net.blockventuremc.consts.PREFIX
 import net.blockventuremc.consts.TEXT_GRAY
 import net.blockventuremc.database.functions.createDatabaseUser
@@ -22,7 +23,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.util.*
 
-
+@Deprecated("Use the new message System")
 fun CommandSender.sendMessagePrefixed(message: String) = sendMessage(text(PREFIX + message))
 
 fun CommandSender.sendMessageBlock(vararg lines: String) {
@@ -35,13 +36,19 @@ fun CommandSender.sendMessageBlock(vararg lines: String) {
     sendEmtpyLine()
 }
 
+fun CommandSender.sendMessageFormated(message: String, format: MessageFormat, args: String? = null) = format.sendCommandSender(this, message, args)
+
+// TODO: auto use translation system and add placeholders and replace msg
+
+fun CommandSender.sendInfo(message: String) = sendMessageFormated(message, MessageFormat.INFO)
+fun CommandSender.sendWarning(message: String) = sendMessageFormated(message, MessageFormat.WARNING)
+fun CommandSender.sendError(message: String) = sendMessageFormated(message, MessageFormat.ERROR)
+fun CommandSender.sendSuccess(message: String) = sendMessageFormated(message, MessageFormat.SUCCESS)
+fun CommandSender.sendLink(message: String, url: String) = sendMessageFormated(message, MessageFormat.LINK, url)
+fun CommandSender.sendCommand(message: String, command: String) = sendMessageFormated(message, MessageFormat.COMMAND, command)
+fun CommandSender.sendLocked(message: String) = sendMessageFormated(message, MessageFormat.LOCKED)
+
 fun CommandSender.sendEmtpyLine() = sendMessage(text(" "))
-
-fun CommandSender.sendText(message: String) = sendMessage(text(TEXT_GRAY + message))
-fun CommandSender.sendTextPrefixedIf(message: String, condition: Boolean) =
-    if (condition) sendMessage(text(PREFIX + message)) else Unit
-
-fun CommandSender.sendTextPrefixed(message: String) = sendMessage(text(PREFIX + message))
 
 fun Player.sendDeniedSound() = playSound(location, "minecraft:block.note_block.bass", 1f, 1f)
 fun CommandSender.sendDeniedSound(): Boolean {
@@ -113,10 +120,6 @@ fun BlockUser.translate(message: String, placeholders: Map<String, Any?> = empty
 fun CommandSender.translate(message: String, placeholders: Map<String, Any?> = emptyMap()): Translation? {
     if (this is Player) return toBlockUser().translate(message, placeholders)
     return TranslationCache.get(Languages.EN.getLanguageCode(), message, placeholders)
-}
-
-fun Player.translate(message: String, placeholders: Map<String, Any?> = emptyMap()): Translation? {
-    return toBlockUser().translate(message, placeholders)
 }
 
 fun Player.toBlockUser(): BlockUser {

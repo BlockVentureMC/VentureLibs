@@ -1,9 +1,9 @@
 package net.blockventuremc.modules.general.commands.crew
 
-import io.papermc.paper.entity.TeleportFlag
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
-import net.blockventuremc.extensions.sendMessagePrefixed
+import net.blockventuremc.extensions.sendError
+import net.blockventuremc.extensions.sendSuccess
 import net.blockventuremc.extensions.teleportAsyncWithPassengers
 import net.blockventuremc.extensions.translate
 import org.bukkit.Bukkit
@@ -13,7 +13,6 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
-import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.permissions.PermissionDefault
 
 
@@ -29,7 +28,7 @@ class WorldCommand : CommandExecutor, TabExecutor {
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (args.isEmpty()) {
-            sender.sendMessagePrefixed(sender.translate("commands.world.usage")?.message ?: "Usage: /world <world>")
+            sender.sendError(sender.translate("commands.world.usage")?.message ?: "Usage: /world <world>")
             return true
         }
 
@@ -38,21 +37,21 @@ class WorldCommand : CommandExecutor, TabExecutor {
 
         if (world == null) {
             world = Bukkit.createWorld(WorldCreator(worldName))
-            sender.sendMessagePrefixed(
+            sender.sendSuccess(
                 sender.translate("commands.world.created", mapOf("world" to worldName))?.message
                     ?: "World $worldName created successfully"
             )
         }
 
         if (sender !is Player) {
-            sender.sendMessagePrefixed("<red>Only players can use this command")
+            sender.sendError("Only players can use this command")
             return true
         }
 
         Bukkit.getScheduler().runTaskLater(VentureLibs.instance, Runnable {
             sender.teleportAsyncWithPassengers(world!!.spawnLocation)
 
-            sender.sendMessagePrefixed(
+            sender.sendSuccess(
                 sender.translate(
                     "commands.world.teleported",
                     mapOf("world" to worldName)

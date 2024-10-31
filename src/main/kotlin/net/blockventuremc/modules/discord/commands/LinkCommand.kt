@@ -3,6 +3,7 @@ package net.blockventuremc.modules.discord.commands
 import net.blockventuremc.database.functions.getLinkOfDiscord
 import net.blockventuremc.database.model.Link
 import net.blockventuremc.extensions.getLogger
+import net.blockventuremc.extensions.sendInfo
 import net.blockventuremc.modules.discord.annotations.SlashCommand
 import net.blockventuremc.modules.discord.interfaces.HasOptions
 import net.blockventuremc.modules.discord.manager.LinkManager
@@ -78,7 +79,7 @@ class LinkCommand : ListenerAdapter(), HasOptions {
 
         replyEmbeds(embedBuilder.build()).setEphemeral(true).queue()
 
-        player.sendMessage(
+        player.sendInfo(
             TranslationCache.get(
                 language.code,
                 "commands.link.linked_field_description",

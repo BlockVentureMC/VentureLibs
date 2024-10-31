@@ -1,6 +1,8 @@
 package net.blockventuremc.modules.`fun`.baloon
 
 import net.blockventuremc.annotations.VentureCommand
+import net.blockventuremc.extensions.sendError
+import net.blockventuremc.extensions.sendInfo
 import net.blockventuremc.modules.structures.StructureManager
 import org.bukkit.Material
 import org.bukkit.command.Command
@@ -35,11 +37,10 @@ class BalloonCommand : CommandExecutor {
 
         if (item.type == Material.AIR) {
             if(currentBalloon != null) {
-                player.sendMessage("byeee ballloon! :C")
-                currentBalloon.remove()
+                player.sendInfo("byeee ballloon! :C")
                 return true
             }
-            player.sendMessage("duu musst ein Block in der Hand haben um einen Balloon zu spawnen :3")
+            player.sendError("duu musst ein Block in der Hand haben um einen Balloon zu spawnen :3")
             return true
         }
 
@@ -48,7 +49,7 @@ class BalloonCommand : CommandExecutor {
             StructureManager.balloons.remove(player)
         }
 
-        val balloon = ItemBalloon(player, item)
+        val balloon = Balloon(player, item)
         balloon.stiffness = 0.02
         balloon.damping = 0.91
         balloon.ydamping = 0.91
@@ -57,7 +58,8 @@ class BalloonCommand : CommandExecutor {
         balloon.spawn()
         StructureManager.balloons[player] = balloon
 
-        player.sendMessage("balloon spawned! :)")
+        player.sendInfo("balloon spawned! :)")
+
         return true
     }
 

@@ -1,8 +1,9 @@
 package net.blockventuremc.modules.structures.events
 
-import io.papermc.paper.entity.TeleportFlag
 import me.m56738.smoothcoasters.api.event.PlayerSmoothCoastersHandshakeEvent
 import net.blockventuremc.VentureLibs
+import net.blockventuremc.extensions.sendError
+import net.blockventuremc.extensions.sendInfo
 import net.blockventuremc.modules.`fun`.baloon.Balloon
 import net.blockventuremc.modules.structures.StructureManager
 import org.bukkit.Bukkit
@@ -20,7 +21,7 @@ class StructureEvents : Listener {
 
     @EventHandler
     fun onPlayerSmoothCoastersHandshakeEvent(event: PlayerSmoothCoastersHandshakeEvent) {
-        event.player.sendMessage("Yippi :3")
+        event.player.sendInfo("Yippi :3")
     }
 
     @EventHandler
@@ -90,7 +91,7 @@ class StructureEvents : Listener {
         if (seat?.customName == null || seat.customName != "seat") return
 
         if (seat.passengers.size > 1) {
-            player.sendMessage("Kuscheln verboten! Nimm dir einen eigenen Platz :3")
+            player.sendError("Kuscheln verboten! Nimm dir einen eigenen Platz :3")
             return
         }
 

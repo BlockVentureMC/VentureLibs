@@ -1,7 +1,9 @@
 package net.blockventuremc.modules.general.commands.club
 
 import net.blockventuremc.annotations.VentureCommand
-import net.blockventuremc.extensions.sendMessagePrefixed
+import net.blockventuremc.extensions.sendError
+import net.blockventuremc.extensions.sendInfo
+import net.blockventuremc.extensions.sendSuccess
 import net.blockventuremc.extensions.translate
 import org.bukkit.WeatherType
 import org.bukkit.command.Command
@@ -25,7 +27,7 @@ class PersonalWeatherCommand : CommandExecutor, TabExecutor {
         if (sender !is Player) return true
 
         if (args.isEmpty()) {
-            sender.sendMessagePrefixed(
+            sender.sendInfo(
                 sender.translate(
                     "commands.personaweather.current",
                     mapOf("weather" to (sender.playerWeather?.name ?: "None"))
@@ -37,7 +39,7 @@ class PersonalWeatherCommand : CommandExecutor, TabExecutor {
 
         if (args[0] == "reset") {
             sender.resetPlayerWeather()
-            sender.sendMessagePrefixed(
+            sender.sendSuccess(
                 sender.translate(
                     "commands.personaweather.reset",
                     mapOf()
@@ -50,7 +52,7 @@ class PersonalWeatherCommand : CommandExecutor, TabExecutor {
             "clear" -> WeatherType.CLEAR
             "rain" -> WeatherType.DOWNFALL
             else -> {
-                sender.sendMessagePrefixed(
+                sender.sendError(
                     sender.translate(
                         "commands.personaweather.invalid",
                         mapOf()
@@ -63,7 +65,7 @@ class PersonalWeatherCommand : CommandExecutor, TabExecutor {
 
         sender.setPlayerWeather(weather)
 
-        sender.sendMessagePrefixed(
+        sender.sendSuccess(
             sender.translate(
                 "commands.personaweather.set",
                 mapOf("weather" to weather.name)

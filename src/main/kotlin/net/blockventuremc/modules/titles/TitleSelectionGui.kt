@@ -2,7 +2,7 @@ package net.blockventuremc.modules.titles
 
 import dev.fruxz.stacked.extension.asPlainString
 import dev.fruxz.stacked.text
-import net.blockventuremc.extensions.sendMessagePrefixed
+import net.blockventuremc.extensions.sendSuccess
 import net.blockventuremc.extensions.translate
 import net.blockventuremc.modules.general.cache.PlayerCache
 import net.blockventuremc.modules.titles.events.TitleChangedEvent
@@ -108,11 +108,11 @@ class TitleSelectionGui : Listener {
             Bukkit.getPluginManager().callEvent(titleChangedEvent)
 
             player.playSound(whoClicked, Sound.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 0.4f, 1.3f)
-            player.sendMessagePrefixed(
+            player.sendSuccess(
                 blockPlayer.translate(
                     "title.changed",
                     mapOf("title" to title.display(player))
-                )?.message ?: "<green>Your title has been changed to <yellow>${title.display(player)}</yellow> <green>!"
+                )?.message ?: "Your title has been changed to <yellow>${title.display(player)}</yellow>!"
             )
             player.closeInventory()
         }
