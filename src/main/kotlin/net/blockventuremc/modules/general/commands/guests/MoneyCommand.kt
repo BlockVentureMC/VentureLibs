@@ -1,10 +1,7 @@
 package net.blockventuremc.modules.general.commands.guests
 
 import net.blockventuremc.annotations.VentureCommand
-import net.blockventuremc.extensions.bitsPerMinute
-import net.blockventuremc.extensions.sendMessagePrefixed
-import net.blockventuremc.extensions.toBlockUser
-import net.blockventuremc.extensions.translate
+import net.blockventuremc.extensions.*
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -33,7 +30,7 @@ class MoneyCommand : CommandExecutor {
         val player = sender
         val dbUser = player.toBlockUser()
 
-        player.sendMessagePrefixed(
+        player.sendInfo(
             player.translate(
                 "venturebits.self", mapOf(
                     "venturebits" to dbUser.ventureBits.toString(),

@@ -7,9 +7,7 @@ import dev.fruxz.stacked.text
 import net.blockventuremc.database.functions.addAchievementToUser
 import net.blockventuremc.database.functions.getAchievementOfUser
 import net.blockventuremc.database.model.DatabaseAchievement
-import net.blockventuremc.extensions.sendMessagePrefixed
-import net.blockventuremc.extensions.toBlockUser
-import net.blockventuremc.extensions.translate
+import net.blockventuremc.extensions.*
 import net.blockventuremc.modules.achievements.model.Achievement
 import org.bukkit.Bukkit
 import java.util.*
@@ -36,10 +34,11 @@ object AchievementManager {
 
         player.showTitle(Title(text(title), text(description)))
 
-        player.sendMessagePrefixed(
+        player.sendSuccess(
             player.toBlockUser().translate("achievement.achieved", mapOf("achievement" to title))
                 ?.message ?: "Achievement achieved: $title"
         )
+        player.sendSuccessSound()
 
         addAchievementToUser(DatabaseAchievement(uuid, achievement))
         getItsLogger().info("Added new achievement $title to ${player.name}")

@@ -4,7 +4,9 @@ import dev.fruxz.ascend.extension.container.toUUID
 import dev.fruxz.ascend.tool.time.calendar.Calendar
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.database.model.BitBoosters
+import net.blockventuremc.extensions.sendError
 import net.blockventuremc.extensions.sendMessagePrefixed
+import net.blockventuremc.extensions.sendSuccess
 import net.blockventuremc.modules.boosters.BoosterCategory
 import net.blockventuremc.modules.boosters.BoosterManager
 import org.bukkit.command.Command
@@ -27,7 +29,7 @@ class CreateBoosterCommand : CommandExecutor, TabExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         // duration, multiplier are optional
         if (args.isEmpty()) {
-            sender.sendMessagePrefixed("Usage: /createbooster <player> [modifier] [duration] [userOnly]")
+            sender.sendError("Usage: /createbooster <player> [modifier] [duration] [userOnly]")
             return true
         }
 
@@ -50,7 +52,7 @@ class CreateBoosterCommand : CommandExecutor, TabExecutor {
         if (args.size > 2) {
             val durationString = args[2]
             duration = Duration.parseOrNull(durationString) ?: run {
-                sender.sendMessagePrefixed("Invalid duration.")
+                sender.sendError("Invalid duration.")
                 return true
             }
         }
@@ -67,7 +69,7 @@ class CreateBoosterCommand : CommandExecutor, TabExecutor {
 
         BoosterManager.addBooster(booster)
 
-        sender.sendMessagePrefixed("Booster created for ${target.name} with a modifier of $mod, duration of $duration, and userOnly set to $userOnly.")
+        sender.sendSuccess("Booster created for ${target.name} with a modifier of $mod, duration of $duration, and userOnly set to $userOnly.")
 
         return true
     }
