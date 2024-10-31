@@ -26,26 +26,23 @@ class AFKEvent: Listener {
         if (event.afk) {
             afkPlayers.add(event.blockUser.uuid)
 
-            // add blindness effect so player knows they are afk
-            bukkitPlayer.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 1000000, 1, false, false))
+            bukkitPlayer.addPotionEffect(PotionEffect(PotionEffectType.DARKNESS, Int.MAX_VALUE, 1, false, false, false))
         } else {
             afkPlayers.remove(event.blockUser.uuid)
 
             // remove blindness effect
-            bukkitPlayer.removePotionEffect(PotionEffectType.BLINDNESS)
+            bukkitPlayer.removePotionEffect(PotionEffectType.DARKNESS)
         }
     }
 
-    // If User is AFK, give him particles (custom with zzzz) over his head
-
     private fun runTask() {
-        val task: BukkitTask = Bukkit.getScheduler().runTaskTimer(VentureLibs.instance, Runnable {
+        Bukkit.getScheduler().runTaskTimer(VentureLibs.instance, Runnable {
             for (uuid in afkPlayers) {
                 val player = Bukkit.getPlayer(uuid) ?: continue
                 // TODO: Add custom particle with zzzz
                 player.spawnParticle(Particle.SPLASH, player.location.add(0.0, 2.0, 0.0), 1)
             }
-        }, 0, 20)
+        }, 0, 20) // 20 ticks = 1 second
     }
 
 
