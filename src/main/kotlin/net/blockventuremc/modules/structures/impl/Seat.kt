@@ -43,7 +43,7 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) :
             var transform = transformation
             transform.scale.mul(0.03f)
             transformation = transform
-            setCustomType(StructureType.SEAT)
+            setCustomType(StructureType.SEAT, root.uuid.toString())
         }
 
         interaction = location.world.spawnEntity(location, EntityType.INTERACTION) as Interaction
@@ -52,7 +52,7 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) :
             interactionWidth = 0.45f
             isCustomNameVisible = false
             itemDisplay?.addPassenger(this)
-            setCustomType(StructureType.SEAT)
+            setCustomType(StructureType.SEAT, root.uuid.toString())
         }
     }
 

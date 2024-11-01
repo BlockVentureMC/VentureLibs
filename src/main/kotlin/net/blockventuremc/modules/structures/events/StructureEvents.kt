@@ -6,6 +6,7 @@ import net.blockventuremc.extensions.sendError
 import net.blockventuremc.extensions.sendInfo
 import net.blockventuremc.modules.`fun`.baloon.Balloon
 import net.blockventuremc.modules.structures.StructureManager
+import net.blockventuremc.modules.structures.vehicle.PacketHandler
 import org.bukkit.Bukkit
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
@@ -13,6 +14,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDismountEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.util.Vector
@@ -62,6 +64,11 @@ class StructureEvents : Listener {
         }
 
         currentBalloon?.spawn(targetLocation.add(Vector(0.0, 0.1, 0.0)))
+    }
+
+    @EventHandler
+    fun onJoin(event: PlayerJoinEvent) {
+        PacketHandler.movementPacketCheck(event.player)
     }
 
     @EventHandler

@@ -4,6 +4,7 @@ import net.blockventuremc.VentureLibs
 import net.blockventuremc.consts.NAMESPACE_CUSTOMENTITY_IDENTIFIER
 import net.blockventuremc.modules.`fun`.baloon.Balloon
 import net.blockventuremc.modules.structures.impl.Train
+import net.blockventuremc.modules.structures.vehicle.CustomVehicle
 import org.bukkit.Bukkit
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
@@ -16,11 +17,12 @@ object StructureManager {
     val trains = mutableMapOf<UUID, Train>()
     val structures = mutableMapOf<UUID, RootAttachment>()
     val balloons = mutableMapOf<Player, Balloon>()
+    val vehicles = mutableMapOf<UUID, CustomVehicle>()
 
     fun update() {
 
+        //general structures and trains
         interval(0, 1) {
-
             trains.forEach { (uuid, train) ->
                 train.update()
             }
@@ -29,10 +31,17 @@ object StructureManager {
                 attachment.update()
             }
 
+        }
+
+        //vehicles and balloons
+        interval(0, 1) {
             balloons.forEach { (player, balloon) ->
                 balloon.update()
             }
 
+            vehicles.values.forEach { vehicle ->
+                vehicle.update()
+            }
         }
 
     }
@@ -44,11 +53,16 @@ object StructureManager {
         balloons.forEach { (player, balloon) ->
             balloon.remove()
         }
-        trains.forEach { (player, train) ->
+        trains.forEach { (uuid, train) ->
             train.remove()
+        }
+        vehicles.forEach { (uuid, vehicle) ->
+            vehicle.despawnAttachmentsRecurse()
         }
         balloons.clear()
         structures.clear()
+        trains.clear()
+        vehicles.clear()
     }
 
     fun cleanUpWorld() {
