@@ -14,8 +14,6 @@ object PacketHandler {
 
     fun vehicleMovement(player: Player, packet: ServerboundPlayerInputPacket) {
 
-        if(packet.zza == 0.0f && packet.xxa == 0.0f) return
-
         val vehicle = player.vehicle
         val uuidString =  vehicle?.persistentDataContainer?.get(NAMESPACE_CUSTOMENTITY_IDENTIFIER, PersistentDataType.STRING) ?: return
         val uuid = UUID.fromString(uuidString)

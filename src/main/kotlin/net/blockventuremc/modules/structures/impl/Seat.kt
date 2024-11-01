@@ -22,6 +22,7 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) :
     var itemDisplay: ItemDisplay? = null
     var interaction: Interaction? = null
     var dynamic = false
+    var smoothCoaster = true
 
     val offset = 0.8//0.53
 
@@ -35,8 +36,8 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) :
         itemDisplay = location.world.spawnEntity(location, EntityType.ITEM_DISPLAY) as ItemDisplay
         itemDisplay?.apply {
             shadowStrength = 0.0f
-            teleportDuration = 3
-            interpolationDuration = 3
+            teleportDuration = root.smoothFactor
+            interpolationDuration = root.smoothFactor
             itemDisplayTransform = ItemDisplay.ItemDisplayTransform.HEAD
             isCustomNameVisible = false
             customName = "seat"
@@ -71,16 +72,18 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) :
             TeleportFlag.EntityState.RETAIN_PASSENGERS
         )
 
-        passenger?.let { player ->
-            VentureLibs.instance.smoothCoastersAPI.setRotation(
-                VentureLibs.instance.networkInterface,
-                player,
-                rotation.x,
-                rotation.y,
-                rotation.z,
-                rotation.w,
-                3
-            )
+        if(smoothCoaster) {
+            passenger?.let { player ->
+                VentureLibs.instance.smoothCoastersAPI.setRotation(
+                    VentureLibs.instance.networkInterface,
+                    player,
+                    rotation.x,
+                    rotation.y,
+                    rotation.z,
+                    rotation.w,
+                    3
+                )
+            }
         }
     }
 

@@ -12,6 +12,8 @@ open class RootAttachment(name: String, var position: Vector = Vector(), rotatio
     var animation: Animation? = null
     lateinit var world: World
 
+    var smoothFactor: Int = 3
+
     init {
         parent = this
         root = this
