@@ -1,6 +1,7 @@
 package net.blockventuremc.modules.structures.vehicle
 
 import net.blockventuremc.annotations.VentureCommand
+import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.sendSuccess
 import net.blockventuremc.modules.structures.Animation
 import net.blockventuremc.modules.structures.Attachment
@@ -40,25 +41,40 @@ class VehicleCommand : CommandExecutor {
 
         val player = sender
 
+        if (args.isEmpty()) {
+            sender.sendMessagePrefixed("Usage: /vehicle <vehicle>")
+            return true
+        }
 
-        val vehicle = CustomVehicle("nicos vehicle", player.location.toVector(), Vector(0.0f,player.location.yaw,0.0f))
-        vehicle.world = player.world
-        vehicle.addChild(
-            ItemAttachment(
-                "model",
-                ItemBuilder(Material.DIAMOND_SWORD).customModelData(98).build(),
-                Vector(0.0, 0.3, 0.0),
-                Vector()
-            )
-        )
-        vehicle.addChild(Seat("seat1", Vector(0.0,0.4,0.0), Vector()))
+        val vehicleName = args[0]
+
+        when (vehicleName) {
+            "cart" -> {
+                val vehicle = CustomVehicle("nicos vehicle", player.location.toVector(), Vector(0.0f,player.location.yaw,0.0f))
+                vehicle.world = player.world
+                vehicle.addChild(
+                    ItemAttachment(
+                        "model",
+                        ItemBuilder(Material.DIAMOND_SWORD).customModelData(98).build(),
+                        Vector(0.0, 0.3, 0.0),
+                        Vector()
+                    )
+                )
+                vehicle.addChild(Seat("seat1", Vector(0.0,0.4,0.0), Vector()))
+
+                vehicle.initialize()
+
+                StructureManager.vehicles[vehicle.uuid] = vehicle
+                player.sendSuccess("Custom Vehicle Spawned!")
+            }
+            "airplane" -> {
+                val vehicle = CustomVehicle("airplane", player.location.toVector(), Vector(0.0f,player.location.yaw,0.0f))
 
 
+            }
+        }
 
-        vehicle.initialize()
 
-        StructureManager.vehicles[vehicle.uuid] = vehicle
-        player.sendSuccess("Custom Vehicle Spawned!")
         return true
     }
 
