@@ -48,7 +48,7 @@ class CustomVehicle(name: String, position: Vector, rotation: Vector) : RootAtta
     fun vehicleMovement(player: Player, packet: ServerboundPlayerInputPacket) {
         armorStand?.let { armorStand ->
             val onGround = armorStand.isOnGround
-            val verticalInput = (packet.zza) * 4.8f * (if (onGround) 1.0f else 0.4f) * (if (packet.zza < 0) 0.6f else 1.0f)
+            val verticalInput = (packet.zza) * 0.5f * (if (onGround) 1.0f else 0.4f) * (if (packet.zza < 0) 0.6f else 1.0f)
             val horizontalInput = (packet.xxa * -1.0f) * 0.14f * if (onGround) 1.0f else 0.4f
 
             val targetYaw = armorStand.location.yaw + (-packet.xxa * 6)
