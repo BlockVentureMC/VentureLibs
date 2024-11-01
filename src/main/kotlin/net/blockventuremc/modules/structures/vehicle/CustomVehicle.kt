@@ -8,8 +8,9 @@ import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
+import org.bukkit.attribute.Attribute
 
-class CustomVehicle: RootAttachment("vehicle") {
+class CustomVehicle(name: String, position: Vector, rotation: Vector) : RootAttachment(name, position, rotation) {
 
     var armorStand: ArmorStand? = null
 
@@ -19,8 +20,10 @@ class CustomVehicle: RootAttachment("vehicle") {
         armorStand?.apply {
             isInvulnerable = true
             setBasePlate(false)
-            isVisible = true
+            isVisible = false
+            isSmall = true
             setCustomType(StructureType.VEHICLE)
+            getAttribute(Attribute.GENERIC_STEP_HEIGHT)?.baseValue = 0.8
         }
     }
 
@@ -45,13 +48,13 @@ class CustomVehicle: RootAttachment("vehicle") {
     fun vehicleMovement(player: Player, packet: ServerboundPlayerInputPacket) {
         armorStand?.let { armorStand ->
             val onGround = armorStand.isOnGround
-            val verticalInput = (packet.zza) * 0.20f * (if (onGround) 1.0f else 0.4f) * (if (packet.zza < 0) 0.6f else 1.0f)
+            val verticalInput = (packet.zza) * 4.8f * (if (onGround) 1.0f else 0.4f) * (if (packet.zza < 0) 0.6f else 1.0f)
             val horizontalInput = (packet.xxa * -1.0f) * 0.14f * if (onGround) 1.0f else 0.4f
 
-            val targetYaw = armorStand.location.yaw + (packet.xxa * 6)
+            val targetYaw = armorStand.location.yaw + (-packet.xxa * 6)
             armorStand.setRotation(targetYaw, 0.0f)
 
-            armorStand.velocity = armorStand.location.direction.multiply(verticalInput)
+            armorStand.velocity = armorStand.velocity.add (armorStand.location.direction.multiply(verticalInput))
         }
     }
 
