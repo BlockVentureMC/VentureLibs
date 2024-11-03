@@ -4,6 +4,7 @@ import dev.fruxz.stacked.extension.asPlainString
 import dev.fruxz.stacked.text
 import me.clip.placeholderapi.PlaceholderAPI
 import net.blockventuremc.extensions.rank
+import net.blockventuremc.extensions.translate
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
@@ -18,6 +19,8 @@ fun parsePlaceholders(text: String, player: Player): String {
     parsed = parsed.replace("%displayname%", player.displayName().asPlainString)
     parsed = parsed.replace("%color%", player.rank.color)
     parsed = parsed.replace("%rank%", player.rank.displayName)
+
+    parsed = parsed.replace("%translate_open_profile%", player.translate("chat.open_profile")?.message ?: "Open Profile")
 
     if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
         parsed = PlaceholderAPI.setPlaceholders(player, parsed)
