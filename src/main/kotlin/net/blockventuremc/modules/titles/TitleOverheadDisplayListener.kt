@@ -4,8 +4,10 @@ import dev.fruxz.stacked.text
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.extensions.getLogger
 import net.blockventuremc.extensions.toBlockUser
+import net.blockventuremc.modules.structures.StructureType
 import net.blockventuremc.modules.structures.events.TrainEnterEvent
 import net.blockventuremc.modules.structures.events.TrainExitEvent
+import net.blockventuremc.modules.structures.setCustomType
 import net.blockventuremc.modules.titles.events.TitleChangedEvent
 import org.bukkit.entity.Display
 import org.bukkit.entity.EntityType
@@ -55,6 +57,7 @@ class TitleOverheadDisplayListener : Listener {
             textDisplay.transformation.rightRotation,
         )
 
+        textDisplay.setCustomType(StructureType.TITLE)
 
         player.addPassenger(textDisplay)
         getLogger().info("Created textDisplay for ${player.name} with uuid ${textDisplay.uniqueId}")

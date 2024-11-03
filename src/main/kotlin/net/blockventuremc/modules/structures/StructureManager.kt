@@ -91,9 +91,10 @@ enum class StructureType {
     TRACK,
     GENERIC,
     VEHICLE,
-    SEAT
+    SEAT,
+    TITLE
 }
 
 fun Entity.setCustomType(type: StructureType, value: String = "") {
-    this.persistentDataContainer.set(NAMESPACE_CUSTOMENTITY_IDENTIFIER, PersistentDataType.STRING, value)
+    this.persistentDataContainer[NAMESPACE_CUSTOMENTITY_IDENTIFIER, PersistentDataType.STRING] = value
 }
