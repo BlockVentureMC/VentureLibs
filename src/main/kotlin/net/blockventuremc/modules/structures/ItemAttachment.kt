@@ -11,6 +11,7 @@ class ItemAttachment(name: String, val item: ItemStack, localPosition: Vector, l
     Attachment(name, localPosition, localRotation) {
 
     var itemDisplay: ItemDisplay? = null
+    private var scale = 0.617f
 
     override fun spawn() {
         val location = bukkitLocation
@@ -23,7 +24,7 @@ class ItemAttachment(name: String, val item: ItemStack, localPosition: Vector, l
             setItemStack(item)
             isCustomNameVisible = false
             var transform = transformation
-            transform.scale.mul(0.617f)
+            transform.scale.mul(scale)
             transformation = transform
             setCustomType(StructureType.GENERIC)
         }
@@ -46,11 +47,7 @@ class ItemAttachment(name: String, val item: ItemStack, localPosition: Vector, l
     }
 
     fun setScale(scale: Float): ItemAttachment {
-        itemDisplay?.let { display ->
-            val transform = display.transformation
-            transform.scale.set(scale)
-            itemDisplay?.transformation = transform
-        }
+        this.scale = scale
         return this
     }
 

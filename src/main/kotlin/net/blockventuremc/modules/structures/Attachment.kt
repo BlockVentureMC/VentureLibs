@@ -6,7 +6,7 @@ import org.joml.Matrix4f
 
 open class Attachment(
     val name: String,
-    val localPosition: Vector,
+    var localPosition: Vector,
     var localRotation: Vector,
     var transform: Matrix4f = Matrix4f(),
     var localTransformChance: Boolean = false

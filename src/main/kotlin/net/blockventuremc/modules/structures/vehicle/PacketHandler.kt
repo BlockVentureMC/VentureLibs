@@ -13,7 +13,6 @@ import java.util.UUID
 object PacketHandler {
 
     fun vehicleMovement(player: Player, packet: ServerboundPlayerInputPacket) {
-
         val vehicle = player.vehicle
         val uuidString =  vehicle?.persistentDataContainer?.get(NAMESPACE_CUSTOMENTITY_IDENTIFIER, PersistentDataType.STRING) ?: return
         val uuid = UUID.fromString(uuidString)

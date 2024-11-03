@@ -148,6 +148,89 @@ class VehicleCommand : CommandExecutor, TabExecutor {
                 StructureManager.vehicles[vehicle.uuid] = vehicle
                 player.sendSuccess("Custom Vehicle Spawned!")
             }
+            "jetski" -> {
+                val vehicle = WaterVehicle("jetski vehicle", player.location.toVector(), Vector(0.0f,player.location.yaw,0.0f))
+                vehicle.world = player.world
+                vehicle.owner = player.uniqueId
+                vehicle.addChild(
+                    ItemAttachment("jetski", ItemBuilder(Material.LEATHER_HORSE_ARMOR).customModelData(10000).build(), Vector(0.0, 0.2, 0.0), Vector()).setScale(0.8f)
+                )
+                vehicle.addChild(Seat("seat1", Vector(0.0,0.2,0.0), Vector()))
+
+                //effect
+                val back = EffectAttachment("back", Vector(0.0,0.0,-0.8), Vector())
+                val left = EffectAttachment("left", Vector(-0.7,0.0,0.8), Vector())
+                val right = EffectAttachment("right", Vector(0.7,0.0,0.8), Vector())
+                vehicle.addChild(back)
+                vehicle.addChild(left)
+                vehicle.addChild(right)
+                vehicle.animation = object : Animation() {
+                    val waterBlockData = Material.WATER.createBlockData()
+
+                    override fun animate() {
+                        val velocity = vehicle.armorStand?.velocity ?: return
+
+                        if(vehicle.groundBlock.isSolid) {
+                            if(velocity.length() < 0.02) return
+                            vehicle.world.spawnParticle(Particle.BLOCK, vehicle.position.x, vehicle.position.y, vehicle.position.z, 10, 0.5, 0.1, 0.5, 1.0, vehicle.groundBlock.blockData)
+                        } else {
+                            if(velocity.length() < 0.12) return
+                            vehicle.world.spawnParticle(
+                                Particle.BLOCK,
+                                back.lerpPosition.x,
+                                back.lerpPosition.y,
+                                back.lerpPosition.z,
+                                20,
+                                0.1,
+                                0.29,
+                                0.1,
+                                1.0,
+                                waterBlockData
+                            )
+                            vehicle.world.spawnParticle(
+                                Particle.SPLASH,
+                                back.lerpPosition.x,
+                                back.lerpPosition.y,
+                                back.lerpPosition.z,
+                                4,
+                                0.24,
+                                0.27,
+                                0.24
+                            )
+
+                            vehicle.world.spawnParticle(
+                                Particle.BLOCK,
+                                left.lerpPosition.x,
+                                left.lerpPosition.y,
+                                left.lerpPosition.z,
+                                10,
+                                0.0,
+                                0.3,
+                                0.0,
+                                1.0,
+                                waterBlockData
+                            )
+                            vehicle.world.spawnParticle(
+                                Particle.BLOCK,
+                                right.lerpPosition.x,
+                                right.lerpPosition.y,
+                                right.lerpPosition.z,
+                                10,
+                                0.0,
+                                0.3,
+                                0.0,
+                                1.0,
+                                waterBlockData
+                            )
+                        }
+                    }
+                }
+
+                vehicle.initialize()
+
+                StructureManager.vehicles[vehicle.uuid] = vehicle
+                player.sendSuccess("Jetski Vehicle Spawned!")
+            }
             "airplane" -> {
                 val vehicle = AirplaneVehicle("airplane", player.location.toVector(), Vector(0.0f,player.location.yaw,0.0f))
                 vehicle.owner = player.uniqueId
@@ -182,7 +265,7 @@ class VehicleCommand : CommandExecutor, TabExecutor {
         args: Array<out String>
     ): List<String> {
         return when (args.size) {
-            1 -> listOf("cart", "airplane", "roller").filter { it.startsWith(args[0]) }
+            1 -> listOf("cart", "airplane", "roller", "jetski").filter { it.startsWith(args[0]) }
             else -> emptyList()
         }
     }

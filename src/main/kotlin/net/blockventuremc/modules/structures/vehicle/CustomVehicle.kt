@@ -16,11 +16,13 @@ open class CustomVehicle(name: String, position: Vector, rotation: Vector) : Roo
     var armorStand: ArmorStand? = null
     var tilt = 0.0f
     var owner: UUID? = null
+    var velocity = Vector()
 
     override fun spawn() {
         val location = bukkitLocation
         armorStand = location.world.spawnEntity(location, EntityType.ARMOR_STAND) as ArmorStand
         armorStand?.apply {
+            isSilent = true
             isInvulnerable = true
             setBasePlate(false)
             isVisible = false
@@ -35,9 +37,7 @@ open class CustomVehicle(name: String, position: Vector, rotation: Vector) : Roo
     }
 
     override fun update() {
-
         movementUpdate()
-
         super.update()
     }
 
@@ -45,11 +45,15 @@ open class CustomVehicle(name: String, position: Vector, rotation: Vector) : Roo
         val targetPosition = armorStand?.location ?: return
         position = targetPosition.toVector()
         localRotation = Vector(targetPosition.pitch, targetPosition.yaw, tilt)
+        velocity = armorStand?.velocity ?: return
     }
 
     //asynchronous
     open fun vehicleMovement(player: Player, packet: ServerboundPlayerInputPacket) {
         if(packet.zza == 0.0f && packet.xxa == 0.0f) return
+
+        //if(player.uniqueId != uuid) return
+
         armorStand?.let { armorStand ->
             val onGround = armorStand.isOnGround
             val verticalInput = (packet.zza) * 0.35f * (if (onGround) 1.0f else 0.4f) * (if (packet.zza < 0) 0.6f else 1.0f)
