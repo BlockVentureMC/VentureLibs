@@ -17,7 +17,7 @@ import java.time.Duration
 class ChatEvent : Listener {
 
     private val chatFormat =
-        "%luckperms_prefix%%luckperms_primary_group_name% <color:#3d3d3d>»</color> <color:#c8d6e5>%playername%</color> <color:#f6e58d>"
+        "%luckperms_prefix%%luckperms_primary_group_name% <color:#3d3d3d>»</color> <color:#c8d6e5><hover:show_text:'<color:#1B9CFC>%translate_open_profile%</color>'><click:run_command:'/profile %playername%'>%playername%</click></hover></color> <color:#f6e58d>"
 
     @EventHandler
     fun onChat(event: AsyncChatEvent): Unit = with(event) {
