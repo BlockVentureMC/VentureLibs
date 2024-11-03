@@ -1,5 +1,6 @@
 package net.blockventuremc.modules.titles
 
+import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent
 import dev.fruxz.stacked.text
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.extensions.getLogger
@@ -15,6 +16,7 @@ import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.vehicle.VehicleEnterEvent
@@ -73,6 +75,16 @@ class TitleOverheadDisplayListener : Listener {
     fun onPlayerQuit(event: PlayerQuitEvent) {
         val player = event.player
         textDisplays[player]?.remove()
+    }
+
+    @EventHandler
+    fun onPlayerDeath(event: PlayerDeathEvent) {
+        textDisplays[event.player]?.remove()
+    }
+
+    @EventHandler
+    fun onPlayerRespawn(event: PlayerPostRespawnEvent) {
+        createTextDisplay(event.player)
     }
 
     @EventHandler
