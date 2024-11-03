@@ -36,7 +36,7 @@ class TitleOverheadDisplayListener : Listener {
     }
 
     private fun createTextDisplay(player: Player) {
-        val textDisplay = player.world.spawnEntity(player.eyeLocation, EntityType.TEXT_DISPLAY) as TextDisplay
+        val textDisplay = player.world.spawnEntity(player.eyeLocation.add(0.0, 0.5, 0.0), EntityType.TEXT_DISPLAY) as TextDisplay
         textDisplays[player] = textDisplay
         textDisplay.text(text(player.toBlockUser().selectedTitle?.display?.let { it(player) }
             ?: "<color:#4b6584>No title"))
