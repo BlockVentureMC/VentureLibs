@@ -85,5 +85,20 @@
     "commands.world.teleported": "Teleported to world <color:#f78fb3>%world%</color>.",
     "commands.skull.usage": "Usage: /skull <color:#f78fb3><player/texture>",
     "commands.skull.name": "<gray>Head of <color:#f78fb3>%name%</color>.",
-    "commands.skull.given": "You have received the head of <color:#f78fb3>%name%</color>."
+    "commands.skull.given": "You have received the head of <color:#f78fb3>%name%</color>.",
+    "menus.park_areas.ASHEN_SHORES": "Ashen Shores",
+    "menus.park_areas.ASHEN_SHORES.description": "Built around a volcano, Ashen Shores is a place of wonder and adventure.",
+    "menus.park_areas.PARADISE_BAY": "Paradise Bay",
+    "menus.park_areas.PARADISE_BAY.description": "A place of pure bliss, Paradise Bay is a place of peace and tranquility.",
+    "menus.park_areas.SERPENT_JUNGLE": "Serpent Jungle",
+    "menus.park_areas.SERPENT_JUNGLE.description": "A place of mystery and danger, Serpent Jungle is a place of danger and excitement.",
+    "menus.park_areas.UNKNOWN_AREA": "Unknown Area",
+    "menus.park_areas.UNKNOWN_AREA_2": "Unknown Area",
+    "menus.park_areas.UNKNOWN_AREA_3": "Unknown Area",
+    "menus.warps.sorting": "Sorting",
+    "menus.warps.type.GENERIC": "Generic",
+    "menus.warps.type.COASTER": "Coaster",
+    "menus.warps.type.FLATRIDE": "Flatride",
+    "menus.warps.type.SHOP": "Shop",
+    "menus.warps.type.POI": "POI"
 }
