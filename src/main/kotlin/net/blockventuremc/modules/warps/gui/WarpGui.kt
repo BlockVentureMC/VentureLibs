@@ -87,7 +87,9 @@ object WarpGui {
         return warp.material.toItemBuilder {
             display("<color:${warp.rankNeeded.rank.color}>${warp.name}")
             customModelData(warp.customModelData)
-            onClick {
+            onClick { event ->
+                event.isCancelled = true
+                event.currentItem = null
                 player.sendInfo("Teleporting to ${warp.name}")
                 player.teleportAsyncWithPassengers(warp.location)
             }
