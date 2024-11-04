@@ -4,6 +4,7 @@ import io.papermc.paper.entity.TeleportFlag
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.extensions.*
 import net.blockventuremc.modules.general.model.Ranks
+import net.blockventuremc.modules.warps.gui.WarpGui
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -44,9 +45,10 @@ class WarpCommand : CommandExecutor, TabExecutor {
         label: String,
         args: Array<out String>
     ): Boolean {
+        if (sender !is Player) return true
 
         if (label.equals("warps", ignoreCase = true)) {
-            listWarps(sender)
+            WarpGui.openMenu(sender)
             return true
         }
 

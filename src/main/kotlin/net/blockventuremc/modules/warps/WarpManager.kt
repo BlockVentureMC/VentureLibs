@@ -8,6 +8,7 @@ import net.blockventuremc.modules.general.events.custom.*
 import net.blockventuremc.modules.general.model.Ranks
 import net.blockventuremc.utils.FileConfig
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.WorldCreator
 
 object WarpManager {
@@ -62,7 +63,10 @@ object WarpManager {
                         warpKey,
                         ventureLocation.toBukkitLocation(),
                         warpSection.getString("rankNeeded")?.let { Ranks.valueOf(it) } ?: Ranks.TEAM,
-                        warpSection.getString("type")?.let { WarpType.valueOf(it) } ?: WarpType.GENERIC
+                        warpSection.getString("type")?.let { WarpType.valueOf(it) } ?: WarpType.GENERIC,
+                        warpSection.getString("parkArea")?.let { ParkArea.valueOf(it) } ?: ParkArea.PARADISE_BAY,
+                        warpSection.getString("material")?.let { Material.valueOf(it) } ?: Material.DIAMOND,
+                        warpSection.getInt("customModelData")
                     )
                     warps[warpKey] = warp
                 }, 1L)
@@ -143,6 +147,9 @@ object WarpManager {
             warpConfig["${warp.name}.location"] = warp.location.toVentureLocation().toSimpleString()
             warpConfig["${warp.name}.rankNeeded"] = warp.rankNeeded.name
             warpConfig["${warp.name}.type"] = warp.type.name
+            warpConfig["${warp.name}.parkArea"] = warp.parkArea.name
+            warpConfig["${warp.name}.material"] = warp.material.name
+            warpConfig["${warp.name}.customModelData"] = warp.customModelData
             warpConfig.saveConfig()
             getLogger().info("Warp ${warp.name} added.")
             return true

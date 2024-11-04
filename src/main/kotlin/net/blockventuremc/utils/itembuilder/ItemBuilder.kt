@@ -6,6 +6,8 @@ import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import dev.fruxz.ascend.extension.logging.getItsLogger
 import dev.fruxz.stacked.text
+import net.blockventuremc.consts.NAMESPACE_ITEM_IDENTIFIER
+import net.blockventuremc.modules.general.events.ItemClickListener
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
@@ -459,6 +461,22 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
         return this
     }
 
+    /**
+     * Sets whether the item should have a glint effect or not.
+     *
+     * @param glinting true if the item should have a glint effect, false otherwise
+     * @return the updated ItemBuilder instance
+     */
+    fun setGlinting(glinting: Boolean, force: Boolean = false): ItemBuilder {
+        meta<ItemMeta> {
+            if (!force) {
+                this.setEnchantmentGlintOverride(if (glinting) true else null)
+                return@meta
+            }
+            this.setEnchantmentGlintOverride(glinting)
+        }
+        return this
+    }
 
     /**
      * Sets the equippable state of the item in the specified slot.
@@ -510,7 +528,8 @@ class ItemBuilder(material: Material, count: Int = 1, dsl: ItemBuilder.() -> Uni
      * @return the updated ItemBuilder object.
      */
     fun onClick(onClick: (InventoryClickEvent) -> Unit): ItemBuilder {
-        ItemClickListener.itemClickEvents[itemStack] = onClick
+        addPersistentData(NAMESPACE_ITEM_IDENTIFIER, "clickable")
+        ItemClickListener.Companion.itemClickEvents[itemStack] = onClick
         return this
     }
 
