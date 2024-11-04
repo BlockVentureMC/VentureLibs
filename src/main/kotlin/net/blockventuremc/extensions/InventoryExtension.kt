@@ -19,7 +19,7 @@ fun fillEmptyAndOpenInventory(
     vararg identifiers: Map<NamespacedKey, String>? = arrayOf()
 ) {
     fillEmpty(inv)
-    if (identifier != null) inv.identify(identifier, *identifiers)
+    if (identifier != null) inv.identify(identifier, 0, *identifiers)
     player.openInventory(inv)
 }
 
@@ -29,7 +29,7 @@ fun openWithIdentifier(
     identifier: String? = null,
     vararg identifiers: Map<NamespacedKey, String>? = arrayOf()
 ) {
-    if (identifier != null) inv.identify(identifier, *identifiers)
+    if (identifier != null) inv.identify(identifier, 0, *identifiers)
     player.openInventory(inv)
 }
 
@@ -44,7 +44,7 @@ fun fillEmpty(
             inventory.setItem(i, item)
         }
     }
-    if (identifier != null) inventory.identify(identifier, *identifiers)
+    if (identifier != null) inventory.identify(identifier, 0, *identifiers)
 }
 
 fun Inventory.fillEmpty(
@@ -57,11 +57,11 @@ fun Inventory.fillEmpty(
             this.setItem(i, filler)
         }
     }
-    if (identifier != null) this.identify(identifier, *identifiers)
+    if (identifier != null) this.identify(identifier, 0, *identifiers)
 }
 
-fun Inventory.identify(identifier: String, vararg identifiers: Map<NamespacedKey, String>? = arrayOf()) {
-    this.setItem(0, this.getItem(0)?.toItemBuilder {
+fun Inventory.identify(identifier: String, slot: Int = 0, vararg identifiers: Map<NamespacedKey, String>? = arrayOf()) {
+    this.setItem(slot, this.getItem(slot)?.toItemBuilder {
         addPersistentData(NAMESPACE_GUI_IDENTIFIER, identifier)
         identifiers.forEach { map ->
             map?.forEach { (key, value) ->
@@ -78,8 +78,8 @@ fun Inventory.identify(identifier: String, vararg identifiers: Map<NamespacedKey
     }.build())
 }
 
-fun Inventory.isIdentifiedAs(identifier: String): Boolean {
-    return this.getItem(0)?.itemMeta?.persistentDataContainer?.get(
+fun Inventory.isIdentifiedAs(identifier: String, slot: Int = 0): Boolean {
+    return this.getItem(slot)?.itemMeta?.persistentDataContainer?.get(
         NAMESPACE_GUI_IDENTIFIER,
         PersistentDataType.STRING
     ) == identifier
