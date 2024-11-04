@@ -28,11 +28,11 @@ class WaterVehicle(name: String, position: Vector, rotation: Vector): CustomVehi
             val onGround = armorStand.isOnGround || groundBlock.isSolid
             val verticalInput = (packet.zza) * 0.35f * (if (onGround) 0.03f else 0.4f) * (if (packet.zza < 0) 0.6f else 1.0f)
 
-            val targetYaw = armorStand.location.yaw + (-packet.xxa * (if (onGround) 2 else 7))
-            armorStand.setRotation(targetYaw, 0.0f)
+            yaw += (-packet.xxa * (if (onGround) 2 else 7))
 
             val jumpVelocity = Vector(0.0, if (packet.isJumping && groundBlock.type == Material.WATER) 0.3 else 0.0, 0.0)
 
+            armorStand.setRotation(yaw, 0.0f)
             armorStand.velocity = armorStand.velocity.add(armorStand.location.direction.multiply(verticalInput).add(jumpVelocity))
         }
 

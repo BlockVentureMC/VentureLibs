@@ -14,7 +14,7 @@ class AirplaneVehicle(name: String, position: Vector, rotation: Vector): CustomV
         super.spawn()
 
         armorStand?.apply {
-            getAttribute(Attribute.GENERIC_GRAVITY)?.baseValue = 0.04
+            getAttribute(Attribute.GENERIC_GRAVITY)?.baseValue = 0.00
         }
 
     }
@@ -29,7 +29,7 @@ class AirplaneVehicle(name: String, position: Vector, rotation: Vector): CustomV
         armorStand?.let { armorStand ->
             val onGround = armorStand.isOnGround
 
-            val verticalInput = (packet.zza) * 0.15f * (if (packet.zza < 0) 0.6f else 1.0f)
+            val verticalInput = (packet.zza) * 0.90f * (if (packet.zza < 0) 0.6f else 1.0f)
 
             forwardForce = lerp(forwardForce, verticalInput, deltaTime, 0.8f)
 
@@ -43,11 +43,12 @@ class AirplaneVehicle(name: String, position: Vector, rotation: Vector): CustomV
                 tilt += angle * -1.7f;
                 tilt *= 0.8f;
                 tilt = tilt.coerceIn(-40.0f, 40.0f);
-
-                armorStand.setRotation(targetYaw, targetPitch)
+                yaw = targetYaw
+                pitch = targetPitch
                 lastYaw = targetYaw
 
-            armorStand.velocity = armorStand.velocity.add( armorStand.location.direction.multiply(forwardForce))
+            armorStand.setRotation(yaw, pitch)
+            armorStand.velocity = armorStand.location.direction.multiply(forwardForce)
 
         }
 

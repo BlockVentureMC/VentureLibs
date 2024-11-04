@@ -14,6 +14,8 @@ import java.util.UUID
 open class CustomVehicle(name: String, position: Vector, rotation: Vector) : RootAttachment(name, position, rotation) {
 
     var armorStand: ArmorStand? = null
+    var yaw = 0.0f
+    var pitch = 0.0f
     var tilt = 0.0f
     var owner: UUID? = null
     var velocity = Vector()
@@ -44,7 +46,7 @@ open class CustomVehicle(name: String, position: Vector, rotation: Vector) : Roo
     fun movementUpdate() {
         val targetPosition = armorStand?.location ?: return
         position = targetPosition.toVector()
-        localRotation = Vector(targetPosition.pitch, targetPosition.yaw, tilt)
+        localRotation = Vector(pitch, yaw, tilt)
         velocity = armorStand?.velocity ?: return
     }
 
@@ -57,11 +59,9 @@ open class CustomVehicle(name: String, position: Vector, rotation: Vector) : Roo
         armorStand?.let { armorStand ->
             val onGround = armorStand.isOnGround
             val verticalInput = (packet.zza) * 0.35f * (if (onGround) 1.0f else 0.4f) * (if (packet.zza < 0) 0.34f else 0.7f)
-            val horizontalInput = (packet.xxa * -1.0f) * 0.14f * if (onGround) 1.0f else 0.4f
 
-            val targetYaw = armorStand.location.yaw + (-packet.xxa * 7)
-            armorStand.setRotation(targetYaw, 0.0f)
-
+            yaw += -packet.xxa * 7
+            armorStand.setRotation(yaw, 0.0f)
             armorStand.velocity = armorStand.velocity.add (armorStand.location.direction.multiply(verticalInput))
         }
     }
