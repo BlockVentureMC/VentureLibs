@@ -5,6 +5,12 @@ import java.lang.StringBuilder
 import kotlin.math.abs
 import kotlin.math.pow
 
+
+/**
+ * Thanks to MitchGB for the great tutorial on how to create custom GUIs!
+ * https://www.spigotmc.org/threads/custom-inventory-uis-updated.635897/
+ * https://github.com/MitchGB/CustomInventoryUI/tree/main
+ */
 enum class CharRepo(val literal: String) {
     //Spacing Characters
     NEG1("\uF801"),
