@@ -2,8 +2,11 @@ package net.blockventuremc.modules.structures.events
 
 import me.m56738.smoothcoasters.api.event.PlayerSmoothCoastersHandshakeEvent
 import net.blockventuremc.VentureLibs
+import net.blockventuremc.consts.NAMESPACE_BALL_IDENTIFIER
+import net.blockventuremc.consts.NAMESPACE_CUSTOMENTITY_IDENTIFIER
 import net.blockventuremc.extensions.sendError
 import net.blockventuremc.extensions.sendInfo
+import net.blockventuremc.extensions.sendSuccess
 import net.blockventuremc.modules.`fun`.baloon.Balloon
 import net.blockventuremc.modules.structures.StructureManager
 import net.blockventuremc.modules.structures.vehicle.PacketHandler
@@ -12,11 +15,13 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDismountEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerTeleportEvent
+import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
 
 class StructureEvents : Listener {
@@ -64,6 +69,27 @@ class StructureEvents : Listener {
         }
 
         currentBalloon?.spawn(targetLocation.add(Vector(0.0, 0.1, 0.0)))
+    }
+
+    @EventHandler
+    fun onDamage(event: EntityDamageByEntityEvent ) {
+        val player = event.damager
+        val entity = event.entity
+        if (player !is Player) return
+
+        if(entity.type != EntityType.ARMOR_STAND) return
+        val uuidString =  entity.persistentDataContainer.get(NAMESPACE_BALL_IDENTIFIER, PersistentDataType.STRING) ?: return
+        player.sendSuccess("Du hast einen Ball gefangen!")
+
+        if(entity.isOnGround) {
+            entity.velocity = player.location.direction.add(Vector(0.0,0.9,0.0)).normalize().multiply(1.3)
+        } else {
+            entity.velocity = player.location.direction.multiply(1.3)
+        }
+
+        event.isCancelled = true
+        //yaw
+
     }
 
     @EventHandler

@@ -12,3 +12,4 @@ val NAMESPACE_ITEM_IDENTIFIER = NamespacedKey(NAMESPACE_PLUGIN, "item_identifier
 
 // Custom Entities System
 val NAMESPACE_CUSTOMENTITY_IDENTIFIER = NamespacedKey(NAMESPACE_PLUGIN, "custom_identifier")
+val NAMESPACE_BALL_IDENTIFIER = NamespacedKey(NAMESPACE_PLUGIN, "ball_identifier")

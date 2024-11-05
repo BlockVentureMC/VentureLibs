@@ -34,53 +34,25 @@ class CustomEntityCommand : CommandExecutor {
 
         val player = sender
 //
-        val rootAttachment = RootAttachment("test", player.location.toVector(), Vector())
-        rootAttachment.addChild(
+        val ball = Ball("ball", player.location.toVector(), Vector())
+        ball.addChild(
             ItemAttachment(
                 "base",
-                ItemBuilder(Material.DIAMOND_SWORD).customModelData(100).build(),
-                Vector(0.0, 0.4, 0.0),
+                ItemBuilder(Material.PLAYER_HEAD).textureFromMineSkin("02b00dc2105c439bac5a89a09b78ee4b").build(),
+                Vector(0.0, 0.76, 0.0),
                 Vector()
-            )
+            ).setScale(1.5f)
         )
-        rootAttachment.world = player.world
-        val rotator = Attachment("rotator", Vector(), Vector())
-        rootAttachment.addChild(rotator)
+        ball.world = player.world
 
-        rotator.addChild(Seat("seat1", Vector(0.39, 0.6, 0.3), Vector()))
-        rotator.addChild(Seat("seat2", Vector(-0.39, 0.6, 0.3), Vector()))
-        rotator.addChild(Seat("seat3", Vector(0.39, 0.6, -0.3), Vector()))
-        rotator.addChild(Seat("seat4", Vector(-0.39, 0.6, -0.3), Vector()))
-
-        rotator.addChild(
-            ItemAttachment(
-                "model",
-                ItemBuilder(Material.DIAMOND_SWORD).customModelData(99).build(),
-                Vector(0.0, 1.0, 0.0),
-                Vector()
-            )
-        )
-        rotator.addChild(
-            ItemAttachment(
-                "test",
-                ItemStack(Material.COMMAND_BLOCK),
-                Vector(2.0, 0.0, 0.0),
-                Vector(0.0, 0.0, 0.0)
-            )
-        )
-
-        rootAttachment.initialize()
-        rootAttachment.animation = object : Animation() {
+        ball.initialize()
+        ball.animation = object : Animation() {
             override fun animate() {
-
-                rootAttachment.position = player.location.toVector()
-                rootAttachment.localRotation =
-                    Vector(player.location.pitch.toDouble(), player.location.yaw.toDouble(), 0.0)
-                rotator.localRotation.add(Vector(0.0, 1.0, 0.0))
+                //ball.localRotation.add(Vector(0.0, 1.0, 0.0))
             }
         }
-        StructureManager.structures[rootAttachment.uuid] = rootAttachment
-        player.sendSuccess("Custom Entity Spawned!")
+        StructureManager.structures[ball.uuid] = ball
+        player.sendSuccess("Ball Spawned!")
         return true
     }
 
