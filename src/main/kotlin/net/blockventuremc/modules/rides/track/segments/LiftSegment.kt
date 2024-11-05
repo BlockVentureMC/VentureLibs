@@ -9,7 +9,9 @@ import kotlin.math.abs
  *
  * @param liftSpeed The desired speed for the segment.
  */
-class LiftSegment(startId: Int, endId: Int, val liftSpeed: Float) : TrackSegment(startId, endId) {
+class LiftSegment(startId: Int, endId: Int, var liftSpeed: Float) : TrackSegment(startId, endId) {
+
+    constructor(startId: Int, endId: Int) : this(startId, endId, 1.0f)
 
     override fun applyForces(train: Train, deltaTime: Float) {
         if (abs(train.velocity) > liftSpeed) return
@@ -19,6 +21,15 @@ class LiftSegment(startId: Int, endId: Int, val liftSpeed: Float) : TrackSegment
     override val type: SegmentTypes
         get() = SegmentTypes.LIFT
 
+    override fun getSaveData(): Map<String, String> {
+        return mapOf(
+            "liftSpeed" to liftSpeed.toString()
+        )
+    }
+
+    override fun setSaveData(data: Map<String, String>) {
+        liftSpeed = data["liftSpeed"]?.toFloat() ?: 1.0f
+    }
 }
 
 

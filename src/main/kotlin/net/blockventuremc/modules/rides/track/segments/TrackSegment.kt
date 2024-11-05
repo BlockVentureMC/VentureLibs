@@ -12,4 +12,12 @@ open class TrackSegment(
 
     open val type: SegmentTypes
         get() = SegmentTypes.NORMAL
+
+    open fun getSaveData(): Map<String, String> {
+        return mapOf()
+    }
+
+    open fun setSaveData(data: Map<String, String>) {
+        return
+    }
 }

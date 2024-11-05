@@ -2,6 +2,8 @@ package net.blockventuremc.modules.rides.track
 
 import net.blockventuremc.extensions.createQuaternionFromVectors
 import net.blockventuremc.modules.rides.track.segments.SegmentTypes
+import net.blockventuremc.modules.structures.StructureType
+import net.blockventuremc.modules.structures.setCustomType
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.ItemDisplay
@@ -36,7 +38,6 @@ data class TrackNode(
     val upY: Float = 0.0f,
     val upZ: Float = 0.0f,
 
-    var calculatedSpeed: Double = 0.0
 ) {
 
     /**
@@ -111,7 +112,7 @@ data class TrackNode(
         itemDisplayEnt.itemDisplayTransform = ItemDisplayTransform.NONE
         itemDisplayEnt.viewRange = 16.0f
         itemDisplayEnt.transformation = Transformation(originVec, quaternion, Vector3f(1f, 1f, 1f), Quaternionf())
-
+        itemDisplayEnt.setCustomType(StructureType.TRACK)
 
         return itemDisplayEnt.uniqueId
     }

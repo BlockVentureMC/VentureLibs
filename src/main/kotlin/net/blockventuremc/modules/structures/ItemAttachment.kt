@@ -11,20 +11,22 @@ class ItemAttachment(name: String, val item: ItemStack, localPosition: Vector, l
     Attachment(name, localPosition, localRotation) {
 
     var itemDisplay: ItemDisplay? = null
+    private var scale = 0.617f
 
     override fun spawn() {
         val location = bukkitLocation
         itemDisplay = location.world.spawnEntity(location, EntityType.ITEM_DISPLAY) as ItemDisplay
         itemDisplay?.apply {
             shadowStrength = 0.0f
-            teleportDuration = 2
-            interpolationDuration = 2
+            teleportDuration = root.smoothFactor
+            interpolationDuration = root.smoothFactor
             itemDisplayTransform = ItemDisplay.ItemDisplayTransform.HEAD
             setItemStack(item)
             isCustomNameVisible = false
             var transform = transformation
-            transform.scale.mul(0.617f)
+            transform.scale.mul(scale)
             transformation = transform
+            setCustomType(StructureType.GENERIC)
         }
         itemDisplay?.customName = "root=$root, name=$name"
     }
@@ -42,6 +44,11 @@ class ItemAttachment(name: String, val item: ItemStack, localPosition: Vector, l
                 display.transformation = transform
             }
         }
+    }
+
+    fun setScale(scale: Float): ItemAttachment {
+        this.scale = scale
+        return this
     }
 
     override fun despawn() {

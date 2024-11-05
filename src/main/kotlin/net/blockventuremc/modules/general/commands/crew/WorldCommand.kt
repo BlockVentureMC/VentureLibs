@@ -4,6 +4,7 @@ import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.extensions.sendError
 import net.blockventuremc.extensions.sendSuccess
+import net.blockventuremc.extensions.teleportAsyncWithPassengers
 import net.blockventuremc.extensions.translate
 import org.bukkit.Bukkit
 import org.bukkit.WorldCreator
@@ -48,7 +49,8 @@ class WorldCommand : CommandExecutor, TabExecutor {
         }
 
         Bukkit.getScheduler().runTaskLater(VentureLibs.instance, Runnable {
-            sender.teleport(world!!.spawnLocation)
+            sender.teleportAsyncWithPassengers(world!!.spawnLocation)
+
             sender.sendSuccess(
                 sender.translate(
                     "commands.world.teleported",

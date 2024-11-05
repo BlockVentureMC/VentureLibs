@@ -7,9 +7,9 @@ enum class SegmentTypes(val material: Material, val segmentType: KClass<out Trac
 
     NORMAL(Material.SPRUCE_TRAPDOOR, TrackSegment::class),
     LIFT(Material.OAK_TRAPDOOR, LiftSegment::class),
-    LAUNCH(Material.ACACIA_TRAPDOOR, AccelerationSegment::class),
-    BRAKE(Material.BIRCH_TRAPDOOR, TrackSegment::class),
-    STATION(Material.DARK_OAK_TRAPDOOR, TrackSegment::class),
+    LAUNCH(Material.ACACIA_TRAPDOOR, LaunchSegment::class),
+    BRAKE(Material.BIRCH_TRAPDOOR, BreakSegment::class),
+    STATION(Material.DARK_OAK_TRAPDOOR, StationSegment::class),
     ACCELERATION(Material.CRIMSON_TRAPDOOR, AccelerationSegment::class),
     HIGHLIGHTED(Material.CRIMSON_TRAPDOOR, TrackSegment::class),
 
