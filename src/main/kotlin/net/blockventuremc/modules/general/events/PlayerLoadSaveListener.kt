@@ -46,7 +46,7 @@ class PlayerLoadSaveListener : Listener {
         player.sendPlayerListHeaderAndFooter(
             text(
                 "<#ff8aff>┌                                                  <#10eefe>┐\n" +
-                "<gradient:#70b5ff:#6fbaf7>}<b>BlockVenture</b></gradient>\n" +
+                "<gradient:#70b5ff:#6fbaf7><b>BlockVenture</b></gradient>\n" +
                 " "
             ),
             text(

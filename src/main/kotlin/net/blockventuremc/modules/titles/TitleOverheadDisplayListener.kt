@@ -1,11 +1,14 @@
 package net.blockventuremc.modules.titles
 
+import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent
 import dev.fruxz.stacked.text
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.extensions.getLogger
 import net.blockventuremc.extensions.toBlockUser
+import net.blockventuremc.modules.structures.StructureType
 import net.blockventuremc.modules.structures.events.TrainEnterEvent
 import net.blockventuremc.modules.structures.events.TrainExitEvent
+import net.blockventuremc.modules.structures.setCustomType
 import net.blockventuremc.modules.titles.events.TitleChangedEvent
 import org.bukkit.entity.Display
 import org.bukkit.entity.EntityType
@@ -13,7 +16,9 @@ import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.vehicle.VehicleEnterEvent
 import org.bukkit.event.vehicle.VehicleExitEvent
 import org.bukkit.util.Transformation
@@ -33,7 +38,7 @@ class TitleOverheadDisplayListener : Listener {
     }
 
     private fun createTextDisplay(player: Player) {
-        val textDisplay = player.world.spawnEntity(player.eyeLocation, EntityType.TEXT_DISPLAY) as TextDisplay
+        val textDisplay = player.world.spawnEntity(player.eyeLocation.add(0.0, 0.5, 0.0), EntityType.TEXT_DISPLAY) as TextDisplay
         textDisplays[player] = textDisplay
         textDisplay.text(text(player.toBlockUser().selectedTitle?.display?.let { it(player) }
             ?: "<color:#4b6584>No title"))
@@ -54,6 +59,7 @@ class TitleOverheadDisplayListener : Listener {
             textDisplay.transformation.rightRotation,
         )
 
+        textDisplay.setCustomType(StructureType.TITLE)
 
         player.addPassenger(textDisplay)
         getLogger().info("Created textDisplay for ${player.name} with uuid ${textDisplay.uniqueId}")
@@ -66,9 +72,19 @@ class TitleOverheadDisplayListener : Listener {
     }
 
     @EventHandler
-    fun onPlayerQuit(event: PlayerJoinEvent) {
+    fun onPlayerQuit(event: PlayerQuitEvent) {
         val player = event.player
         textDisplays[player]?.remove()
+    }
+
+    @EventHandler
+    fun onPlayerDeath(event: PlayerDeathEvent) {
+        textDisplays[event.player]?.remove()
+    }
+
+    @EventHandler
+    fun onPlayerRespawn(event: PlayerPostRespawnEvent) {
+        createTextDisplay(event.player)
     }
 
     @EventHandler

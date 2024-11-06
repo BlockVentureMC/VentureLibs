@@ -1,11 +1,11 @@
 package net.blockventuremc.modules.warps.gui
 
 import dev.fruxz.stacked.text
-import io.papermc.paper.entity.TeleportFlag
 import net.blockventuremc.consts.TEXT_GRAY
 import net.blockventuremc.extensions.identify
 import net.blockventuremc.extensions.isRankOrHigher
 import net.blockventuremc.extensions.sendInfo
+import net.blockventuremc.extensions.teleportAsyncWithPassengers
 import net.blockventuremc.extensions.translate
 import net.blockventuremc.modules.warps.ParkArea
 import net.blockventuremc.modules.warps.Warp
@@ -15,7 +15,6 @@ import net.blockventuremc.utils.itembuilder.toItemBuilder
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause
 import org.bukkit.inventory.ItemStack
 
 object WarpGui {
@@ -88,10 +87,11 @@ object WarpGui {
         return warp.material.toItemBuilder {
             display("<color:${warp.rankNeeded.rank.color}>${warp.name}")
             customModelData(warp.customModelData)
-            onClick {
+            onClick { event ->
+                event.isCancelled = true
+                event.currentItem = null
                 player.sendInfo("Teleporting to ${warp.name}")
-                player.teleportAsync(warp.location, TeleportCause.PLUGIN, TeleportFlag.EntityState.RETAIN_PASSENGERS,
-                    TeleportFlag.EntityState.RETAIN_VEHICLE)
+                player.teleportAsyncWithPassengers(warp.location)
             }
         }.build()
     }

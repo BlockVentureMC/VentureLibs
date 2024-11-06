@@ -8,12 +8,20 @@ import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.modules.general.events.custom.toVentureLocation
 import net.blockventuremc.modules.rides.track.Nl2Importer
 import net.blockventuremc.modules.rides.track.TrackManager
+import net.blockventuremc.modules.rides.track.segments.AccelerationSegment
+import net.blockventuremc.modules.rides.track.segments.BreakSegment
+import net.blockventuremc.modules.rides.track.segments.BreakSegment.BreakType
+import net.blockventuremc.modules.rides.track.segments.LaunchSegment
 import net.blockventuremc.modules.rides.track.segments.LiftSegment
 import net.blockventuremc.modules.rides.track.segments.SegmentTypes
+import net.blockventuremc.modules.rides.track.segments.StationSegment
 import net.blockventuremc.modules.rides.track.segments.TrackSegment
+import net.blockventuremc.modules.structures.Animation
 import net.blockventuremc.modules.structures.Attachment
 import net.blockventuremc.modules.structures.ItemAttachment
 import net.blockventuremc.modules.structures.StructureManager
+import net.blockventuremc.modules.structures.TrainRegistry
+import net.blockventuremc.modules.structures.impl.Cart
 import net.blockventuremc.modules.structures.impl.Seat
 import net.blockventuremc.modules.structures.impl.Train
 import net.blockventuremc.utils.itembuilder.ItemBuilder
@@ -128,19 +136,19 @@ class TrackCommand : CommandExecutor, TabExecutor {
                     sender.sendMessage("Usage: /track speed <velocity>")
                     return true
                 }
-                performDebugSpeed(sender, args[1].toFloat().coerceIn(-4.0f, 4.0f))
+                performDebugSpeed(sender, args[1].toFloat().coerceIn(-200.0f, 200.0f))
             }
 
             "spawn" -> {
-                if (args.size != 2) {
-                    sender.sendMessage("Usage: /track spawn <trackId>")
+                if (args.size != 3) {
+                    sender.sendMessage("Usage: /track spawn <name> <trackId>")
                     return true
                 }
-                val trackId = args[1].toIntOrNull() ?: run {
+                val trackId = args[2].toIntOrNull() ?: run {
                     sender.sendMessage("Invalid track ID.")
                     return true
                 }
-                performSpawnTrainOnTrack(sender, trackId)
+                performSpawnTrainOnTrack(sender, trackId, args[1])
             }
 
             "despawn" -> {
@@ -214,22 +222,48 @@ class TrackCommand : CommandExecutor, TabExecutor {
             }
 
             SegmentTypes.LAUNCH -> {
+                val value = args[5].toFloatOrNull() ?: run {
+                    sender.sendMessage("Invalid acceleration (m/s²) value")
+                    return
+                }
+                trackSegment = LaunchSegment(nodeIdStart, nodeIdEnd, value)
+                sender.sendMessage("new Launch Segment")
             }
 
             SegmentTypes.BRAKE -> {
+                val breakType = BreakType.entries.find { it.name.equals(args[5], true) } ?: run {
+                    sender.sendMessage("Invalid break type (blockbreak, trimbreak)")
+                    return
+                }
+                val minspeed = args[6].toFloatOrNull() ?: run {
+                    sender.sendMessage("Invalid minspeed value")
+                    return
+                }
 
+                trackSegment = BreakSegment(nodeIdStart, nodeIdEnd, breakType, minspeed)
+                sender.sendMessage("new Break Segment")
             }
 
             SegmentTypes.STATION -> {
-
+                val stationSpeed = args[5].toFloatOrNull() ?: run {
+                    sender.sendMessage("Invalid station speed value")
+                    return
+                }
+                trackSegment = StationSegment(nodeIdStart, nodeIdEnd, stationSpeed)
+                sender.sendMessage("new Station Segment")
             }
 
             SegmentTypes.ACCELERATION -> {
-
+                val value = args[5].toFloatOrNull() ?: run {
+                    sender.sendMessage("Invalid fixedSpeed (m/s) value")
+                    return
+                }
+                trackSegment = AccelerationSegment(nodeIdStart, nodeIdEnd, value)
+                sender.sendMessage("new Acceleration Segment")
             }
 
-            else -> {
-
+            SegmentTypes.HIGHLIGHTED -> {
+                // No action required
             }
         }
         if (trackSegment == null) {
@@ -237,6 +271,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
             return
         }
 
+        TrackManager.saveTrack(track)
         track.setSegmentType(nodeIdStart, nodeIdEnd, trackSegment)
     }
 
@@ -284,8 +319,9 @@ class TrackCommand : CommandExecutor, TabExecutor {
             return
         }
 
-        TrackManager.tracks[trackId] = Nl2Importer(file, trackId, sender.location).import()
-        TrackManager.saveTrack(trackId, sender.location.toVentureLocation())
+        val trackRide = Nl2Importer(file, trackId, sender.location).import()
+        TrackManager.tracks[trackId] = trackRide
+        TrackManager.saveTrack(trackRide)
         sender.sendMessage("Track $trackId imported.")
         performShowTrack(sender, trackId)
     }
@@ -337,7 +373,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
     }
 
     private fun performDebugSpeed(sender: Player, velocity: Float) {
-        val first = StructureManager.structures.values.last() as Train
+        val first = StructureManager.trains.values.last()
         first.velocity = velocity
         sender.sendMessage("Velocity $velocity")
     }
@@ -350,42 +386,21 @@ class TrackCommand : CommandExecutor, TabExecutor {
         sender.sendMessage("Distance between nodes 0 and 1 is ${track.nodeDistance} meters. Total Length of ${track.totalLength}")
     }
 
-    private fun performSpawnTrainOnTrack(sender: Player, trackId: Int) {
+    private fun performSpawnTrainOnTrack(sender: Player, trackId: Int, name: String) {
         val track = TrackManager.tracks[trackId] ?: run {
             sender.sendMessage("Track $trackId does not exist.")
             return
         }
-        val train = Train("train", track, sender.world, sender.location.toVector(), BlockVector(0.0, 0.0, 0.0))
 
-        train.addChild(
-            ItemAttachment(
-                "base",
-                ItemBuilder(Material.DIAMOND_SWORD).customModelData(100).build(),
-                Vector(0.0, 0.4, 0.0),
-                Vector()
-            )
-        )
-        val rotator = Attachment("rotator", Vector(), Vector())
-        train.addChild(rotator)
-
-        rotator.addChild(Seat("seat1", Vector(0.39, 0.6, 0.3), Vector()))
-        rotator.addChild(Seat("seat2", Vector(-0.39, 0.6, 0.3), Vector()))
-        rotator.addChild(Seat("seat3", Vector(0.39, 0.6, -0.3), Vector()))
-        rotator.addChild(Seat("seat4", Vector(-0.39, 0.6, -0.3), Vector()))
-
-        rotator.addChild(
-            ItemAttachment(
-                "model",
-                ItemBuilder(Material.DIAMOND_SWORD).customModelData(99).build(),
-                Vector(0.0, 1.0, 0.0),
-                Vector()
-            )
-        )
-
+        val trainAbstract = TrainRegistry.trains[name] ?: run {
+            sender.sendMessage("Train $name does not exist.")
+            return
+        }
+        val train = trainAbstract.train(track, 0.1)
         train.initialize()
-        StructureManager.structures[train.uuid] = train
+        StructureManager.trains[train.uuid] = train
 
-        sender.sendMessage("Train spawned on Track $trackId.")
+        sender.sendMessage("Train $name spawned on Track $trackId.")
 
     }
 
@@ -394,11 +409,11 @@ class TrackCommand : CommandExecutor, TabExecutor {
             sender.sendMessage("Track $trackId does not exist.")
             return
         }
-        val trains = StructureManager.structures.filter { it.value is Train }.map { it.value as Train }
+        val trains = StructureManager.trains.map { it.value }
             .filter { it.trackRide.id == trackId }
         trains.forEach { train ->
-            train.despawnAttachmentsRecurse()
-            StructureManager.structures.remove(train.uuid)
+            train.remove()
+            StructureManager.trains.remove(train.uuid)
         }
         sender.sendMessage("Trains despawned on Track $trackId.")
     }
@@ -424,13 +439,17 @@ class TrackCommand : CommandExecutor, TabExecutor {
                 "speed"
             ).filter { it.startsWith(args[0]) }
 
-            2 -> when (args[0]) {
-                "show", "hide", "select", "segment", "spawn", "despawn", "placeblocks" -> TrackManager.tracks.keys.map { it.toString() }
-                    .filter { it.startsWith(args[1]) }
+            2 -> when(args[0]) {
+                "show", "hide", "select", "segment", "despawn", "placeblocks" ->
+                    TrackManager.tracks.keys.map { it.toString() }.filter { it.startsWith(args[1]) }
+                "spawn" -> TrainRegistry.trains.keys.map { it.toString() }.filter { it.startsWith(args[1]) }
 
                 else -> emptyList()
             }
-
+            3 -> when (args[0]) {
+                "spawn" ->  TrackManager.tracks.keys.map { it.toString() }.filter { it.startsWith(args[1]) }
+                else -> emptyList()
+            }
             5 -> when (args[0]) {
                 "segment" -> SegmentTypes.entries.map { it.name }.filter { it.startsWith(args[3]) }
                 else -> emptyList()

@@ -1,5 +1,6 @@
 package net.blockventuremc.modules.warps
 
+import io.papermc.paper.entity.TeleportFlag
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.extensions.*
 import net.blockventuremc.modules.general.model.Ranks
@@ -9,6 +10,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
+import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.permissions.PermissionDefault
 
 @VentureCommand(
@@ -228,8 +230,7 @@ class WarpCommand : CommandExecutor, TabExecutor {
             sender.sendError("Only players can use this command.")
             return
         }
-
-        sender.teleport(warp.location)
+        sender.teleportAsyncWithPassengers(warp.location)
         sender.sendSuccessSound()
     }
 

@@ -34,8 +34,8 @@ class CustomEntityCommand : CommandExecutor {
 
         val player = sender
 //
-        val customEntity = CustomEntity("test", player.world, player.location.toVector(), Vector())
-        customEntity.addChild(
+        val rootAttachment = RootAttachment("test", player.location.toVector(), Vector())
+        rootAttachment.addChild(
             ItemAttachment(
                 "base",
                 ItemBuilder(Material.DIAMOND_SWORD).customModelData(100).build(),
@@ -43,8 +43,9 @@ class CustomEntityCommand : CommandExecutor {
                 Vector()
             )
         )
+        rootAttachment.world = player.world
         val rotator = Attachment("rotator", Vector(), Vector())
-        customEntity.addChild(rotator)
+        rootAttachment.addChild(rotator)
 
         rotator.addChild(Seat("seat1", Vector(0.39, 0.6, 0.3), Vector()))
         rotator.addChild(Seat("seat2", Vector(-0.39, 0.6, 0.3), Vector()))
@@ -68,17 +69,17 @@ class CustomEntityCommand : CommandExecutor {
             )
         )
 
-        customEntity.initialize()
-        customEntity.animation = object : Animation() {
+        rootAttachment.initialize()
+        rootAttachment.animation = object : Animation() {
             override fun animate() {
 
-                customEntity.position = player.location.toVector()
-                customEntity.localRotation =
+                rootAttachment.position = player.location.toVector()
+                rootAttachment.localRotation =
                     Vector(player.location.pitch.toDouble(), player.location.yaw.toDouble(), 0.0)
                 rotator.localRotation.add(Vector(0.0, 1.0, 0.0))
             }
         }
-        StructureManager.structures[customEntity.uuid] = customEntity
+        StructureManager.structures[rootAttachment.uuid] = rootAttachment
         player.sendSuccess("Custom Entity Spawned!")
         return true
     }

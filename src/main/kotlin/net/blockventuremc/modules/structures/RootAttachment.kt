@@ -5,11 +5,14 @@ import org.bukkit.util.Vector
 import org.joml.Matrix4f
 import java.util.*
 
-open class CustomEntity(name: String, val world: World, var position: Vector, rotation: Vector) :
+open class RootAttachment(name: String, var position: Vector = Vector(), rotation: Vector = Vector()) :
     Attachment(name, Vector(), rotation) {
 
     val uuid = UUID.randomUUID()
     var animation: Animation? = null
+    lateinit var world: World
+
+    var smoothFactor: Int = 3
 
     init {
         parent = this
