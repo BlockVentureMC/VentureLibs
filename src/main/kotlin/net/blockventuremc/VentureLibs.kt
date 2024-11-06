@@ -7,6 +7,7 @@ import net.blockventuremc.audioserver.common.data.RabbitConfiguration
 import net.blockventuremc.audioserver.minecraft.AudioServer
 import net.blockventuremc.database.DatabaseManager
 import net.blockventuremc.modules.boosters.BoosterCache
+import net.blockventuremc.modules.games.GameManager
 import net.blockventuremc.modules.general.cache.PlayerCache
 import net.blockventuremc.modules.i18n.TranslationCache
 import net.blockventuremc.modules.rides.track.TrackManager
@@ -102,12 +103,14 @@ class VentureLibs : JavaPlugin() {
         logger.info("loading tracks...")
         TrackManager.loadTracks()
 
-        logger.info("Cleaning up world...")
+        logger.info("Cleaning up custom entities in all worlds...")
         StructureManager.cleanUpWorld()
 
         logger.info("Setting up custom entities...")
         StructureManager.update()
 
+        logger.info("Initilizing games...")
+        GameManager.initilizeGames()
 
         logger.info("Plugin has been enabled.")
     }
@@ -115,6 +118,10 @@ class VentureLibs : JavaPlugin() {
     override fun onDisable() {
         PlayerCache.cleanup()
         TrackManager.cleanUp()
+
+        //clean up all structures
+        StructureManager.cleanup()
+        StructureManager.cleanUpWorld()
 
         for (player in Bukkit.getOnlinePlayers()) {
             val pixelPlayer = PlayerCache.getOrNull(player.uniqueId) ?: continue
@@ -126,7 +133,6 @@ class VentureLibs : JavaPlugin() {
         smoothCoastersAPI.unregister()
 
         AudioServer.disconnect()
-        StructureManager.cleanup()
 
         jda.shutdown()
 

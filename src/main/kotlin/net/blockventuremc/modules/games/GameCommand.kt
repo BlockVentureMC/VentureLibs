@@ -1,12 +1,12 @@
 package net.blockventuremc.modules.games
 
 import net.blockventuremc.annotations.VentureCommand
-import net.blockventuremc.extensions.sendSuccess
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
+
 @VentureCommand(
     name = "game",
     description = "Join games!",
@@ -25,9 +25,11 @@ class GameCommand : CommandExecutor {
     ): Boolean {
         if (sender !is Player) return false
         val player = sender
-
-
-        player.sendSuccess("Game Test!")
+        if(GameManager.inGame(player)) {
+            GameManager.games.firstOrNull()?.leave(player)
+            return true
+        }
+        GameManager.games.firstOrNull()?.join(player)
         return true
     }
 
