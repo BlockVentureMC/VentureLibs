@@ -8,6 +8,7 @@ import net.blockventuremc.extensions.sendError
 import net.blockventuremc.extensions.sendInfo
 import net.blockventuremc.extensions.sendSuccess
 import net.blockventuremc.modules.`fun`.baloon.Balloon
+import net.blockventuremc.modules.structures.Ball
 import net.blockventuremc.modules.structures.StructureManager
 import net.blockventuremc.modules.structures.vehicle.PacketHandler
 import org.bukkit.Bukkit
@@ -23,6 +24,7 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
+import java.util.UUID
 
 class StructureEvents : Listener {
 
@@ -77,19 +79,22 @@ class StructureEvents : Listener {
         val entity = event.entity
         if (player !is Player) return
 
-        if(entity.type != EntityType.ARMOR_STAND) return
-        val uuidString =  entity.persistentDataContainer.get(NAMESPACE_BALL_IDENTIFIER, PersistentDataType.STRING) ?: return
-        player.sendSuccess("Du hast einen Ball gefangen!")
+        if(entity.type != EntityType.INTERACTION) return
+        val uuidString =  entity.persistentDataContainer.get(NAMESPACE_CUSTOMENTITY_IDENTIFIER, PersistentDataType.STRING) ?: return
 
-        if(entity.isOnGround) {
-            entity.velocity = player.location.direction.add(Vector(0.0,0.9,0.0)).normalize().multiply(1.3)
-        } else {
-            entity.velocity = player.location.direction.multiply(1.3)
+        StructureManager.structures[UUID.fromString(uuidString)]?.let { ball ->
+            if (ball is Ball) {
+                if(entity.isOnGround) {
+                    ball.velocity = player.location.direction.add(Vector(0.0,0.9,0.0)).normalize().multiply(1.3)
+                } else {
+                    ball.velocity = player.location.direction.multiply(1.3)
+                }
+                player.sendSuccess("Du hast einen Ball gefangen!")
+            }
         }
 
         event.isCancelled = true
         //yaw
-
     }
 
     @EventHandler

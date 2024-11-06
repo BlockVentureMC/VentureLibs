@@ -49,8 +49,8 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) :
 
         interaction = location.world.spawnEntity(location, EntityType.INTERACTION) as Interaction
         interaction?.apply {
-            interactionHeight = 1.0f
-            interactionWidth = 0.45f
+            interactionHeight = 1.2f
+            interactionWidth = 0.65f
             isCustomNameVisible = false
             itemDisplay?.addPassenger(this)
             setCustomType(StructureType.SEAT, root.uuid.toString())

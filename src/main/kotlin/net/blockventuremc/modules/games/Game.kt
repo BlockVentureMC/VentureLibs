@@ -14,12 +14,16 @@ open class Game (val data: GameData) {
         return players.contains(player)
     }
 
+    open fun tick() {
+
+    }
+
     open fun join(player: Player) {
         if (players.contains(player)) {
             player.sendError("You are already in this game!")
             return
         }
-        if (state != GameState.WAITING || state != GameState.ENDED) {
+        if (state != GameState.WAITING) {
             player.sendError("Game is already started!")
             return
         }

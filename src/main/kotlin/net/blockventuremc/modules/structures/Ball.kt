@@ -1,48 +1,18 @@
 package net.blockventuremc.modules.structures
 
-import net.blockventuremc.consts.NAMESPACE_BALL_IDENTIFIER
-import net.blockventuremc.consts.NAMESPACE_CUSTOMENTITY_IDENTIFIER
 import org.bukkit.Bukkit
-import org.bukkit.attribute.Attribute
-import org.bukkit.entity.ArmorStand
-import org.bukkit.entity.EntityType
-import org.bukkit.entity.Interaction
-import org.bukkit.persistence.PersistentDataType
+import org.bukkit.FluidCollisionMode
+import org.bukkit.entity.Entity
 import org.bukkit.util.Vector
+import kotlin.math.abs
+import kotlin.math.max
 
-class Ball(name: String, position: Vector, rotation: Vector) : RootAttachment(name, position, rotation)  {
+class Ball(name: String, position: Vector, rotation: Vector, var radius: Double) : RootAttachment(name, position, rotation)  {
 
-    var armorStand: ArmorStand? = null
-    var interaction: Interaction? = null
-    var lastVelocity = Vector()
+    var velocity = Vector()
     var yaw = 0.0f
-
-    override fun spawn() {
-        val location = bukkitLocation
-        armorStand = location.world.spawnEntity(location, EntityType.ARMOR_STAND) as ArmorStand
-        armorStand?.apply {
-            isSilent = true
-            isInvulnerable = true
-            setBasePlate(false)
-            isVisible = true
-            isSmall = true
-            setCustomType(StructureType.VEHICLE)
-            persistentDataContainer[NAMESPACE_BALL_IDENTIFIER, PersistentDataType.STRING] = uuid.toString()
-            getAttribute(Attribute.GENERIC_STEP_HEIGHT)?.baseValue = 0.0
-        }
-        interaction = location.world.spawnEntity(location, EntityType.INTERACTION) as Interaction
-        interaction?.apply {
-            interactionHeight = 0.6f
-            interactionWidth = 0.6f
-            isCustomNameVisible = false
-            armorStand?.addPassenger(this)
-            setCustomType(StructureType.GENERIC, uuid.toString())
-        }
-    }
-
-    override fun despawn() {
-        armorStand?.remove()
-    }
+    val bounceStop = 0.3
+    val retention = 0.8
 
     override fun update() {
         movementUpdate()
@@ -50,35 +20,34 @@ class Ball(name: String, position: Vector, rotation: Vector) : RootAttachment(na
     }
 
     fun movementUpdate() {
-        armorStand?.let { armorStand ->
+        var location = bukkitLocation
+        // Air drag
+        velocity = velocity.multiply(0.9)
+
+        val collisionCheckVector = if (velocity.length() > 0) velocity else Vector(0, -1, 0)
 
 
-            var currentVelocity = armorStand.velocity
-            if (currentVelocity.x == 0.0) {
-                currentVelocity.x = -lastVelocity.x * 0.9
-                this.yaw = currentVelocity.z.toFloat()
-            } else if (kotlin.math.abs(lastVelocity.x - currentVelocity.x) < 0.15) {
-                currentVelocity.x = lastVelocity.x * 0.975
+        //val collision =  world.rayTrace(location, collisionCheckVector, velocity.length(), FluidCollisionMode.NEVER, true, 0.4, null)
+        val collision = location.world.rayTraceBlocks(location, collisionCheckVector, max(radius, velocity.length()), FluidCollisionMode.NEVER, true)
+
+        if (collision?.hitBlockFace != null) {
+            val normal = collision.hitBlockFace!!.direction
+
+            // Reflexion der Geschwindigkeit
+
+            velocity = velocity.subtract(normal.multiply(2 * velocity.dot(normal))).multiply(retention)
+
+
+            val hitPosition = collision.hitPosition
+            val penetrationDepth = radius - hitPosition.distance(location.toVector())
+            Bukkit.broadcastMessage("p: $penetrationDepth")
+
+            if (penetrationDepth > 0) {
+                position = position.add(normal.clone().multiply(penetrationDepth + radius))
+                velocity = velocity.add(normal.multiply(penetrationDepth + radius * 0.1))
             }
-
-            if (currentVelocity.z == 0.0) {
-                currentVelocity.z = -lastVelocity.z * 0.9
-                this.yaw = currentVelocity.z.toFloat()
-            } else if (kotlin.math.abs(lastVelocity.z - currentVelocity.z) < 0.15) {
-                currentVelocity.z = lastVelocity.z * 0.975
-            }
-
-            armorStand.location.direction = currentVelocity
-            armorStand.velocity = currentVelocity
-
-
-            val targetPosition = armorStand.location
-            position = targetPosition.toVector()
-
-            lastVelocity = currentVelocity
         }
 
+        position = position.add(velocity)
     }
-
-
 }

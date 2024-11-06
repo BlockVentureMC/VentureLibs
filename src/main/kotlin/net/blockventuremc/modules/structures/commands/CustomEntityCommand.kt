@@ -31,26 +31,16 @@ class CustomEntityCommand : CommandExecutor {
         args: Array<out String>
     ): Boolean {
         if (sender !is Player) return false
-
         val player = sender
 //
-        val ball = Ball("ball", player.location.toVector(), Vector())
-        ball.addChild(
-            ItemAttachment(
-                "base",
-                ItemBuilder(Material.PLAYER_HEAD).textureFromMineSkin("02b00dc2105c439bac5a89a09b78ee4b").build(),
-                Vector(0.0, 0.76, 0.0),
-                Vector()
-            ).setScale(1.5f)
-        )
-        ball.world = player.world
+        val ball = Ball("ball", player.location.toVector(), Vector(), 0.5)
+        //ball.addChild(ItemAttachment("base", ItemBuilder(Material.PLAYER_HEAD).textureFromMineSkin("02b00dc2105c439bac5a89a09b78ee4b").build(), Vector(0.0, 0.76, 0.0), Vector()).setScale(1.5f))
+        ball.addChild(ItemAttachment("base", ItemBuilder(Material.MUSHROOM_STEM).build(), Vector(0.0, 0.0, 0.0), Vector()).setScale(1.0f))
 
+        ball.addChild(InteractionAttachment("interaction", Vector(0.0, 0.0, 0.0), 1.7f,1.7f))
+
+        ball.world = player.world
         ball.initialize()
-        ball.animation = object : Animation() {
-            override fun animate() {
-                //ball.localRotation.add(Vector(0.0, 1.0, 0.0))
-            }
-        }
         StructureManager.structures[ball.uuid] = ball
         player.sendSuccess("Ball Spawned!")
         return true

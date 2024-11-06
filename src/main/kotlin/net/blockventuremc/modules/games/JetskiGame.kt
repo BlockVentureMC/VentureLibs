@@ -22,11 +22,8 @@ class JetskiGame: Game(GameData("Jetski", "This is a jetski game", 8, 2)) {
 
     override fun start() {
         super.start()
-
-        //spawn all jetskis
-
+        //spawn all jetskis locations form file!
     }
-
 
     fun cleanUpJetskis() {
         jetskis.forEach { jetski ->

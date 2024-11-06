@@ -78,6 +78,7 @@ class WaterVehicle(name: String, position: Vector, rotation: Vector): CustomVehi
 
         armorStand?.apply {
             getAttribute(Attribute.GENERIC_GRAVITY)?.baseValue = 0.0
+            getAttribute(Attribute.GENERIC_SCALE)?.baseValue = 2.0
             groundBlock = location.add(0.0,-0.1,0.0).block
             lastGroundBlock = groundBlock
         }
