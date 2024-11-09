@@ -2,7 +2,7 @@ package net.blockventuremc.modules.games
 
 import net.blockventuremc.extensions.sendSuccess
 import net.blockventuremc.modules.structures.Animation
-import net.blockventuremc.modules.structures.EffectAttachment
+import net.blockventuremc.modules.structures.Locator
 import net.blockventuremc.modules.structures.ItemAttachment
 import net.blockventuremc.modules.structures.StructureManager
 import net.blockventuremc.modules.structures.impl.Seat
@@ -12,7 +12,6 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.entity.Player
-import org.bukkit.entity.Vehicle
 import org.bukkit.util.Vector
 import kotlin.collections.set
 
@@ -43,9 +42,9 @@ class JetskiGame: Game(GameData("Jetski", "This is a jetski game", 8, 2)) {
         )
         vehicle.addChild(Seat("seat1", Vector(0.0,0.2,0.0), Vector()))
         //effect
-        val back = EffectAttachment("back", Vector(0.0,0.0,-0.8), Vector())
-        val left = EffectAttachment("left", Vector(-0.7,0.0,0.8), Vector())
-        val right = EffectAttachment("right", Vector(0.7,0.0,0.8), Vector())
+        val back = Locator("back", Vector(0.0,0.0,-0.8), Vector())
+        val left = Locator("left", Vector(-0.7,0.0,0.8), Vector())
+        val right = Locator("right", Vector(0.7,0.0,0.8), Vector())
         vehicle.addChild(back)
         vehicle.addChild(left)
         vehicle.addChild(right)

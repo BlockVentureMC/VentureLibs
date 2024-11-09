@@ -129,7 +129,6 @@ class StructureEvents : Listener {
         if (seat?.customName == null || seat.customName != "seat") return
 
         if (seat.passengers.size > 1) {
-            player.sendError("Kuscheln verboten! Nimm dir einen eigenen Platz :3")
             return
         }
 

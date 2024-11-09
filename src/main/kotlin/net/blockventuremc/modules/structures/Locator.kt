@@ -3,12 +3,11 @@ package net.blockventuremc.modules.structures
 import net.blockventuremc.extensions.lerpVector
 import org.bukkit.util.Vector
 
-class EffectAttachment(name: String, localPosition: Vector, localRotation: Vector) : Attachment(name, localPosition, localRotation) {
+class Locator(name: String, localPosition: Vector, localRotation: Vector) : Attachment(name, localPosition, localRotation) {
 
     var lerpPosition = Vector()
 
     override fun spawn() {
-        super.spawn()
         lerpPosition = worldPosition
     }
 

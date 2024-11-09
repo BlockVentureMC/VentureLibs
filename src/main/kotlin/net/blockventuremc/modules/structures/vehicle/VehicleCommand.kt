@@ -4,10 +4,8 @@ import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.sendSuccess
 import net.blockventuremc.modules.structures.Animation
-import net.blockventuremc.modules.structures.Attachment
-import net.blockventuremc.modules.structures.EffectAttachment
+import net.blockventuremc.modules.structures.Locator
 import net.blockventuremc.modules.structures.ItemAttachment
-import net.blockventuremc.modules.structures.RootAttachment
 import net.blockventuremc.modules.structures.StructureManager
 import net.blockventuremc.modules.structures.impl.Seat
 import net.blockventuremc.utils.itembuilder.ItemBuilder
@@ -18,7 +16,6 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 import org.bukkit.permissions.PermissionDefault
 import org.bukkit.util.Vector
 import kotlin.collections.set
@@ -69,10 +66,10 @@ class VehicleCommand : CommandExecutor, TabExecutor {
                 vehicle.addChild(Seat("seat1", Vector(0.0,0.4,0.0), Vector()))
 
                 //effect
-                val wheel1 = EffectAttachment("wheel1", Vector(0.55,0.0,1.2), Vector())
-                val wheel2 = EffectAttachment("wheel2", Vector(-0.55,0.0,1.2), Vector())
-                val wheel3 = EffectAttachment("wheel3", Vector(0.55,0.0,-0.25), Vector())
-                val wheel4 = EffectAttachment("wheel4", Vector(-0.55,0.0,-0.25), Vector())
+                val wheel1 = Locator("wheel1", Vector(0.55,0.0,1.2), Vector())
+                val wheel2 = Locator("wheel2", Vector(-0.55,0.0,1.2), Vector())
+                val wheel3 = Locator("wheel3", Vector(0.55,0.0,-0.25), Vector())
+                val wheel4 = Locator("wheel4", Vector(-0.55,0.0,-0.25), Vector())
                 vehicle.addChild(wheel1)
                 vehicle.addChild(wheel2)
                 vehicle.addChild(wheel3)
@@ -118,9 +115,9 @@ class VehicleCommand : CommandExecutor, TabExecutor {
                 vehicle.addChild(Seat("seat2", Vector(-0.7,0.4,-0.1), Vector()))
 
                 //effect
-                val wheel1 = EffectAttachment("wheel1", Vector(0.0,0.0,1.0), Vector())
-                val wheel2 = EffectAttachment("wheel2", Vector(0.0,0.0,-0.86), Vector())
-                val wheel3 = EffectAttachment("wheel3", Vector(-1.1,0.0,0.0), Vector())
+                val wheel1 = Locator("wheel1", Vector(0.0,0.0,1.0), Vector())
+                val wheel2 = Locator("wheel2", Vector(0.0,0.0,-0.86), Vector())
+                val wheel3 = Locator("wheel3", Vector(-1.1,0.0,0.0), Vector())
                 vehicle.addChild(wheel1)
                 vehicle.addChild(wheel2)
                 vehicle.addChild(wheel3)
@@ -158,12 +155,9 @@ class VehicleCommand : CommandExecutor, TabExecutor {
                 vehicle.addChild(Seat("seat1", Vector(0.0,0.2,0.0), Vector()))
 
                 //effect
-                val back = EffectAttachment("back", Vector(0.0,0.0,-0.8), Vector())
-                val left = EffectAttachment("left", Vector(-0.7,0.0,0.8), Vector())
-                val right = EffectAttachment("right", Vector(0.7,0.0,0.8), Vector())
-                vehicle.addChild(back)
-                vehicle.addChild(left)
-                vehicle.addChild(right)
+                val back = vehicle.addChild(Locator("back", Vector(0.0,0.0,-0.8), Vector()))
+                val left = vehicle.addChild(Locator("left", Vector(-0.7,0.0,0.8), Vector()))
+                val right = vehicle.addChild(Locator("right", Vector(0.7,0.0,0.8), Vector()))
                 vehicle.animation = object : Animation() {
                     val waterBlockData = Material.WATER.createBlockData()
 
@@ -245,6 +239,57 @@ class VehicleCommand : CommandExecutor, TabExecutor {
                     )
                 )
                 val seat1 = Seat("seat1", Vector(0.0,0.2,0.0), Vector())
+
+                val middle = vehicle.addChild(Locator("middle", Vector(), Vector()))
+                val left = vehicle.addChild(Locator("left", Vector(-2.0,0.0,0.0), Vector()))
+                val right = vehicle.addChild(Locator("right", Vector(2.0,0.0,0.0), Vector()))
+
+                vehicle.animation = object : Animation() {
+
+                    override fun animate() {
+                        val velocity = vehicle.armorStand?.velocity ?: return
+
+                            if (velocity.length() < 0.01) return
+                            vehicle.world.spawnParticle(
+                                Particle.FIREWORK,
+                                left.lerpPosition.x,
+                                left.lerpPosition.y,
+                                left.lerpPosition.z,
+                                1,
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            )
+                            vehicle.world.spawnParticle(
+                                Particle.FIREWORK,
+                                right.lerpPosition.x,
+                                right.lerpPosition.y,
+                                right.lerpPosition.z,
+                                1,
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            )
+
+                        val onGround = vehicle.groundCollision?.hitBlock?: return
+                            vehicle.world.spawnParticle(
+                                Particle.BLOCK,
+                                middle.lerpPosition.x,
+                                vehicle.groundCollision!!.hitPosition.y + 0.4,
+                                middle.lerpPosition.z,
+                                14,
+                                1.2,
+                                0.3,
+                                1.2,
+                                1.0,
+                                vehicle.groundCollision!!.hitBlock!!.blockData
+                            )
+
+                    }
+                }
+
                 seat1.smoothCoaster = false
                 vehicle.addChild(seat1)
                 vehicle.initialize()

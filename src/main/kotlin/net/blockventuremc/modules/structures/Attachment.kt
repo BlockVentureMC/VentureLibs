@@ -23,7 +23,7 @@ open class Attachment(
 
     var worldTransform = Matrix4f()
 
-    fun addChild(child: Attachment) {
+    fun <T : Attachment> addChild(child: T): T {
         if (this is RootAttachment) {
             child.root = this
         } else {
@@ -31,6 +31,7 @@ open class Attachment(
         }
         child.parent = this
         children[child.name] = child
+        return child
     }
 
     open fun spawn() {}
