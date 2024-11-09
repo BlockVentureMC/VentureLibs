@@ -1,12 +1,17 @@
 package net.blockventuremc.modules.structures.vehicle
 
+import net.blockventuremc.VentureLibs
 import net.blockventuremc.extensions.lerp
 import net.blockventuremc.modules.structures.deltaTime
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket
+import org.bukkit.Bukkit
 import org.bukkit.FluidCollisionMode
+import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
+import org.bukkit.entity.Snowball
+import org.bukkit.inventory.ItemStack
 import org.bukkit.util.RayTraceResult
 import org.bukkit.util.Vector
 import kotlin.math.max
@@ -39,6 +44,19 @@ class AirplaneVehicle(name: String, position: Vector, rotation: Vector): CustomV
             val onGround = groundCollision?.hitBlock != null
 
             val verticalInput = (packet.zza) * 0.90f * (if (packet.zza < 0) 0.6f else 1.0f)
+
+            if(packet.isJumping) {
+                Bukkit.getScheduler().runTask(VentureLibs.instance, Runnable {
+                    val direction = player.location.direction
+                    val snowball = player.world.spawn(
+                        player.eyeLocation, Snowball::class.java
+                    ).apply {
+                        setGravity(false)
+                        velocity = velocity.add(player.location.direction.multiply(2.3))
+                        item = ItemStack(Material.KELP)
+                    }
+                })
+            }
 
             forwardForce = lerp(forwardForce, verticalInput, deltaTime, 0.8f)
 

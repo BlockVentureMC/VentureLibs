@@ -45,8 +45,8 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) :
             transform.scale.mul(0.03f)
             transformation = transform
             setCustomType(StructureType.SEAT, root.uuid.toString())
+            isPersistent = true
         }
-
         interaction = location.world.spawnEntity(location, EntityType.INTERACTION) as Interaction
         interaction?.apply {
             interactionHeight = 1.2f
@@ -54,35 +54,28 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) :
             isCustomNameVisible = false
             itemDisplay?.addPassenger(this)
             setCustomType(StructureType.SEAT, root.uuid.toString())
+            isPersistent = true
         }
     }
 
     override fun updateTransform() {
-        var rotation = Quaternionf()
-        rotation = worldTransform.getNormalizedRotation(rotation)
+        itemDisplay?.let { display->
 
-        val upVector = (rotation.clone() as Quaternionf).transform(Vector3f(0.0f, 1.0f, 0.0f)).normalize()
-
-        val loopingOffset = upVector.dot(Vector3f(0.0f, -1.0f, 0.0f)).coerceIn(0.0f, 1.0f)
-        upVector.mul(loopingOffset).mul(0.0f)
-
-        itemDisplay?.teleport(
-            bukkitLocation.add(Vector(0.0, -offset, 0.0))
-                .add(upVector.x.toDouble(), upVector.y.toDouble(), upVector.z.toDouble()),
-            TeleportFlag.EntityState.RETAIN_PASSENGERS
-        )
-
+            display.teleport(bukkitLocation.add(Vector(0.0, -offset, 0.0)), TeleportFlag.EntityState.RETAIN_PASSENGERS)
         if(smoothCoaster) {
+            var quaternion = Quaternionf()
+            quaternion = worldTransform.getNormalizedRotation(quaternion)
             passenger?.let { player ->
                 VentureLibs.instance.smoothCoastersAPI.setRotation(
                     VentureLibs.instance.networkInterface,
                     player,
-                    rotation.x,
-                    rotation.y,
-                    rotation.z,
-                    rotation.w,
-                    3
+                    quaternion.x,
+                    quaternion.y,
+                    quaternion.z,
+                    quaternion.w,
+                    4
                 )
+            }
             }
         }
     }

@@ -31,6 +31,7 @@ open class CustomVehicle(name: String, position: Vector, rotation: Vector) : Roo
             isSmall = true
             setCustomType(StructureType.VEHICLE)
             getAttribute(Attribute.GENERIC_STEP_HEIGHT)?.baseValue = 0.8
+            isPersistent = true
         }
     }
 

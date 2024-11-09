@@ -27,6 +27,7 @@ class ItemAttachment(name: String, val item: ItemStack, localPosition: Vector, l
             transform.scale.mul(scale)
             transformation = transform
             setCustomType(StructureType.GENERIC)
+            isPersistent = true
         }
         itemDisplay?.customName = "root=$root, name=$name"
     }
