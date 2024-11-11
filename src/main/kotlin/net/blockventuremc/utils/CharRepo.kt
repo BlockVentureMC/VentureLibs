@@ -38,7 +38,10 @@ enum class CharRepo(val literal: String) {
     POS1024("\uF82F"),
 
     MENU_CONTAINER_27("\uF001"),
-    MENU_BUTTON("\uF002");
+    MENU_BUTTON("\uF002"),
+    MENU_SLIM_54("\uF003"),
+    MENU_GENERIC_54("\uF004")
+    ;
 
     override fun toString(): String {
         return this.literal
