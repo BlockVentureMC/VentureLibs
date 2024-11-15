@@ -5,9 +5,16 @@ import io.netty.channel.ChannelDuplexHandler
 import io.netty.channel.ChannelHandlerContext
 import net.blockventuremc.consts.NAMESPACE_CUSTOMENTITY_IDENTIFIER
 import net.blockventuremc.modules.structures.StructureManager
+import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket
+import net.minecraft.server.level.ServerEntity
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.phys.AABB
+import org.bukkit.craftbukkit.entity.CraftEntity
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.persistence.PersistentDataType
+import java.lang.reflect.Field
 import java.util.UUID
 
 object PacketHandler {
@@ -18,6 +25,28 @@ object PacketHandler {
         val uuid = UUID.fromString(uuidString)
 
         StructureManager.vehicles[uuid]?.vehicleMovement(player, packet)
+    }
+
+    fun setEntityHitbox(entity: Entity, width: Double, height: Double) {
+        val nmsEntity = (entity as CraftEntity).handle
+        // Setze eine neue AABB (Axis-Aligned Bounding Box) für die Hitbox-Größe
+
+        val newBoundingBox = AABB(
+            nmsEntity.boundingBox.minX,
+            nmsEntity.boundingBox.minY,
+            nmsEntity.boundingBox.minZ,
+            nmsEntity.boundingBox.minX + width,
+            nmsEntity.boundingBox.minY + height,
+            nmsEntity.boundingBox.minZ + width
+        )
+        nmsEntity.setBoundingBox(newBoundingBox)
+    }
+
+    fun removeEntityPacket(player: Player, entity: Entity) {
+        val entityID = entity.entityId
+        val entityPlayer = (player as org.bukkit.craftbukkit.entity.CraftPlayer).handle as ServerPlayer
+        val removeEntityPacket = ClientboundRemoveEntitiesPacket(entityID)
+        entityPlayer.connection.send(removeEntityPacket)
     }
 
     fun movementPacketCheck(player: Player) {

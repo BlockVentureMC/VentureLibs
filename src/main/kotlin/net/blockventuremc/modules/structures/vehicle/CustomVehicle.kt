@@ -20,6 +20,8 @@ open class CustomVehicle(name: String, position: Vector, rotation: Vector) : Roo
     var owner: UUID? = null
     var velocity = Vector()
 
+    var steeringTask: (player: Player, packet: ServerboundPlayerInputPacket) -> Unit = { player, packet -> }
+
     override fun spawn() {
         val location = bukkitLocation
         armorStand = location.world.spawnEntity(location, EntityType.ARMOR_STAND) as ArmorStand
@@ -29,6 +31,7 @@ open class CustomVehicle(name: String, position: Vector, rotation: Vector) : Roo
             setBasePlate(false)
             isVisible = false
             isSmall = true
+            getAttribute(Attribute.GENERIC_SCALE)?.baseValue = 2.0
             setCustomType(StructureType.VEHICLE)
             getAttribute(Attribute.GENERIC_STEP_HEIGHT)?.baseValue = 0.8
             isPersistent = true
@@ -56,6 +59,7 @@ open class CustomVehicle(name: String, position: Vector, rotation: Vector) : Roo
         if(packet.zza == 0.0f && packet.xxa == 0.0f) return
 
         //if(player.uniqueId != uuid) return
+        steeringTask(player, packet)
 
         armorStand?.let { armorStand ->
             val onGround = armorStand.isOnGround

@@ -66,7 +66,7 @@ class FlatRideCommand : CommandExecutor, TabExecutor {
         val rotator = Attachment("rotator", Vector(0.0, 0.0, 10.0), Vector())
         rotator.localTransformChance = true
         tiltShift.addChild(rotator)
-        rotator.addChild(ItemAttachment("modell", ItemBuilder(Material.DIAMOND_SWORD).customModelData(70).build(), Vector(0.0, 0.0, 0.0), Vector()).setScale(10.0f))
+        rotator.addChild(ItemAttachment("modell", ItemBuilder(Material.DIAMOND_SWORD).customModelData(70).build(), Vector(0.0, 0.0, 0.0), Vector()).setScale(1.1f))
 
         val cartRotator = Attachment("cartrotator", Vector(0.0, 0.0, 0.0), Vector())
         rotator.addChild(cartRotator)

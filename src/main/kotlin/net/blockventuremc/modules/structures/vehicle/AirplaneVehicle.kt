@@ -18,13 +18,13 @@ import kotlin.math.max
 
 class AirplaneVehicle(name: String, position: Vector, rotation: Vector): CustomVehicle(name, position, rotation) {
 
-
     override fun spawn() {
         super.spawn()
 
         armorStand?.apply {
             getAttribute(Attribute.GENERIC_GRAVITY)?.baseValue = 0.00
             getAttribute(Attribute.GENERIC_STEP_HEIGHT)?.baseValue = 1.8
+            getAttribute(Attribute.GENERIC_SCALE)?.baseValue = 3.0
         }
 
     }
@@ -33,6 +33,9 @@ class AirplaneVehicle(name: String, position: Vector, rotation: Vector): CustomV
 
     var forwardForce = 0.0f
     var lastYaw = 0.0f
+
+    var movementTilt = 0.0f
+    var spin = 0.0f
 
     override fun vehicleMovement(player: Player, packet: ServerboundPlayerInputPacket) {
 
@@ -44,19 +47,7 @@ class AirplaneVehicle(name: String, position: Vector, rotation: Vector): CustomV
             val onGround = groundCollision?.hitBlock != null
 
             val verticalInput = (packet.zza) * 0.90f * (if (packet.zza < 0) 0.6f else 1.0f)
-
-            if(packet.isJumping) {
-                Bukkit.getScheduler().runTask(VentureLibs.instance, Runnable {
-                    val direction = player.location.direction
-                    val snowball = player.world.spawn(
-                        player.eyeLocation, Snowball::class.java
-                    ).apply {
-                        setGravity(false)
-                        velocity = velocity.add(player.location.direction.multiply(2.3))
-                        item = ItemStack(Material.KELP)
-                    }
-                })
-            }
+            val horizontalInput = (packet.xxa) * -4.0f
 
             forwardForce = lerp(forwardForce, verticalInput, deltaTime, 0.8f)
 
@@ -67,10 +58,15 @@ class AirplaneVehicle(name: String, position: Vector, rotation: Vector): CustomV
                     angle = 0.0f;
                 }
 
-                tilt += angle * -2.0f;
-                tilt *= 0.7f;
-                tilt = tilt.coerceIn(-40.0f, 40.0f);
-                yaw = targetYaw
+            movementTilt += angle * -2.0f;
+            movementTilt *= 0.7f;
+            movementTilt = movementTilt.coerceIn(-40.0f, 40.0f);
+
+            spin += horizontalInput
+
+            tilt = movementTilt + spin
+
+            yaw = targetYaw
             if(onGround) {
                 pitch = if(targetPitch < 0.0f) targetPitch else 0.0f
             } else {
@@ -82,6 +78,7 @@ class AirplaneVehicle(name: String, position: Vector, rotation: Vector): CustomV
             armorStand.setRotation(yaw, pitch)
             armorStand.velocity = armorStand.location.direction.multiply(forwardForce)
 
+            steeringTask(player, packet)
         }
 
 

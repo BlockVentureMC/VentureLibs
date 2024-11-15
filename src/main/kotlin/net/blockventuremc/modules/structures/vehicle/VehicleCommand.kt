@@ -1,14 +1,20 @@
 package net.blockventuremc.modules.structures.vehicle
 
+import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
+import net.blockventuremc.extensions.lerp
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.sendSuccess
 import net.blockventuremc.modules.structures.Animation
 import net.blockventuremc.modules.structures.Locator
 import net.blockventuremc.modules.structures.ItemAttachment
 import net.blockventuremc.modules.structures.StructureManager
+import net.blockventuremc.modules.structures.deltaTime
 import net.blockventuremc.modules.structures.impl.Seat
+import net.blockventuremc.modules.structures.vehicle.PacketHandler.removeEntityPacket
 import net.blockventuremc.utils.itembuilder.ItemBuilder
+import org.bukkit.Bukkit
+import org.bukkit.FluidCollisionMode
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.command.Command
@@ -16,9 +22,12 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
+import org.bukkit.entity.Snowball
+import org.bukkit.inventory.ItemStack
 import org.bukkit.permissions.PermissionDefault
 import org.bukkit.util.Vector
 import kotlin.collections.set
+import kotlin.math.asin
 
 
 @VentureCommand(
@@ -65,15 +74,17 @@ class VehicleCommand : CommandExecutor, TabExecutor {
                 )
                 vehicle.addChild(Seat("seat1", Vector(0.0,0.4,0.0), Vector()))
 
+
                 //effect
-                val wheel1 = Locator("wheel1", Vector(0.55,0.0,1.2), Vector())
-                val wheel2 = Locator("wheel2", Vector(-0.55,0.0,1.2), Vector())
-                val wheel3 = Locator("wheel3", Vector(0.55,0.0,-0.25), Vector())
-                val wheel4 = Locator("wheel4", Vector(-0.55,0.0,-0.25), Vector())
-                vehicle.addChild(wheel1)
-                vehicle.addChild(wheel2)
-                vehicle.addChild(wheel3)
-                vehicle.addChild(wheel4)
+                val wheel1 = vehicle.addChild(Locator("wheel1", Vector(0.55,0.0,1.2), Vector()))
+                val wheel2 = vehicle.addChild(Locator("wheel2", Vector(-0.55,0.0,1.2), Vector()))
+                val wheel3 = vehicle.addChild(Locator("wheel3", Vector(0.55,0.0,-0.25), Vector()))
+                val wheel4 = vehicle.addChild(Locator("wheel4", Vector(-0.55,0.0,-0.25), Vector()))
+
+                val front = vehicle.addChild(Locator("raytestfront", Vector(0.0,0.0,1.2), Vector()))
+                val back = vehicle.addChild(Locator("raytestback", Vector(-0.0,0.0,-0.25), Vector()))
+
+                val downVector = Vector(0,-1,0)
                 vehicle.animation = object : Animation() {
                     var time = 0.0
                     override fun animate() {
@@ -82,21 +93,39 @@ class VehicleCommand : CommandExecutor, TabExecutor {
 
                         val velocity = vehicle.armorStand?.velocity ?: return
 
-                        if(velocity.length() < 0.15) return
+                        if(velocity.length() < 0.07) return
 
+                        val frontPosition = Vector(front.lerpPosition.x, vehicle.position.y + 0.75, front.lerpPosition.z).toLocation(vehicle.world)
+                        val frontCheck = vehicle.world.rayTraceBlocks(frontPosition, downVector, 1.8, FluidCollisionMode.NEVER, true)
+                        val frontOnGround = frontCheck?.hitBlock != null
+                        val frontHitPosition = if(frontOnGround) frontCheck.hitPosition else front.lerpPosition
+
+                        val backPosition = Vector(back.lerpPosition.x, vehicle.position.y + 0.75, back.lerpPosition.z).toLocation(vehicle.world)
+                        val backCheck = vehicle.world.rayTraceBlocks(backPosition, downVector, 1.8, FluidCollisionMode.NEVER, true)
+                        val backOnGround = backCheck?.hitBlock != null
+                        val backtHitPosition = if(backOnGround) backCheck.hitPosition else back.lerpPosition
+
+                        if(backtHitPosition.y == frontHitPosition.y) {
+                            vehicle.pitch = lerp(vehicle.pitch, 0.0f, deltaTime, 3.4f)
+                        } else {
+                            val frontDirection = frontHitPosition.clone().subtract(backtHitPosition).normalize()
+                            val pitchRadians = asin(-frontDirection.y)
+                            vehicle.pitch = lerp(vehicle.pitch, Math.toDegrees(pitchRadians).toFloat(), deltaTime, 3.6f)
+                        }
+                        if(velocity.length() < 0.17) return
                         val blockData = vehicle.bukkitLocation.add(0.0,-0.5,0.0).block.blockData
 
                         vehicle.world.spawnParticle(Particle.BLOCK, wheel1.lerpPosition.x, wheel1.lerpPosition.y, wheel1.lerpPosition.z, 10, 0.1, 0.1, 0.1, 1.0, blockData)
                         vehicle.world.spawnParticle(Particle.BLOCK, wheel2.lerpPosition.x, wheel2.lerpPosition.y, wheel2.lerpPosition.z, 10, 0.1, 0.1, 0.1, 1.0, blockData)
                         vehicle.world.spawnParticle(Particle.BLOCK, wheel3.lerpPosition.x, wheel3.lerpPosition.y, wheel3.lerpPosition.z, 10, 0.1, 0.1, 0.1, 1.0, blockData)
                         vehicle.world.spawnParticle(Particle.BLOCK, wheel4.lerpPosition.x, wheel4.lerpPosition.y, wheel4.lerpPosition.z, 10, 0.1, 0.1, 0.1, 1.0, blockData)
-
                     }
                 }
 
                 vehicle.initialize()
 
                 StructureManager.vehicles[vehicle.uuid] = vehicle
+                removeEntityPacket(player, vehicle.armorStand!!)
                 player.sendSuccess("Custom Vehicle Spawned!")
             }
             "roller" -> {
@@ -136,7 +165,6 @@ class VehicleCommand : CommandExecutor, TabExecutor {
                         vehicle.world.spawnParticle(Particle.BLOCK, wheel1.lerpPosition.x, wheel1.lerpPosition.y, wheel1.lerpPosition.z, 10, 0.1, 0.1, 0.1, 1.0, blockData)
                         vehicle.world.spawnParticle(Particle.BLOCK, wheel2.lerpPosition.x, wheel2.lerpPosition.y, wheel2.lerpPosition.z, 10, 0.1, 0.1, 0.1, 1.0, blockData)
                         vehicle.world.spawnParticle(Particle.BLOCK, wheel3.lerpPosition.x, wheel3.lerpPosition.y, wheel3.lerpPosition.z, 10, 0.1, 0.1, 0.1, 1.0, blockData)
-
                     }
                 }
 
@@ -191,7 +219,6 @@ class VehicleCommand : CommandExecutor, TabExecutor {
                                 0.27,
                                 0.24
                             )
-
                             vehicle.world.spawnParticle(
                                 Particle.BLOCK,
                                 left.lerpPosition.x,
@@ -221,14 +248,14 @@ class VehicleCommand : CommandExecutor, TabExecutor {
                 }
 
                 vehicle.initialize()
-
+                removeEntityPacket(player, vehicle.armorStand!!)
                 StructureManager.vehicles[vehicle.uuid] = vehicle
                 player.sendSuccess("Jetski Vehicle Spawned!")
             }
             "airplane" -> {
                 val vehicle = AirplaneVehicle("airplane", player.location.toVector(), Vector(0.0f,player.location.yaw,0.0f))
                 vehicle.owner = player.uniqueId
-                vehicle.smoothFactor = 8
+                vehicle.smoothFactor = 7
                 vehicle.world = player.world
                 vehicle.addChild(
                     ItemAttachment(
@@ -272,7 +299,6 @@ class VehicleCommand : CommandExecutor, TabExecutor {
                                 0.0,
                                 0.0
                             )
-
                         val onGround = vehicle.groundCollision?.hitBlock?: return
                             vehicle.world.spawnParticle(
                                 Particle.BLOCK,
@@ -290,10 +316,39 @@ class VehicleCommand : CommandExecutor, TabExecutor {
                     }
                 }
 
+                val shootUp = Vector(0.0,0.1,0.0)
+                val speed = 2.3
+                vehicle.steeringTask = { player, packet ->
+                    if(packet.isJumping) {
+                        Bukkit.getScheduler().runTask(VentureLibs.instance, Runnable {
+
+                            val targetPosition = player.eyeLocation.toVector().add(player.eyeLocation.direction.multiply(40))
+
+                            val leftDirection = targetPosition.clone().subtract(left.lerpPosition).normalize().multiply(speed)
+                            val rightDirection = targetPosition.clone().subtract(right.lerpPosition).normalize().multiply(speed)
+
+                            val snowballLeft = player.world.spawn(
+                                left.lerpPosition.toLocation(vehicle.world), Snowball::class.java
+                            ).apply {
+                                setGravity(false)
+                                velocity = leftDirection
+                                item = ItemStack(Material.KELP)
+                            }
+                            val snowballRight = player.world.spawn(
+                                right.lerpPosition.toLocation(vehicle.world), Snowball::class.java
+                            ).apply {
+                                setGravity(false)
+                                velocity = rightDirection
+                                item = ItemStack(Material.KELP)
+                            }
+                        })
+                    }
+                }
+
                 seat1.smoothCoaster = false
                 vehicle.addChild(seat1)
                 vehicle.initialize()
-
+                removeEntityPacket(player, vehicle.armorStand!!)
                 StructureManager.vehicles[vehicle.uuid] = vehicle
                 player.sendSuccess("Custom Vehicle Spawned!")
             }

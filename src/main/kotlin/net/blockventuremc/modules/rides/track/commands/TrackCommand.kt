@@ -36,6 +36,7 @@ import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
 import org.bukkit.util.BlockVector
 import org.bukkit.util.Vector
+import sun.net.www.content.text.plain
 import java.io.File
 
 @VentureCommand(
@@ -109,6 +110,17 @@ class TrackCommand : CommandExecutor, TabExecutor {
                     return true
                 }
                 performShowTrack(sender, trackId)
+            }
+            "tp" -> {
+                if (args.size != 2) {
+                    sender.sendMessage("Usage: /track tp <trackId>")
+                    return true
+                }
+                val trackId = args[1].toIntOrNull() ?: run {
+                    sender.sendMessage("Invalid track ID.")
+                    return true
+                }
+                performTeleportTrack(sender, trackId)
             }
 
             "hide" -> {
@@ -342,6 +354,15 @@ class TrackCommand : CommandExecutor, TabExecutor {
         sender.sendMessage("Track $trackId displayed.")
     }
 
+    private fun performTeleportTrack(sender: Player, trackId: Int) {
+        val track = TrackManager.tracks[trackId] ?: run {
+            sender.sendMessage("Track $trackId does not exist.")
+            return
+        }
+        sender.teleport(track.origin)
+        sender.sendMessage("teleportet to $trackId.")
+    }
+
     private fun performHideTrack(sender: Player, trackId: Int) {
         val track = TrackManager.tracks[trackId] ?: run {
             sender.sendMessage("Track $trackId does not exist.")
@@ -428,6 +449,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
         return when (args.size) {
             1 -> listOf(
                 "import",
+                "tp",
                 "show",
                 "hide",
                 "list",
@@ -440,7 +462,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
             ).filter { it.startsWith(args[0]) }
 
             2 -> when(args[0]) {
-                "show", "hide", "select", "segment", "despawn", "placeblocks" ->
+                "show", "hide", "select", "segment", "despawn", "tp", "placeblocks" ->
                     TrackManager.tracks.keys.map { it.toString() }.filter { it.startsWith(args[1]) }
                 "spawn" -> TrainRegistry.trains.keys.map { it.toString() }.filter { it.startsWith(args[1]) }
 
