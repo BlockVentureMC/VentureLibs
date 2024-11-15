@@ -177,6 +177,7 @@ class VehicleCommand : CommandExecutor, TabExecutor {
                 val vehicle = WaterVehicle("jetski vehicle", player.location.toVector(), Vector(0.0f,player.location.yaw,0.0f))
                 vehicle.world = player.world
                 vehicle.owner = player.uniqueId
+                vehicle.smoothFactor = 4
                 vehicle.addChild(
                     ItemAttachment("jetski", ItemBuilder(Material.LEATHER_HORSE_ARMOR).customModelData(10000).build(), Vector(0.0, 0.2, 0.0), Vector()).setScale(0.8f)
                 )
