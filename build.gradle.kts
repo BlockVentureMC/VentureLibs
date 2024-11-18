@@ -27,7 +27,7 @@ plugins {
     id("com.gradleup.shadow") version "8.3.4"
     id("org.jetbrains.dokka") version "1.9.20"
     id("org.sonarqube") version "5.0.0.4638"
-    id("io.papermc.paperweight.userdev") version "1.7.4"
+    id("io.papermc.paperweight.userdev") version "1.7.5"
     //id("io.sentry.jvm.gradle") version "4.6.0"
 }
 
