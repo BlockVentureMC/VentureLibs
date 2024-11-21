@@ -24,7 +24,7 @@ val smoothCoastersAPIVersion: String by project
 plugins {
     kotlin("jvm") version "2.0.0"
     kotlin("plugin.serialization") version "2.0.21"
-    id("com.gradleup.shadow") version "8.3.4"
+    id("com.gradleup.shadow") version "8.3.5"
     id("org.jetbrains.dokka") version "1.9.20"
     id("org.sonarqube") version "5.0.0.4638"
     id("io.papermc.paperweight.userdev") version "1.7.4"
