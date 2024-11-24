@@ -68,7 +68,7 @@ open class CustomVehicle(name: String, position: Vector, rotation: Vector) : Roo
             yaw += -packet.xxa * 5
             armorStand.setRotation(yaw, 0.0f)
             val forwardVector = armorStand.location.direction
-            verticalInput += if(packet.xxa != 0.0f && packet.zza == 0.0f) 0.1f else 0.0f
+            verticalInput += if(packet.xxa != 0.0f && packet.zza == 0.0f) 0.2f else 0.0f
             val velocity = forwardVector.multiply(verticalInput)
 
             armorStand.velocity = armorStand.velocity.add(velocity)

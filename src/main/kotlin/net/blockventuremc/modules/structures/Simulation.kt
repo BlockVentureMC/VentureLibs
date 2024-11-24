@@ -95,8 +95,8 @@ class Pendulum(val pendulum: Stick, val mass: Float = 20.0f, val world: World) {
         itemDisplay = location.world.spawnEntity(location, EntityType.ITEM_DISPLAY) as ItemDisplay
             itemDisplay.apply {
                 shadowStrength = 0.0f
-                teleportDuration = 2
-                interpolationDuration = 2
+                teleportDuration = 3
+                interpolationDuration = 3
                 itemDisplayTransform = ItemDisplay.ItemDisplayTransform.HEAD
                 setItemStack(ItemStack(Material.DIAMOND_BLOCK))
                 setCustomType(StructureType.GENERIC)
