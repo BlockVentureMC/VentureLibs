@@ -17,7 +17,7 @@ import org.joml.Quaternionf
 import org.joml.Vector3f
 
 class Seat(name: String, localPosition: Vector, localRotation: Vector) :
-    Attachment(name, localPosition, localRotation, Matrix4f(), true) {
+    Attachment(name, localPosition, localRotation) {
 
     var itemDisplay: ItemDisplay? = null
     var interaction: Interaction? = null
@@ -28,7 +28,7 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector) :
 
     init {
         localPosition.add(Vector(0.0, offset, 0.0))
-        localTransformChance = false
+        calculateLocalTransform
     }
 
     override fun spawn() {

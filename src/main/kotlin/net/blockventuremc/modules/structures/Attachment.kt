@@ -8,14 +8,12 @@ open class Attachment(
     val name: String,
     var localPosition: Vector,
     var localRotation: Vector,
-    var transform: Matrix4f = Matrix4f(),
-    var localTransformChance: Boolean = false
+    var animate: Boolean = false,
 ) {
-
+    var matrix: Matrix4f = Matrix4f()
     init {
-        if(!localTransformChance) transform = calculateLocalTransform
+        if(!animate) calculateLocalTransform
     }
-
     lateinit var root: RootAttachment
 
     var parent: Attachment? = null
@@ -63,11 +61,12 @@ open class Attachment(
         }
     }
 
-    private val calculateLocalTransform: Matrix4f
+    val calculateLocalTransform: Matrix4f
         get() {
-        var matrix = Matrix4f().translate(localPosition.toVector3f())
+            matrix.identity()
+            matrix.translate(localPosition.toVector3f())
 
-        if (localRotation.isZero) return matrix
+            if (localRotation.isZero) return matrix
 
         val yaw = Math.toRadians(localRotation.y).toFloat()
         val pitch = Math.toRadians(localRotation.x).toFloat()
@@ -80,7 +79,9 @@ open class Attachment(
     }
 
     open val localTransform: Matrix4f
-        get() = calculateLocalTransform
+        get()  {
+            return if(animate) calculateLocalTransform else matrix
+        }
 
     val bukkitLocation: Location
         get() {

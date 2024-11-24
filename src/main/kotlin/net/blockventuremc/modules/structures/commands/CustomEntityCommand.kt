@@ -38,14 +38,46 @@ class CustomEntityCommand : CommandExecutor {
         val player = sender
 
         val location = player.location
-        var armorStand = location.world.spawnEntity(location, EntityType.ARMOR_STAND) as ArmorStand
-        val width = args[0].toDouble()
-        val height = args[1].toDouble()
-        Bukkit.getScheduler().runTaskLater(VentureLibs.instance, Runnable {
-            setEntityHitbox(armorStand, width, height)
-        },2L)
+        val world = player.world
 
-        player.sendSuccess("Test Armorstand w=$width h=$height")
+        val mass = args.getOrNull(0)?.toFloatOrNull() ?: 20.0f
+
+        val pointA = Point(location.toVector())
+        val pointB = Point(location.toVector().add(Vector(0.0f, -2.0f, 0.0f)))
+        val stick = Stick(pointA, pointB)
+
+        val pendulum = Pendulum(stick, mass, world)
+        pendulum.spawn()
+
+/*
+        for (i in 0..20) {
+            val pointPosition = location.toVector().add(Vector(0.0f, -0.6f, 0.0f).multiply(i))
+
+            val point = Point(pointPosition)
+
+            if(i == 0) point.locked = true
+
+            rope.points.add(point)
+        }
+
+        for (index in 0.. rope.points.size - 2) {
+            rope.sticks.add(Stick(rope.points[index], rope.points[index + 1]))
+        }
+
+ */
+
+
+        interval(0, 1) {
+            if(!player.isOnline || player.inventory.itemInMainHand.type == Material.DIAMOND_BLOCK) {
+                pendulum.despawn()
+                return@interval
+            }
+            pendulum.pendulum.point1.position = player.location.toVector()
+            pendulum.simulate()
+
+        }
+
+        player.sendSuccess("Test Rope g=$gravity")
         return true
     }
 

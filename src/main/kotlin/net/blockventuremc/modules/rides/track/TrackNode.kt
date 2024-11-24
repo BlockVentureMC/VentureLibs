@@ -40,55 +40,14 @@ data class TrackNode(
 
 ) {
 
-    /**
-     * Represents a position in three-dimensional space.
-     *
-     * This class provides a convenient way to represent a position using three coordinates - posX, posY, and posZ.
-     * Instances of this class are generally used to represent positions in a block-based environment.
-     *
-     * @property posX The X-coordinate of the position.
-     * @property posY The Y-coordinate of the position.
-     * @property posZ The Z-coordinate of the position.
-     */
-    val position: BlockVector
-        get() = BlockVector(posX, posY, posZ)
+    val position: BlockVector = BlockVector(posX, posY, posZ)
 
-    /**
-     * Represents the front vector.
-     *
-     * This vector defines the direction in which an object is facing.
-     *
-     * @property frontVector The front vector.
-     */
-    val frontVector: BlockVector
-        get() = BlockVector(frontX, frontY, frontZ)
+    val frontVector: BlockVector = BlockVector(frontX, frontY, frontZ)
 
-    /**
-     * Represents a left vector in a Cartesian coordinate system.
-     * The vector is represented as a BlockVector.
-     */
-    val leftVector: BlockVector
-        get() = BlockVector(leftX, leftY, leftZ)
+    val leftVector: BlockVector = BlockVector(leftX, leftY, leftZ)
 
-    /**
-     * Represents an upward vector in three-dimensional space.
-     * This vector is used to define the direction of the "up" in relation to a reference point.
-     *
-     * @property upX The x-coordinate value of the upward vector.
-     * @property upY The y-coordinate value of the upward vector.
-     * @property upZ The z-coordinate value of the upward vector.
-     */
-    val upVector: BlockVector
-        get() = BlockVector(upX, upY, upZ)
+    val upVector: BlockVector = BlockVector(upX, upY, upZ)
 
-
-    /**
-     * Displays a node in the given world as itemDisplayEntities.
-     *
-     * @param world The world in which the node should be displayed.
-     *
-     * @return A triple containing the unique IDs of the front vector entity, left vector entity, and up vector entity.
-     */
     fun displayInWord(origin: Location): UUID {
         val loc = Location(origin.world, origin.x + posX, origin.y + posY, origin.z + posZ)
 
@@ -116,7 +75,6 @@ data class TrackNode(
 
         return itemDisplayEnt.uniqueId
     }
-
 
     override fun hashCode(): Int {
         var hash = 7

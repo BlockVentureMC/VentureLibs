@@ -56,15 +56,14 @@ class FlatRideCommand : CommandExecutor, TabExecutor {
         val rootAttachment = RootAttachment("flat", location.toVector(), Vector())
         rootAttachment.world = location.world
 
-
         // Add tilt shift attachment
         val tiltShift = Attachment("tilt_shift", Vector(), Vector())
+        tiltShift.animate = true
         rootAttachment.addChild(tiltShift)
-
 
         // Add rotator attachment
         val rotator = Attachment("rotator", Vector(0.0, 0.0, 10.0), Vector())
-        rotator.localTransformChance = true
+        rotator.animate = true
         tiltShift.addChild(rotator)
         rotator.addChild(ItemAttachment("modell", ItemBuilder(Material.DIAMOND_SWORD).customModelData(70).build(), Vector(0.0, 0.0, 0.0), Vector()).setScale(1.1f))
 
@@ -120,7 +119,7 @@ class FlatRideCommand : CommandExecutor, TabExecutor {
 
     private fun generateCart(rotator: Attachment, n: Int, offset: Vector, angle: Double) {
         val cartRotator = Attachment("rotator$n", offset, Vector(0.0, Math.toDegrees(angle), 0.0))
-        cartRotator.localTransformChance = true
+        cartRotator.animate = true
         rotator.addChild(cartRotator)
 
         cartRotator.addChild(Seat("seat1", Vector(0.39, 0.6, 0.3), Vector()))

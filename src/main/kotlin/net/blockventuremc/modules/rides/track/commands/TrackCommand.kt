@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
+import net.blockventuremc.extensions.teleportAsyncWithPassengers
 import net.blockventuremc.modules.general.events.custom.toVentureLocation
 import net.blockventuremc.modules.rides.track.Nl2Importer
 import net.blockventuremc.modules.rides.track.TrackManager
@@ -359,7 +360,7 @@ class TrackCommand : CommandExecutor, TabExecutor {
             sender.sendMessage("Track $trackId does not exist.")
             return
         }
-        sender.teleport(track.origin)
+        sender.teleportAsyncWithPassengers(track.origin)
         sender.sendMessage("teleportet to $trackId.")
     }
 

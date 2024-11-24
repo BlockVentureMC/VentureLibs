@@ -33,7 +33,7 @@ open class CustomVehicle(name: String, position: Vector, rotation: Vector) : Roo
             isSmall = true
             getAttribute(Attribute.GENERIC_SCALE)?.baseValue = 2.0
             setCustomType(StructureType.VEHICLE)
-            getAttribute(Attribute.GENERIC_STEP_HEIGHT)?.baseValue = 0.8
+            getAttribute(Attribute.GENERIC_STEP_HEIGHT)?.baseValue = 1.02
             isPersistent = true
         }
     }
@@ -63,11 +63,15 @@ open class CustomVehicle(name: String, position: Vector, rotation: Vector) : Roo
 
         armorStand?.let { armorStand ->
             val onGround = armorStand.isOnGround
-            val verticalInput = (packet.zza) * 0.35f * (if (onGround) 1.0f else 0.4f) * (if (packet.zza < 0) 0.34f else 0.7f)
+            var verticalInput = (packet.zza) * 0.35f * (if (onGround) 1.0f else 0.4f) * (if (packet.zza < 0) 0.34f else 0.7f)
 
-            yaw += -packet.xxa * 7
+            yaw += -packet.xxa * 5
             armorStand.setRotation(yaw, 0.0f)
-            armorStand.velocity = armorStand.velocity.add (armorStand.location.direction.multiply(verticalInput))
+            val forwardVector = armorStand.location.direction
+            verticalInput += if(packet.xxa != 0.0f && packet.zza == 0.0f) 0.1f else 0.0f
+            val velocity = forwardVector.multiply(verticalInput)
+
+            armorStand.velocity = armorStand.velocity.add(velocity)
         }
     }
 

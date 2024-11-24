@@ -34,7 +34,7 @@ object TrainRegistry {
                             rotator.addChild(Seat("seat2", Vector(-0.39, 0.6, 0.3), Vector()))
                             rotator.addChild(Seat("seat3", Vector(0.39, 0.6, -0.3), Vector()))
                             rotator.addChild(Seat("seat4", Vector(-0.39, 0.6, -0.3), Vector()))
-
+                            rotator.animate = true
                             rotator.addChild(
                                 ItemAttachment(
                                     "model",

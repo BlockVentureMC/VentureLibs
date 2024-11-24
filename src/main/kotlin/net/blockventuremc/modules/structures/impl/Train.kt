@@ -141,7 +141,6 @@ class Train(name: String, val trackRide: TrackRide, var startPosition: Double = 
             cart.up = up
             cart.left = left
 
-            // simulation
             val velocity = cart.simulate(trackNode, velocityDir,v)
 
             if(i == 0) {
@@ -160,6 +159,7 @@ class Train(name: String, val trackRide: TrackRide, var startPosition: Double = 
             cart.update()
 
             cartPosition -= cart.cartLength + cart.cartDistance
+
             if (cartPosition < 0) {
                 cartPosition += trackRide.totalLength.toFloat()
             } else if (cartPosition >= trackRide.totalLength) {
@@ -171,7 +171,6 @@ class Train(name: String, val trackRide: TrackRide, var startPosition: Double = 
     }
 
     fun sounds() {
-
         if(ticksLived % 2 == 0) {
             val volume = remap(abs(velocity), 2.0f,30.0f,0.0f,1.0f)
             val pitch = remap(abs(velocity), 2.0f,30.0f,0.1f,1.2f)
@@ -180,7 +179,7 @@ class Train(name: String, val trackRide: TrackRide, var startPosition: Double = 
     }
 
     fun trackNodeAtDistance(distance: Double): TrackNode {
-        val totalNodes = trackRide.nodes.size - 1
+        val totalNodes = trackRide.nodes.size
         val distanceBetweenNodes = trackRide.nodeDistance
 
         val nodeIndex = (distance / distanceBetweenNodes).toInt()

@@ -6,13 +6,13 @@ import org.joml.Matrix4f
 import java.util.*
 
 open class RootAttachment(name: String, var position: Vector = Vector(), rotation: Vector = Vector()) :
-    Attachment(name, Vector(), rotation) {
+    Attachment(name, Vector(), rotation, true) {
 
     val uuid = UUID.randomUUID()
     var animation: Animation? = null
     lateinit var world: World
 
-    var smoothFactor: Int = 2
+    var smoothFactor: Int = 3
 
     init {
         parent = this
@@ -20,13 +20,15 @@ open class RootAttachment(name: String, var position: Vector = Vector(), rotatio
     }
 
     open fun initialize() {
-        val matrix = Matrix4f().translate(position.toVector3f())
+        matrix.identity()
+        val matrix = matrix.translate(position.toVector3f())
         updateTransformRecurse(matrix)
         spawnAttachmentsRecurse()
     }
 
     open fun update() {
-        val matrix = Matrix4f().translate(position.toVector3f())
+        matrix.identity()
+        matrix.translate(position.toVector3f())
         animation?.animate()
         updateTransformRecurse(matrix)
     }
