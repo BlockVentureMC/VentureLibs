@@ -50,7 +50,7 @@ open class Attachment(
         }
     }
 
-    fun updateTransformRecurse(transform: Matrix4f) {
+    open fun updateTransformRecurse(transform: Matrix4f) {
         worldTransform.set(transform)
         worldTransform.mul(localTransform)
 

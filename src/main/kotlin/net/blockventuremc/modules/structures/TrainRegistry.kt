@@ -66,6 +66,39 @@ object TrainRegistry {
             }
         })
 
+        //lift
+        trains.put("lift", object : AbstractTrain() {
+            override fun train(trackRide: TrackRide, startPosition: Double): Train {
+                val train = Train("lift", trackRide, 0.0)
+                repeat(3) { i ->
+                    val cart = Cart(0.8f, 2.0f)
+                    var pendulumAttachment = cart.addChild(PendulumAttachment("pendulum", Vector(0.0,0.0,0.0), 300.0))
+
+                    pendulumAttachment.addChild(
+                        ItemAttachment(
+                            "bug",
+                            ItemBuilder(Material.DIAMOND_BLOCK).build(),
+                            Vector(0.0, 0.0, 0.0),
+                            Vector()
+                        )
+                    )
+                    pendulumAttachment.addChild(
+                        ItemAttachment(
+                            "base",
+                            ItemBuilder(Material.DIAMOND_SWORD).customModelData(105).build(),
+                            Vector(0.0, -3.0, 0.0),
+                            Vector()
+                        )
+                    )
+                    pendulumAttachment.addChild(Seat("seat1", Vector(0.6, -3.0, 0.0), Vector(), false))
+                    pendulumAttachment.addChild(Seat("seat2", Vector(-0.6, -3.0, 0.0), Vector(), false))
+
+                    train.addCart(cart)
+                }
+                return train
+            }
+        })
+
         //lumbertrack_coaster
         trains.put("lumbertrack_coaster", object : AbstractTrain() {
             override fun train(trackRide: TrackRide, startPosition: Double): Train {
@@ -95,6 +128,21 @@ object TrainRegistry {
                     )
                     cart.addChild(Seat("seat1", Vector(0.4, 0.4, 0.0), Vector()))
                     cart.addChild(Seat("seat2", Vector(-0.4, 0.4, 0.0), Vector()))
+
+                    val rotatorAttachment =  cart.addChild(PendulumAttachment("rotator", Vector(0.0,0.0,0.0), 300.0))
+                    rotatorAttachment.addChild(
+                        ItemAttachment(
+                            "test",
+                            ItemBuilder(Material.DIAMOND_BLOCK).build(),
+                            Vector(0.0, -2.0, 0.0),
+                            Vector()
+                        )
+                    )
+                    cart.animation = object : Animation() {
+                        override fun animate() {
+                        }
+                    }
+
                     train.addCart(cart)
                 }
                 return train

@@ -1,5 +1,6 @@
 package net.blockventuremc.modules.structures.commands
 
+import dev.fruxz.ascend.extension.container.second
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.extensions.sendSuccess
@@ -17,6 +18,7 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.permissions.PermissionDefault
 import org.bukkit.util.Vector
+import kotlin.math.PI
 
 @VentureCommand(
     name = "customentity",
@@ -40,14 +42,8 @@ class CustomEntityCommand : CommandExecutor {
         val location = player.location
         val world = player.world
 
-        val mass = args.getOrNull(0)?.toFloatOrNull() ?: 20.0f
-
-        val pointA = Point(location.toVector())
-        val pointB = Point(location.toVector().add(Vector(0.0f, -2.0f, 0.0f)))
-        val stick = Stick(pointA, pointB)
-
-        val pendulum = Pendulum(stick, mass, world)
-        pendulum.spawn()
+        val length = args.getOrNull(0)?.toDoubleOrNull() ?: 100.0
+        val mass = args.getOrNull(1)?.toDoubleOrNull() ?: 1.0
 
 /*
         for (i in 0..20) {
@@ -66,18 +62,14 @@ class CustomEntityCommand : CommandExecutor {
 
  */
 
-
+        val pendulum = SimplePendulum(player.world, player.location.toVector(), length, mass, PI / 4)
+        pendulum.spawn()
         interval(0, 1) {
-            if(!player.isOnline || player.inventory.itemInMainHand.type == Material.DIAMOND_BLOCK) {
-                pendulum.despawn()
-                return@interval
-            }
-            pendulum.pendulum.point1.position = player.location.toVector()
-            pendulum.simulate()
-
+            pendulum.origin = player.eyeLocation.toVector().add(player.location.direction.multiply(7))
+            pendulum.update()
         }
 
-        player.sendSuccess("Test Rope g=$gravity")
+        player.sendSuccess("Test Rope length=$length mass=$mass")
         return true
     }
 

@@ -16,13 +16,12 @@ import org.joml.Matrix4f
 import org.joml.Quaternionf
 import org.joml.Vector3f
 
-class Seat(name: String, localPosition: Vector, localRotation: Vector) :
+class Seat(name: String, localPosition: Vector, localRotation: Vector, var smoothCoaster: Boolean = true) :
     Attachment(name, localPosition, localRotation) {
 
     var itemDisplay: ItemDisplay? = null
     var interaction: Interaction? = null
     var dynamic = false
-    var smoothCoaster = true
 
     val offset = 0.8//0.53
 

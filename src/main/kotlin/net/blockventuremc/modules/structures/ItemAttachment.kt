@@ -37,9 +37,8 @@ class ItemAttachment(name: String, val item: ItemStack, localPosition: Vector, l
             display.teleport(bukkitLocation, TeleportFlag.EntityState.RETAIN_PASSENGERS)
 
             var transform = display.transformation
-            var quaternion = Quaternionf()
-            quaternion = worldTransform.getNormalizedRotation(quaternion)
-            transform.leftRotation.set(quaternion)
+
+            transform.leftRotation.set(worldTransform.getNormalizedRotation(Quaternionf()))
             if (transform != display.transformation) {
                 display.interpolationDelay = 0
                 display.transformation = transform
