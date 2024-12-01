@@ -2,6 +2,7 @@ package net.blockventuremc.modules.structures.vehicle
 
 import net.blockventuremc.modules.structures.RootAttachment
 import net.blockventuremc.modules.structures.StructureType
+import net.blockventuremc.modules.structures.impl.Seat
 import net.blockventuremc.modules.structures.setCustomType
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket
 import org.bukkit.entity.ArmorStand
@@ -19,6 +20,8 @@ open class CustomVehicle(name: String, position: Vector, rotation: Vector) : Roo
     var tilt = 0.0f
     var owner: UUID? = null
     var velocity = Vector()
+
+    var steeringSeat: Seat? = null
 
     var steeringTask: (player: Player, packet: ServerboundPlayerInputPacket) -> Unit = { player, packet -> }
 

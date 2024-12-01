@@ -57,7 +57,7 @@ open class Attachment(
         updateTransform()
 
         for (child in children.values) {
-            child.updateTransformRecurse(worldTransform.clone() as Matrix4f)
+            child.updateTransformRecurse(worldTransform)
         }
     }
 

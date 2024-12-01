@@ -72,7 +72,7 @@ class Seat(name: String, localPosition: Vector, localRotation: Vector, var smoot
                     quaternion.y,
                     quaternion.z,
                     quaternion.w,
-                    4
+                    3
                 )
             }
             }

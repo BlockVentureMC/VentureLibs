@@ -128,16 +128,6 @@ object TrainRegistry {
                     )
                     cart.addChild(Seat("seat1", Vector(0.4, 0.4, 0.0), Vector()))
                     cart.addChild(Seat("seat2", Vector(-0.4, 0.4, 0.0), Vector()))
-
-                    val rotatorAttachment =  cart.addChild(PendulumAttachment("rotator", Vector(0.0,0.0,0.0), 300.0))
-                    rotatorAttachment.addChild(
-                        ItemAttachment(
-                            "test",
-                            ItemBuilder(Material.DIAMOND_BLOCK).build(),
-                            Vector(0.0, -2.0, 0.0),
-                            Vector()
-                        )
-                    )
                     cart.animation = object : Animation() {
                         override fun animate() {
                         }

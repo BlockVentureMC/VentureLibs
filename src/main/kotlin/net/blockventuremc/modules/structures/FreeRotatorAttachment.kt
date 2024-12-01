@@ -19,25 +19,27 @@ open class FreeRotatorAttachment(name: String, localPosition: Vector, localRotat
             return if(animate) calculateLocalTransform else matrix
         }
 
-    override fun updateTransformRecurse(transform: Matrix4f) {
+    var tempMatrix = Matrix4f()
 
+    override fun updateTransformRecurse(transform: Matrix4f) {
         val yaw = atan2(transform.m20().toDouble(), transform.m00().toDouble()).toFloat()
 
+        tempMatrix.set(transform)
         // Entferne die Rotation (Setze Rotationsanteile auf Identität)
-        transform.m00(1f).m01(0f).m02(0f) // X-Achse right
-        transform.m10(0f).m11(1f).m12(0f) // Y-Achse up
-        transform.m20(0f).m21(0f).m22(1f) // Z-Achse forward
+        tempMatrix.m00(1f).m01(0f).m02(0f) // X-Achse right
+        tempMatrix.m10(0f).m11(1f).m12(0f) // Y-Achse up
+        tempMatrix.m20(0f).m21(0f).m22(1f) // Z-Achse forward
 
-        //keep yaw and roll
-        transform.rotateY(yaw)
+        //keep yaw
+        tempMatrix.rotateY(yaw)
 
-        worldTransform.set(transform)
+        worldTransform.set(tempMatrix)
         worldTransform.mul(localTransform)
 
         updateTransform()
 
         for (child in children.values) {
-            child.updateTransformRecurse(worldTransform.clone() as Matrix4f)
+            child.updateTransformRecurse(worldTransform)
         }
     }
 

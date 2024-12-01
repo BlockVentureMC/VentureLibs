@@ -32,14 +32,16 @@ class ItemAttachment(name: String, val item: ItemStack, localPosition: Vector, l
         itemDisplay?.customName = "root=$root, name=$name"
     }
 
+    var rotation = Quaternionf()
+
     override fun updateTransform() {
         itemDisplay?.let { display ->
             display.teleport(bukkitLocation, TeleportFlag.EntityState.RETAIN_PASSENGERS)
 
             var transform = display.transformation
 
-            transform.leftRotation.set(worldTransform.getNormalizedRotation(Quaternionf()))
-            if (transform != display.transformation) {
+            transform.leftRotation.set(worldTransform.getNormalizedRotation(rotation))
+            if (transform.leftRotation != display.transformation.leftRotation) {
                 display.interpolationDelay = 0
                 display.transformation = transform
             }
