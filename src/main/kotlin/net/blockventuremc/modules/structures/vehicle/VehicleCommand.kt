@@ -1,5 +1,6 @@
 package net.blockventuremc.modules.structures.vehicle
 
+import dev.fruxz.ascend.extension.isNull
 import net.blockventuremc.VentureLibs
 import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.extensions.lerp
@@ -9,7 +10,9 @@ import net.blockventuremc.modules.structures.Animation
 import net.blockventuremc.modules.structures.Locator
 import net.blockventuremc.modules.structures.ItemAttachment
 import net.blockventuremc.modules.structures.StructureManager
+import net.blockventuremc.modules.structures.WorldPositionAttachment
 import net.blockventuremc.modules.structures.deltaTime
+import net.blockventuremc.modules.structures.impl.Cart
 import net.blockventuremc.modules.structures.impl.Seat
 import net.blockventuremc.modules.structures.vehicle.PacketHandler.removeEntityPacket
 import net.blockventuremc.utils.itembuilder.ItemBuilder
@@ -28,6 +31,8 @@ import org.bukkit.permissions.PermissionDefault
 import org.bukkit.util.Vector
 import kotlin.collections.set
 import kotlin.math.asin
+import kotlin.math.atan2
+import kotlin.math.sqrt
 
 
 @VentureCommand(
@@ -253,6 +258,69 @@ class VehicleCommand : CommandExecutor, TabExecutor {
                 StructureManager.vehicles[vehicle.uuid] = vehicle
                 player.sendSuccess("Jetski Vehicle Spawned!")
             }
+            "train" -> {
+                val vehicle = AirplaneVehicle("train", player.location.toVector(), Vector(0.0f,player.location.yaw,0.0f))
+                vehicle.owner = player.uniqueId
+                vehicle.smoothFactor = 7
+                vehicle.world = player.world
+
+
+                repeat(5) { i -> //122 red
+                    val cart = vehicle.addChild(WorldPositionAttachment("cart$i", player.location.toVector().add(Vector(i + 1,0,0)), Vector()))
+                    var itemId = if (i == 0) 123 else 124
+                    if (i == 4 || i == 1) itemId = 125
+                    cart.addChild(
+                        ItemAttachment(
+                            "base",
+                            ItemBuilder(Material.DIAMOND_SWORD).customModelData(itemId).build(),
+                            Vector(0.0, 0.9, 0.0),
+                            Vector()
+                        )
+                    )
+                    cart.addChild(Seat("seat1", Vector(0.4, 0.4, 0.0), Vector()))
+                    cart.addChild(Seat("seat2", Vector(-0.4, 0.4, 0.0), Vector()))
+                }
+
+
+                vehicle.animation = object : Animation() {
+
+                    init {
+                        animationMap["partDistance"] = 1.5f
+                    }
+                    override fun animate() {
+                        val partDistance = animationMap["partDistance"] as Float
+                        var prevPosition = vehicle.armorStand!!.location.toVector()
+                        var prevDirection = vehicle.armorStand!!.location.direction
+                        vehicle.children.values.forEachIndexed { index, part ->
+                            var direction = prevDirection.clone().subtract(part.localPosition)
+
+                            if (direction.isZero || direction.isNull) return
+                            direction = direction.normalize()
+
+                            val position = prevPosition.subtract(direction.multiply(partDistance))
+
+                            val targetYaw = Math.toDegrees(atan2(-direction.x, direction.z))
+
+                            val horizontalLength = sqrt(direction.x * direction.x + direction.z * direction.z)
+                            val targetPitch = -Math.toDegrees(atan2(direction.y, horizontalLength))
+
+                            val crossProduct = prevDirection.crossProduct(direction).multiply(0.13)
+                            val targetRoll = (crossProduct.dot(Vector(0.0, 1.0, 0.0)) * 90.0).coerceIn(-80.0, 80.0)
+
+                            //cart.localRotation = Vector(targetPitch, targetYaw, targetRoll)
+                            part.localPosition = position
+
+                            prevPosition = position
+                            prevDirection = direction
+                        }
+                    }
+                }
+
+                vehicle.initialize()
+                removeEntityPacket(player, vehicle.armorStand!!)
+                StructureManager.vehicles[vehicle.uuid] = vehicle
+                player.sendSuccess("Custom Vehicle Spawned!")
+            }
             "airplane" -> {
                 val vehicle = AirplaneVehicle("airplane", player.location.toVector(), Vector(0.0f,player.location.yaw,0.0f))
                 vehicle.owner = player.uniqueId
@@ -366,7 +434,7 @@ class VehicleCommand : CommandExecutor, TabExecutor {
         args: Array<out String>
     ): List<String> {
         return when (args.size) {
-            1 -> listOf("cart", "airplane", "roller", "jetski").filter { it.startsWith(args[0]) }
+            1 -> listOf("cart", "airplane", "roller", "jetski", "train").filter { it.startsWith(args[0]) }
             else -> emptyList()
         }
     }
