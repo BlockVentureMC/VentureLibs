@@ -4,7 +4,9 @@ import net.blockventuremc.annotations.VentureCommand
 import net.blockventuremc.extensions.sendError
 import net.blockventuremc.extensions.sendMessagePrefixed
 import net.blockventuremc.extensions.sendSuccess
+import net.blockventuremc.extensions.teleportAsyncWithPassengers
 import net.blockventuremc.modules.structures.RootAttachment
+import net.blockventuremc.modules.structures.StructureManager
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -37,48 +39,100 @@ class StructureCommand : CommandExecutor, TabExecutor {
             "select" -> {
                 if (args.size == 1) {
                     if(selectedStructure != null) {
-                        sender.sendMessage("Currently selected structure is ${selectedStructure!!.name}")
+                        sender.sendSuccess("Currently selected structure is ${selectedStructure!!.name} (type ${selectedStructure!!.javaClass.simpleName})")
+                        sender.teleportAsyncWithPassengers(selectedStructure!!.bukkitLocation)
                         return true
                     }
-
-                    sender.sendMessagePrefixed("Usage: /structure select <name||uuid>")
+                    sender.sendError("Please select a structure first.")
                     return true
                 }
             }
+            "selectnearest" -> {
+                performSelectNearest(sender)
+                return true
+            }
             "animate" -> {
-                if (args.size < 3) {
-                    if (selectedStructure == null) {
-                        sender.sendError("Please select a structure first.")
-                        return true
-                    }
+                if (selectedStructure == null) {
+                    sender.sendError("Please select a structure first.")
+                    return true
+                }
+                if(selectedStructure!!.animation == null) {
+                    sender.sendError("this structure does not have an animation :(")
+                    return true
+                }
+                if(selectedStructure!!.animation!!.animationMap.isEmpty()) {
+                    sender.sendError("This animation does not have custom animation Fields.")
+                    return true
+                }
+                if (args.size == 1) {
                     sender.sendMessagePrefixed("Usage: /structure animate <field> <value>")
                     return true
+                }
+                if(args.size == 2) {
+                    val fieldValue = selectedStructure!!.animation!!.animationMap[args[1]]
+                    if(fieldValue != null) {
+                        sender.sendMessagePrefixed("field ${args[1]} has value $fieldValue")
+                        return true
+                    }
+
                 }
                 performAnimate(sender, args[1], args[2])
                 return true
             }
         }
-        sender.sendMessagePrefixed("Usage: /structure <select/animate>")
+        sender.sendMessagePrefixed("Usage: /structure <selectnearest/animate>")
         return true
+    }
+
+    private fun performSelectNearest(sender: Player) {
+
+        var lastDistance = 10.0
+        var foundStructure = false
+        StructureManager.structures.values.forEach { structure ->
+            if(structure.bukkitLocation.world == sender.location.world) {
+                val distance = structure.bukkitLocation.distance(sender.location)
+                if (distance < lastDistance) {
+                    selectedStructure = structure
+                    foundStructure = true
+                    lastDistance = distance
+                }
+            }
+        }
+        if(!foundStructure) {
+            StructureManager.vehicles.values.forEach { structure ->
+                if(structure.bukkitLocation.world == sender.location.world) {
+                    val distance = structure.bukkitLocation.distance(sender.location)
+                    if (distance < lastDistance) {
+                        selectedStructure = structure
+                        foundStructure = true
+                        lastDistance = distance
+                    }
+                }
+            }
+        }
+        if(!foundStructure) {
+            StructureManager.trains.values.forEach { structure ->
+                var location = structure.carts.first().bukkitLocation
+                if(location.world == sender.location.world) {
+                    val distance = location.distance(sender.location)
+                    if (distance < lastDistance) {
+                        selectedStructure = structure.carts.first()
+                        foundStructure = true
+                        lastDistance = distance
+                    }
+                }
+            }
+        }
+        if(foundStructure) {
+            sender.sendSuccess("Selected structure ${selectedStructure!!.name} (type ${selectedStructure!!.javaClass.simpleName})")
+        } else {
+            sender.sendError("No structure found nearby.")
+        }
     }
 
     private fun performAnimate(sender: Player, animationField: String, value: String) {
 
-        if (selectedStructure == null) {
-            sender.sendError("Please select a structure first.")
-            return
-        }
-        if(selectedStructure!!.animation == null) {
-            sender.sendError("this structure does not have an animation")
-            return
-        }
-
         selectedStructure!!.animation?.let { animation ->
-
-            if(animation.animationMap.isEmpty()) {
-                sender.sendError("This animation does not have custom animation Fields.")
-                return
-            }
 
             val fieldValue = animation.animationMap[animationField]
 
@@ -132,7 +186,7 @@ class StructureCommand : CommandExecutor, TabExecutor {
         args: Array<out String>
     ): List<String> {
         return when (args.size) {
-            1 -> listOf("select", "animate").filter { it.startsWith(args[0]) }
+            1 -> listOf("select", "animate", "selectnearest").filter { it.startsWith(args[0]) }
             2 -> if(args[0] == "animate") selectedStructure?.animation?.animationMap?.keys?.toList()?.filter { it.startsWith(args[1]) } ?: emptyList() else emptyList()
             else -> emptyList()
         }

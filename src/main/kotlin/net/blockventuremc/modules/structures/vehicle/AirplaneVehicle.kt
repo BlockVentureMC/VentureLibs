@@ -14,6 +14,7 @@ import org.bukkit.entity.Snowball
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.RayTraceResult
 import org.bukkit.util.Vector
+import kotlin.math.abs
 import kotlin.math.max
 
 class AirplaneVehicle(name: String, position: Vector, rotation: Vector): CustomVehicle(name, position, rotation) {
@@ -28,6 +29,7 @@ class AirplaneVehicle(name: String, position: Vector, rotation: Vector): CustomV
         }
 
     }
+    var gravity = true
 
     var groundCollision: RayTraceResult? = null
 
@@ -77,6 +79,11 @@ class AirplaneVehicle(name: String, position: Vector, rotation: Vector): CustomV
 
             armorStand.setRotation(yaw, pitch)
             armorStand.velocity = armorStand.location.direction.multiply(forwardForce)
+
+            if(gravity) {
+                var gravity = Vector(0.0f, if(abs(forwardForce) < 0.2f) -0.5f else 0.0f, 0.0f)
+                armorStand.velocity = armorStand.velocity.add(gravity)
+            }
 
             steeringTask(player, packet)
         }

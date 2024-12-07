@@ -265,10 +265,10 @@ class VehicleCommand : CommandExecutor, TabExecutor {
                 vehicle.world = player.world
 
 
-                repeat(5) { i -> //122 red
+                repeat(10) { i -> //122 red
                     val cart = vehicle.addChild(WorldPositionAttachment("cart$i", player.location.toVector().add(Vector(i + 1,0,0)), Vector()))
                     var itemId = if (i == 0) 123 else 124
-                    if (i == 4 || i == 1) itemId = 125
+                    if (i == 9 || i == 1) itemId = 125
                     cart.addChild(
                         ItemAttachment(
                             "base",
@@ -280,24 +280,22 @@ class VehicleCommand : CommandExecutor, TabExecutor {
                     cart.addChild(Seat("seat1", Vector(0.4, 0.4, 0.0), Vector()))
                     cart.addChild(Seat("seat2", Vector(-0.4, 0.4, 0.0), Vector()))
                 }
-
-
                 vehicle.animation = object : Animation() {
 
                     init {
-                        animationMap["partDistance"] = 1.5f
+                        animationMap["partDistance"] = 2.1f
                     }
                     override fun animate() {
                         val partDistance = animationMap["partDistance"] as Float
                         var prevPosition = vehicle.armorStand!!.location.toVector()
                         var prevDirection = vehicle.armorStand!!.location.direction
                         vehicle.children.values.forEachIndexed { index, part ->
-                            var direction = prevDirection.clone().subtract(part.localPosition)
+                            var direction = prevPosition.clone().subtract(part.localPosition).normalize()
 
-                            if (direction.isZero || direction.isNull) return
-                            direction = direction.normalize()
+                            if(direction.isZero || direction.isNull) return
 
                             val position = prevPosition.subtract(direction.multiply(partDistance))
+                            part.localPosition = position.clone()
 
                             val targetYaw = Math.toDegrees(atan2(-direction.x, direction.z))
 
@@ -307,8 +305,7 @@ class VehicleCommand : CommandExecutor, TabExecutor {
                             val crossProduct = prevDirection.crossProduct(direction).multiply(0.13)
                             val targetRoll = (crossProduct.dot(Vector(0.0, 1.0, 0.0)) * 90.0).coerceIn(-80.0, 80.0)
 
-                            //cart.localRotation = Vector(targetPitch, targetYaw, targetRoll)
-                            part.localPosition = position
+                            part.localRotation = Vector(targetPitch, targetYaw, targetRoll)
 
                             prevPosition = position
                             prevDirection = direction

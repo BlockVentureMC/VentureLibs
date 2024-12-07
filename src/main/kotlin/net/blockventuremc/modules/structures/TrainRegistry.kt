@@ -5,6 +5,7 @@ import net.blockventuremc.modules.structures.impl.Cart
 import net.blockventuremc.modules.structures.impl.Seat
 import net.blockventuremc.modules.structures.impl.Train
 import net.blockventuremc.utils.itembuilder.ItemBuilder
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.util.Vector
 
@@ -53,7 +54,7 @@ object TrainRegistry {
 
                                     val spin = crossProduct.dot(Vector(0.0, 1.0, 0.0)) * -4.0f
 
-                                    rotationVelocity += spin
+                                    rotationVelocity += spin.coerceIn(-4.0, 4.0)
                                     rotationVelocity *= 0.99f
 
                                     rotator.localRotation.add(Vector(0.0, rotationVelocity, 0.0))

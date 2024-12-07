@@ -7,7 +7,7 @@ class WorldPositionAttachment(name: String, position: Vector, rotation: Vector) 
     Attachment(name, position, rotation, true) {
 
     override fun updateTransformRecurse(transform: Matrix4f) {
-        worldTransform.mul(localTransform)
+        worldTransform.set(localTransform)
 
         updateTransform()
 
