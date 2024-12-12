@@ -26,9 +26,9 @@ class TestGuiCommand : CommandExecutor {
 
         val player = sender
 
-        val title = CharRepo.getNeg(8) + "<white>" + CharRepo.MENU_CONTAINER_27 + CharRepo.getNeg(168) + CharRepo.MENU_BUTTON
+        val title = CharRepo.getNeg(8) + "<white>" + CharRepo.MENU_SLIM_54 + CharRepo.getNeg(150) +  "TestGUI"
 
-        val inventory = Bukkit.createInventory(null, 27, text(title))
+        val inventory = Bukkit.createInventory(null, 54, text(title))
 
         player.openInventory(inventory)
 
